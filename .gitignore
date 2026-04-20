@@ -21,6 +21,9 @@ bld/
 
 # VisualStudio キャッシュフォルダ
 .vs/
+./.vs/
+.vs/2026_AGS_summer/v17/.suo
+./.vs/2026_AGS_summer/v17/.suo
 
 # DxLibのログファイル
 Log.txt
