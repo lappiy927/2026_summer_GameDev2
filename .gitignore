@@ -20,6 +20,7 @@ bld/
 
 
 # VisualStudio キャッシュフォルダ
+.vs/
 
 # DxLibのログファイル
 Log.txt
