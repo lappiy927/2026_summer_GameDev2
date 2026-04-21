@@ -1,7 +1,6 @@
 #include <DxLib.h>
 #include "../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
-//#include "../Manager/Camera.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -27,7 +26,6 @@ void GameScene::Update(void)
 	{
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
-
 }
 
 void GameScene::Draw(void)

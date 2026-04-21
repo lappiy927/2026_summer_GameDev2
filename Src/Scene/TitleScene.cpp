@@ -2,9 +2,7 @@
 #include "../Utility/AsoUtility.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/SceneManager.h"
-//#include "../Manager/Camera.h"
 #include "../Manager/ResourceManager.h"
-//#include "../Object/Common/AnimationController.h"
 #include "../Application.h"
 #include "TitleScene.h"
 
@@ -29,7 +27,7 @@ void TitleScene::Update(void)
 	auto const& ins = InputManager::GetInstance();
 	if (ins.IsTrgDown(KEY_INPUT_SPACE))
 	{
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
+		sceMng_.ChangeScene(SceneManager::SCENE_ID::TUTORIAL);
 	}
 
 }

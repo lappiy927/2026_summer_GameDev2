@@ -3,8 +3,6 @@
 #include "../Common/Vector2.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/SceneManager.h"
-//#include "../Manager/Camera.h"
-//#include "../Object/Actor/Stage.h"
 #include "DebugScene.h"
 
 DebugScene::DebugScene(void)
