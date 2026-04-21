@@ -4,7 +4,6 @@
 #include "../Common/Fader.h"
 #include "../Scene/TitleScene.h"
 #include "../Scene/GameScene.h"
-//#include "Camera.h"
 #include "ResourceManager.h"
 #include "../Scene/DebugScene.h"
 #include "SceneManager.h"
@@ -34,10 +33,6 @@ void SceneManager::Init(void)
 	// フェード機能の初期化
 	fader_ = new Fader();
 	fader_->Init();
-
-	// カメラ
-	/*camera_ = new Camera();
-	camera_->Init();*/
 
 	// 画面遷移中判定
 	isSceneChanging_ = false;
@@ -107,11 +102,9 @@ void SceneManager::Update(void)
 	}
 	else
 	{
-		// カメラ更新
-		//camera_->Update();
 
 		// 各シーンの更新処理
-		//scene_->Update();
+		scene_->Update();
 	}
 
 
@@ -128,17 +121,11 @@ void SceneManager::Draw(void)
 	// 画面を初期化
 	ClearDrawScreen();
 
-	// カメラ設定
-	//camera_->SetBeforeDraw();
-
 	// Effekseerにより再生中のエフェクトを更新する。
 	UpdateEffekseer3D();
 
 	// 各シーンの描画処理
-	//scene_->Draw();
-
-	// カメラ描画
-	//camera_->DrawDebug();
+	scene_->Draw();
 
 	// Effekseerにより再生中のエフェクトを描画する。
 	DrawEffekseer3D();
@@ -160,9 +147,6 @@ void SceneManager::Destroy(void)
 	// フェード機能の解放
 	delete fader_;
 
-	//camera_->Release();
-	//delete camera_;
-
 
 	// インスタンスのメモリ解放
 	delete instance_;
@@ -177,7 +161,7 @@ void SceneManager::ChangeScene(SCENE_ID nextId)
 	waitSceneId_ = nextId;
 
 	// フェードアウト(暗転)を開始する
-	//fader_->SetFade(Fader::STATE::FADE_OUT);
+	fader_->SetFade(Fader::STATE::FADE_OUT);
 	isSceneChanging_ = true;
 
 }
@@ -190,7 +174,6 @@ SceneManager::SCENE_ID SceneManager::GetSceneID(void)
 float SceneManager::GetDeltaTime(void) const
 {
 	return 1.0f / 60.0f;
-	//return deltaTime_;
 }
 
 Camera* SceneManager::GetCamera(void) const
@@ -237,7 +220,7 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 		delete scene_;
 	}
 
-	/*switch (sceneId_)
+	switch (sceneId_)
 	{
 	case SCENE_ID::TITLE:
 		scene_ = new TitleScene();
@@ -248,10 +231,10 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	case SCENE_ID::DEBUG:
 		scene_ = new DebugScene();
 		break;
-	}*/
+	}
 
 	// 各シーンの初期化
-	//scene_->Init();
+	scene_->Init();
 
 	ResetDeltaTime();
 

@@ -67,7 +67,7 @@ void DebugScene::Release(void)
 {
 	// ステージ解放
 	//stage_->Release();
-	delete stage_;
+	//delete stage_;
 
 	// デバッグポイント群
 	points_.clear();
