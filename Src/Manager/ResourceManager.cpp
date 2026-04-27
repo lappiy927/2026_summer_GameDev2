@@ -31,7 +31,7 @@ void ResourceManager::Init(void)
 	Resource* res;
 
 	// MAIN_STAGEƒ‚ƒfƒ‹
-	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Stage/MainStage/MainStage.fbx");
+	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Stage/MainStage/MainStage.mv1");
 	resourcesMap_.emplace(SRC::MAIN_STAGE, res);
 
 }

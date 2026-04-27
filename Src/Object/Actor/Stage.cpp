@@ -19,13 +19,14 @@ void Stage::Update(void)
 void Stage::InitLoad(void)
 {
 	//ÉÇÉfÉãÇÃì«Ç›çûÇ›
-	transform_.SetModel(
-		resMng_.Load(ResourceManager::SRC::MAIN_STAGE).handleId_);
+	auto id = resMng_.Load(ResourceManager::SRC::MAIN_STAGE).handleId_;
+	
+	transform_.modelId = id;
 }
 
 void Stage::InitTransform(void)
 {
-	transform_.scl = AsoUtility::VECTOR_ONE;
+	transform_.scl = { 0.5f,0.5f,0.5f };
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Identity();
 	transform_.pos = DEFAULT_POS;

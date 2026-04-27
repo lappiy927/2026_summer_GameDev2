@@ -50,7 +50,7 @@ public:
 	void Release(void);
 
 	// モデルのハンドルIDを設定
-	void SetModel(int modelHid);
+	void SetModel(int id);
 
 	// 前方方向を取得
 	VECTOR GetForward(void) const;

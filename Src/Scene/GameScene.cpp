@@ -29,8 +29,8 @@ void GameScene::Init(void)
 
 	// カメラにプレイヤーを追従させる
 	Camera* camera = sceMng_.GetCamera();
-	camera->SetFollow(&player_->GetTransform());
 	camera->ChangeMode(Camera::MODE::FOLLOW);
+	camera->SetFollow(&player_->GetTransform());
 }
 
 void GameScene::Update(void)

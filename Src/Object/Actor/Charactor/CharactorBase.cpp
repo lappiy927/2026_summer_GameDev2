@@ -42,14 +42,14 @@ void CharactorBase::Update(void)
 	// 衝突判定
 	Collision();
 
-	//モデル制御更新
-	transform_.Update();
-
 	//アニメーション再生
 	animationController_->Update();
 
 	//各キャラクターごとの更新後処理
 	UpdateProcessPost();
+
+	//モデル制御更新
+	transform_.Update();
 
 }
 

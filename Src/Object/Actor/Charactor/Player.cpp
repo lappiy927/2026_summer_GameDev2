@@ -34,7 +34,7 @@ void Player::InitTransform(void)
 	transform_.scl = AsoUtility::VECTOR_ONE;
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Euler(DEFAULT_ROT_LOCAL);
-	transform_.pos = AsoUtility::VECTOR_ZERO;
+	transform_.pos = VGet(100.0f,100.0f,100.0f);
 	transform_.Update();
 }
 
@@ -224,48 +224,5 @@ void Player::ProcessJump(void)
 
 void Player::CollisionReserve(void)
 {
-	////アニメーションごとの線分調整
-	//if (animationController_->GetPlayType() == static_cast<int>(ANIM_TYPE::JUMP))
-	//{
-	//	//ジャンプ中は線分を伸ばす
-	//	if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::LINE)) != 0)
-	//	{
-	//		ColliderLine* colLine = dynamic_cast<ColliderLine*>(
-	//			ownColliders_.at(static_cast<int>(COLLIDER_TYPE::LINE)));
-	//		colLine->SetLocalPosStart(COL_LINE_JUMP_START_LOCAL_POS);
-	//		colLine->SetLocalPosEnd(COL_LINE_JUMP_END_LOCAL_POS);
-	//	}
-
-	//	//ジャンプ中はカプセルを上に上げる
-	//	if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::CAPSULE)) != 0)
-	//	{
-	//		ColliderCapsule* colCapsule = dynamic_cast<ColliderCapsule*>(
-	//			ownColliders_.at(static_cast<int>(COLLIDER_TYPE::CAPSULE)));
-	//		colCapsule->SetLocalPosTop(COL_CAPSULE_TOP_JUMP_LOCAL_POS);
-	//		colCapsule->SetLocalPosDown(COL_CAPSULE_DOWN_JUMP_LOCAL_POS);
-	//		colCapsule->SetRadius(COL_CAPSULE_RADIUS);
-	//	}
-	//}
-	//else
-	//{
-
-	//	//通常時の通常時に戻す
-	//	if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::LINE)) != 0)
-	//	{
-	//		ColliderLine* colLine = dynamic_cast<ColliderLine*>(
-	//			ownColliders_.at(static_cast<int>(COLLIDER_TYPE::LINE)));
-	//		colLine->SetLocalPosStart(COL_LINE_START_LOCAL_POS);
-	//		colLine->SetLocalPosEnd(COL_LINE_END_LOCAL_POS);
-	//	}
-
-	//	//通常時のカプセルに戻す
-	//	if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::CAPSULE)) != 0)
-	//	{
-	//		ColliderCapsule* colCapsule = dynamic_cast<ColliderCapsule*>(
-	//			ownColliders_.at(static_cast<int>(COLLIDER_TYPE::CAPSULE)));
-	//		colCapsule->SetLocalPosTop(COL_CAPSULE_TOP_LOCAL_POS);
-	//		colCapsule->SetLocalPosDown(COL_CAPSULE_DOWN_LOCAL_POS);
-	//		colCapsule->SetRadius(COL_CAPSULE_RADIUS);
-	//	}
-	//}
+	
 }

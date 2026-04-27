@@ -54,9 +54,9 @@ void Transform::Release(void)
 {
 }
 
-void Transform::SetModel(int model)
+void Transform::SetModel(int id)
 {
-	modelId = model;
+	modelId = id;
 }
 
 VECTOR Transform::GetForward(void) const

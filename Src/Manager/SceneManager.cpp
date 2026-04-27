@@ -108,15 +108,14 @@ void SceneManager::Update(void)
 	}
 	else
 	{
-		// カメラ更新
-		camera_->Update();
 
 		// 各シーンの更新処理
 		scene_->Update();
+
+		// カメラ更新
+		camera_->Update();
+
 	}
-
-
-
 }
 
 void SceneManager::Draw(void)

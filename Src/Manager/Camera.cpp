@@ -137,14 +137,12 @@ void Camera::SetDefault(void)
 {
 
 	// カメラの初期設定
-	transform_.pos = DERFAULT_POS;
+	transform_.pos = VGet(0,50,-150);
+	targetPos_ = VGet(0, 0, 0);
 
 	// カメラ角
-	angles_ = DERFAULT_ANGLES;
+	angles_ = VGet(0,0,0);
 	transform_.quaRot = Quaternion::Identity();
-
-	// 注視点
-	targetPos_ = AsoUtility::VECTOR_ZERO;
 
 	// カメラの上方向
 	transform_.quaRot.GetUp() = transform_.quaRot.GetUp();
@@ -274,6 +272,7 @@ void Camera::SetBeforeDrawFree(void)
 
 void Camera::SetBeforeDrawFollow(void)
 {
+	if (followTransform_ == nullptr) return;
 
 	// カメラ操作(回転)
 	ProcessRot(true);
@@ -292,6 +291,9 @@ void Camera::SetBeforeDrawFollow(void)
 
 void Camera::Collision(void)
 {
+	if (followTransform_ == nullptr)return;
+	if (followTransform_->modelId == -1)return;
+
 	// プレイヤーのルートフレーム
 	VECTOR start =
 		MV1GetFramePosition(followTransform_->modelId, 1);
