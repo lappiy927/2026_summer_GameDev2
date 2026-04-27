@@ -4,6 +4,7 @@
 #include "../Common/Fader.h"
 #include "../Scene/TitleScene.h"
 #include "../Scene/GameScene.h"
+#include "Camera.h"
 #include "ResourceManager.h"
 #include "../Scene/DebugScene.h"
 #include "../Scene/TutorialScene.h"
@@ -34,6 +35,10 @@ void SceneManager::Init(void)
 	// フェード機能の初期化
 	fader_ = new Fader();
 	fader_->Init();
+
+	// カメラ
+	camera_ = new Camera();
+	camera_->Init();
 
 	// 画面遷移中判定
 	isSceneChanging_ = false;
@@ -103,6 +108,8 @@ void SceneManager::Update(void)
 	}
 	else
 	{
+		// カメラ更新
+		camera_->Update();
 
 		// 各シーンの更新処理
 		scene_->Update();
@@ -122,11 +129,17 @@ void SceneManager::Draw(void)
 	// 画面を初期化
 	ClearDrawScreen();
 
+	// カメラ設定
+	camera_->SetBeforeDraw();
+
 	// Effekseerにより再生中のエフェクトを更新する。
 	UpdateEffekseer3D();
 
 	// 各シーンの描画処理
 	scene_->Draw();
+
+	// カメラ描画
+	camera_->DrawDebug();
 
 	// Effekseerにより再生中のエフェクトを描画する。
 	DrawEffekseer3D();
@@ -147,6 +160,9 @@ void SceneManager::Destroy(void)
 
 	// フェード機能の解放
 	delete fader_;
+
+	camera_->Release();
+	delete camera_;
 
 
 	// インスタンスのメモリ解放

@@ -2,6 +2,7 @@
 #include "../Utility/AsoUtility.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/SceneManager.h"
+#include "../Manager/Camera.h"
 #include "../Manager/ResourceManager.h"
 #include "../Application.h"
 #include "TitleScene.h"
@@ -18,7 +19,8 @@ TitleScene::~TitleScene(void)
 
 void TitleScene::Init(void)
 {
-
+	// ’è“_ƒJƒƒ‰
+	sceMng_.GetCamera()->ChangeMode(Camera::MODE::FIXED_POINT);
 }
 
 void TitleScene::Update(void)

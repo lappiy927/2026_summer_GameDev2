@@ -3,6 +3,8 @@
 #include "../Common/Vector2.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/SceneManager.h"
+#include "../Manager/Camera.h"
+#include "../Object/Actor/Stage.h"
 #include "DebugScene.h"
 
 DebugScene::DebugScene(void)
@@ -19,18 +21,18 @@ DebugScene::~DebugScene(void)
 void DebugScene::Init(void)
 {
 	// ステージ生成
-	/*stage_ = new Stage();
-	stage_->Init();*/
+	stage_ = new Stage();
+	stage_->Init();
 
 	// カメラの追従設定
 	Camera* camera = sceMng_.GetCamera();
-	//camera->ChangeMode(Camera::MODE::FREE);
+	camera->ChangeMode(Camera::MODE::FREE);
 }
 
 void DebugScene::Update(void)
 {
 	// ステージ更新
-	//stage_->Update();
+	stage_->Update();
 
 	// デバックポイントの配置
 	PlaceDebugPoint();
@@ -39,7 +41,7 @@ void DebugScene::Update(void)
 void DebugScene::Draw(void)
 {
 	// ステージ描画
-	//stage_->Draw();
+	stage_->Draw();
 
 	// デバッグポイント群を球体描画
 	int y = 20;
@@ -64,8 +66,8 @@ void DebugScene::Draw(void)
 void DebugScene::Release(void)
 {
 	// ステージ解放
-	//stage_->Release();
-	//delete stage_;
+	stage_->Release();
+	delete stage_;
 
 	// デバッグポイント群
 	points_.clear();

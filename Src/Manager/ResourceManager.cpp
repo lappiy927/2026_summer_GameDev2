@@ -29,6 +29,11 @@ void ResourceManager::Init(void)
 	static std::string PATH_EFF = Application::PATH_EFFECT;
 
 	Resource* res;
+
+	// MAIN_STAGEƒ‚ƒfƒ‹
+	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Stage/MainStage/MainStage.fbx");
+	resourcesMap_.emplace(SRC::MAIN_STAGE, res);
+
 }
 
 void ResourceManager::Release(void)
