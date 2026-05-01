@@ -83,6 +83,9 @@ protected:
 	// è’ìÀîªíË
 	virtual void CollisionReserve(void) {};
 	void Collision(void);
+	void CollisionGravity(void);
+	void CollisionCapsule(void);
+
 	// ä€âeï`âÊ
 	void DrawShadow(void);
 };

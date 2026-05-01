@@ -3,6 +3,9 @@
 #include "../Utility/AsoUtility.h"
 #include "../Manager/InputManager.h"
 #include "../Object/Common/Transform.h"
+#include "../Object/Collider/ColliderBase.h"
+#include "../Object/Collider/ColliderModel.h"
+#include "../Object/Collider/ColliderSphere.h"
 #include "Camera.h"
 
 Camera::Camera(void)
@@ -76,6 +79,20 @@ void Camera::SetFollow(const Transform* follow)
 	followTransform_ = follow;
 }
 
+void Camera::InitCollider(void)
+{
+	// 主に地面との衝突で使用する球体コライダ
+	ColliderSphere* colliderSphere = new ColliderSphere(
+		ColliderBase::TAG::CAMERA,
+		&transform_,
+		AsoUtility::VECTOR_ZERO,
+		COL_CAPSULE_SPHERE
+	);
+
+	ownColliders_.emplace(
+		static_cast<int>(COLLIDER_TYPE::SPHERE), colliderSphere);
+}
+
 void Camera::InitPost(void)
 {
 	ChangeMode(MODE::FIXED_POINT);
@@ -137,12 +154,14 @@ void Camera::SetDefault(void)
 {
 
 	// カメラの初期設定
-	transform_.pos = VGet(0,50,-150);
-	targetPos_ = VGet(0, 0, 0);
+	transform_.pos = DERFAULT_POS;
 
 	// カメラ角
-	angles_ = VGet(0,0,0);
+	angles_ = DERFAULT_ANGLES;
 	transform_.quaRot = Quaternion::Identity();
+
+	// 注視点
+	targetPos_ = AsoUtility::VECTOR_ZERO;
 
 	// カメラの上方向
 	transform_.quaRot.GetUp() = transform_.quaRot.GetUp();
@@ -272,7 +291,6 @@ void Camera::SetBeforeDrawFree(void)
 
 void Camera::SetBeforeDrawFollow(void)
 {
-	if (followTransform_ == nullptr) return;
 
 	// カメラ操作(回転)
 	ProcessRot(true);
@@ -291,13 +309,63 @@ void Camera::SetBeforeDrawFollow(void)
 
 void Camera::Collision(void)
 {
-	if (followTransform_ == nullptr)return;
-	if (followTransform_->modelId == -1)return;
-
 	// プレイヤーのルートフレーム
 	VECTOR start =
 		MV1GetFramePosition(followTransform_->modelId, 1);
 
+	for (const auto& hitCol : hitColliders_)
+	{
+		// モデル以外は処理を飛ばす
+		if (hitCol->GetShape() != ColliderBase::SHAPE::MODEL) continue;
+
+		// 派生クラスへキャスト
+		const ColliderModel* colliderModel =
+			dynamic_cast<const ColliderModel*>(hitCol);
+
+		if (colliderModel == nullptr) continue;
+
+		//線分とモデルの最近接(startに近い)衝突ポリゴンを取得
+		auto hitPoly = colliderModel->GetNearestHitPolyLine(
+			start,
+			transform_.pos,
+			false,
+			true
+		);
+
+		if (!hitPoly.HitFlag)
+		{
+			// 衝突していなければ次のコライダへ
+			continue;
+		}
+
+		// カメラ位置から注視点への方向
+		VECTOR dirToTarget = VNorm(VSub(targetPos_, transform_.pos));
+
+		// 衝突点の少し手前にカメラを置く
+		transform_.pos =
+			VAdd(hitPoly.HitPosition,
+				VScale(dirToTarget, COLLISION_BACK_DIS));
+
+#pragma region 球体の衝突でさらに押し戻す
+
+		// カメラ位置の球体コライダ
+		int typeSphere = static_cast<int>(COLLIDER_TYPE::SPHERE);
+
+		// 球体コライダが無ければ処理を抜ける
+		if (ownColliders_.count(typeSphere) == 0) continue;
+
+		// 球体コライダ情報
+		ColliderSphere* colliderSphere =
+			dynamic_cast<ColliderSphere*>(ownColliders_.at(typeSphere));
+		if (colliderSphere == nullptr) return;
+
+		// 指定された回数と距離で三角形の法線方向に押し戻す
+		transform_.pos =
+			ownColliders_.at(typeSphere)->GetPosPushBackAlongNormal(
+				hitPoly, CNT_TRY_COLLISION_CAMERA, COLLISION_BACK_DIS);
+#pragma endregion
+
+	}
 }
 
 void Camera::RotKeyboard(bool isLimit)

@@ -3,11 +3,11 @@
 #include <EffekseerForDXLib.h>
 #include "../Common/Fader.h"
 #include "../Scene/TitleScene.h"
+#include "../Scene/TutorialScene.h"
 #include "../Scene/GameScene.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "../Scene/DebugScene.h"
-#include "../Scene/TutorialScene.h"
 #include "SceneManager.h"
 
 SceneManager* SceneManager::instance_ = nullptr;
@@ -108,14 +108,15 @@ void SceneManager::Update(void)
 	}
 	else
 	{
-
-		// 各シーンの更新処理
-		scene_->Update();
-
 		// カメラ更新
 		camera_->Update();
 
+		// 各シーンの更新処理
+		scene_->Update();
 	}
+
+
+
 }
 
 void SceneManager::Draw(void)
@@ -190,6 +191,7 @@ SceneManager::SCENE_ID SceneManager::GetSceneID(void)
 float SceneManager::GetDeltaTime(void) const
 {
 	return 1.0f / 60.0f;
+	//return deltaTime_;
 }
 
 Camera* SceneManager::GetCamera(void) const

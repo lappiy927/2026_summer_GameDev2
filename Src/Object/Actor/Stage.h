@@ -3,8 +3,9 @@
 #include <vector>
 #include "ActorBase.h"
 
-class Stage : public ActorBase
+class Stage :public ActorBase
 {
+
 public:
 
 	// 衝突判定種別
@@ -14,13 +15,13 @@ public:
 		MAX,
 	};
 
-	// コンストラクタ
+	//コンストラクタ
 	Stage(void);
 
-	// デストラクタ
+	//デストラクタ
 	~Stage(void);
 
-	// 更新
+	//更新
 	void Update(void);
 
 protected:
@@ -31,6 +32,9 @@ protected:
 	// 大きさ、回転、座標の初期化
 	void InitTransform(void) override;
 
+	// 衝突判定の初期化
+	void InitCollider(void) override;
+
 	// アニメーションの初期化
 	void InitAnimation(void) override;
 
@@ -40,7 +44,7 @@ protected:
 private:
 
 	//座標
-	static constexpr VECTOR DEFAULT_POS = { 0.0f, 0.0f, 0.0f };
+	static constexpr VECTOR DEFAULT_POS = { 0.0f,-100.0f,0.0f };
 
 	// 除外フレーム名称
 	const std::vector<std::string> EXCLUDE_FRAME_NAMES = {
@@ -51,5 +55,6 @@ private:
 	const std::vector<std::string> TARGET_FRAME_NAMES = {
 	"Ground",
 	};
+
 };
 

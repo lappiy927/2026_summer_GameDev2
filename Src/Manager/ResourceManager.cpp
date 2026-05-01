@@ -34,6 +34,9 @@ void ResourceManager::Init(void)
 	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Stage/MainStage/MainStage.mv1");
 	resourcesMap_.emplace(SRC::MAIN_STAGE, res);
 
+	// PLAYERƒ‚ƒfƒ‹
+	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Player/‚¨Ž˜—l.mv1");
+	resourcesMap_.emplace(SRC::PLAYER, res);
 }
 
 void ResourceManager::Release(void)
