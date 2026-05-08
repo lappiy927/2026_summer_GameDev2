@@ -14,6 +14,10 @@ public:
 	// 固定FPS
 	static constexpr int FRAME_RATE = 60;
 
+	// 重力
+	static constexpr float GRAVITY = 9.81f * 100.0f;
+	static constexpr float GRAVITY_SCALE = 0.7f;
+
 	// データパス関連
 	//---------------------------------------------------
 	static const std::string PATH_DATA;
@@ -47,6 +51,9 @@ public:
 
 	// 解放成功/失敗の判定
 	bool IsReleaseFail(void) const;
+
+	// 重力の取得
+	float GetGravityPow(void) const { return GRAVITY * GRAVITY_SCALE; }
 
 private:
 

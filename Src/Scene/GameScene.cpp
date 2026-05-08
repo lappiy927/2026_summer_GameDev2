@@ -27,6 +27,11 @@ void GameScene::Init(void)
 	stage_ = new Stage();
 	stage_->Init();
 
+	// ステージモデルのコライダーをプレイヤーに登録
+	const ColliderBase* stageCollider =
+		stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
+	player_->AddHitCollider(stageCollider);
+
 	// カメラにプレイヤーを追従させる
 	Camera* camera = sceMng_.GetCamera();
 	camera->ChangeMode(Camera::MODE::FOLLOW);

@@ -100,13 +100,13 @@ void CharactorBase::CalcGravityPow(void)
 	VECTOR dirGravity = AsoUtility::DIR_D;
 
 	//重力の強さ
-	/*float gravityPow =
+	float gravityPow =
 		Application::GetInstance().GetGravityPow()
-		* scnMng_.GetDeltaTime();*/
+		* scnMng_.GetDeltaTime();
 
 	//重力
-	//VECTOR gravity = VScale(dirGravity, gravityPow);
-	//jumpPow_ = VAdd(jumpPow_, gravity);
+	VECTOR gravity = VScale(dirGravity, gravityPow);
+	jumpPow_ = VAdd(jumpPow_, gravity);
 
 }
 
@@ -118,6 +118,11 @@ void CharactorBase::Collision(void)
 	// ジャンプ量を加算
 	transform_.pos = VAdd(transform_.pos, jumpPow_);
 
+	// 地面との衝突
+	CollisionGravity();
+
+	// 壁との衝突
+	CollisionCapsule();
 }
 
 void CharactorBase::CollisionGravity(void)
