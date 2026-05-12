@@ -15,6 +15,7 @@ CharactorBase::CharactorBase(void)
 	moveDir_(AsoUtility::VECTOR_ZERO),
 	moveSpeed_(0.0f),
 	movePow_(AsoUtility::VECTOR_ZERO),
+	jumpPow_(AsoUtility::VECTOR_ZERO),
 	isJump_(false),
 	imgShadow_(-1),
 	stepJump_(-1)
@@ -86,12 +87,28 @@ void CharactorBase::InitLoad(void)
 
 void CharactorBase::DelayRotate(void)
 {
-	//ˆÚ“®•ûŒü‚©‚ç‰ñ“]‚É•ÏŠ·‚·‚é
-	Quaternion goalRot = Quaternion::LookRotation(moveDir_);
+	// ƒ[ƒƒxƒNƒgƒ‹‚È‚ç‰ñ“]‚µ‚È‚¢
+	if (VSize(moveDir_) <= 0.001f)
+	{
+		return;
+	}
 
-	//‰ñ“]‚Ì•âŠÔ
+
+	//ˆÚ“®•ûŒü‚©‚ç‰ñ“]‚É•ÏŠ·‚·‚é
+	Quaternion goalRot =
+		Quaternion::LookRotation(moveDir_);
+
 	transform_.quaRot =
-		Quaternion::Slerp(transform_.quaRot, goalRot, 0.2f);
+		Quaternion::Slerp(
+			transform_.quaRot,
+			goalRot,
+			0.2f);
+
+	// ƒ‚ƒfƒ‹•â³
+	transform_.quaRotLocal =
+		Quaternion::AngleAxis(
+			DX_PI_F,
+			AsoUtility::DIR_U);
 }
 
 void CharactorBase::CalcGravityPow(void)
@@ -127,6 +144,11 @@ void CharactorBase::Collision(void)
 
 void CharactorBase::CollisionGravity(void)
 {
+	if (VSize(jumpPow_) <= 0.001f)
+	{
+		return;
+	}
+
 	//—‰º’†‚µ‚©”»’è‚µ‚È‚¢
 	if (!(VDot(AsoUtility::DIR_D, VNorm(jumpPow_)) > 0.9f))
 	{

@@ -21,7 +21,7 @@ void TutorialScene::Update(void)
 {
 	// ƒV[ƒ“‘JˆÚ
 	auto const& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))
+	if (ins.IsTrgDown(KEY_INPUT_RETURN))
 	{
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
 	}

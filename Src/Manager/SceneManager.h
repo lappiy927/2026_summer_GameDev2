@@ -25,6 +25,7 @@ public:
 		TITLE,
 		TUTORIAL,
 		GAME,
+		GAMEOVER,
 		DEBUG,
 	};
 

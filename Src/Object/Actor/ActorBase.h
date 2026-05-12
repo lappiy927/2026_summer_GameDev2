@@ -47,6 +47,8 @@ public:
 	// 衝突対象となるコライダをクリア
 	void ClearHitCollider(void);
 
+	const VECTOR& GetPos() const;
+
 protected:
 
 	// シングルトン参照

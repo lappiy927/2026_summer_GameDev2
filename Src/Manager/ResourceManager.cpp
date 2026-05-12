@@ -37,6 +37,10 @@ void ResourceManager::Init(void)
 	// PLAYERƒ‚ƒfƒ‹
 	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Player/‚¨Ž˜—l.mv1");
 	resourcesMap_.emplace(SRC::PLAYER, res);
+
+	// ENEMYƒ‚ƒfƒ‹
+	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Enemy/mob.mv1");
+	resourcesMap_.emplace(SRC::ENEMY, res);
 }
 
 void ResourceManager::Release(void)

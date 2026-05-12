@@ -5,6 +5,7 @@
 #include "../Scene/TitleScene.h"
 #include "../Scene/TutorialScene.h"
 #include "../Scene/GameScene.h"
+#include "../Scene/GameOverScene.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "../Scene/DebugScene.h"
@@ -248,6 +249,9 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 		break;
 	case SCENE_ID::GAME:
 		scene_ = new GameScene();
+		break;
+	case SCENE_ID::GAMEOVER:
+		scene_ = new GameOverScene();
 		break;
 	case SCENE_ID::DEBUG:
 		scene_ = new DebugScene();

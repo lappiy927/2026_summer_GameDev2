@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include "../ActorBase.h"
 class AnimationController;
 
@@ -43,6 +44,7 @@ protected:
 	// アニメーション
 	AnimationController* animationController_;
 
+
 	// 移動方向
 	VECTOR moveDir_;
 
@@ -67,8 +69,7 @@ protected:
 	// ジャンプの入力受付時間
 	float stepJump_;
 
-	// リソースロード
-	virtual void InitLoad(void) override;
+	void InitLoad(void) override;
 
 	//更新系
 	virtual void UpdateProcess(void) = 0;

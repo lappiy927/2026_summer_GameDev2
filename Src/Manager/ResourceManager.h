@@ -19,6 +19,7 @@ public:
 		PLAYER_FAST_RUN,
 		MAIN_STAGE,
 		PLAYER_SHADOW,
+		ENEMY,
 	};
 
 	// 明示的にインスタンスを生成する

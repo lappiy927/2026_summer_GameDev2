@@ -1,7 +1,12 @@
 #pragma once
+#include <vector>
+#include <memory>
+
 #include "SceneBase.h"
+
 class Stage;
 class Player;
+class EnemyBase;
 
 class GameScene : public SceneBase
 {
@@ -31,4 +36,9 @@ private:
 	Stage* stage_;
 	Player* player_;
 
+	std::vector<std::shared_ptr<EnemyBase>> enemies_;
+
+	float limitTime_;
+
+	bool hit_ = false;
 };
