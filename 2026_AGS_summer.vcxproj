@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Actor\Weapon\Katana.cpp" />
     <ClCompile Include="Src\Object\Collider\ColliderSphere.cpp" />
     <ClCompile Include="Src\Object\Collider\ColliderModel.cpp" />
     <ClCompile Include="Src\Object\Collider\ColliderLine.cpp" />
@@ -167,8 +168,10 @@
     <ClCompile Include="Src\Scene\TutorialScene.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage.cpp" />
     <ClCompile Include="Src\Object\Common\Transform.cpp" />
+    <ClCompile Include="Src\Object\Actor\Weapon\WeaponBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Actor\Weapon\Katana.h" />
     <ClInclude Include="Src\Object\Collider\ColliderSphere.h" />
     <ClInclude Include="Src\Object\Collider\ColliderModel.h" />
     <ClInclude Include="Src\Object\Collider\ColliderLine.h" />
@@ -198,6 +201,7 @@
     <ClInclude Include="Src\Scene\TutorialScene.h" />
     <ClInclude Include="Src\Object\Actor\Stage.h" />
     <ClInclude Include="Src\Object\Common\Transform.h" />
+    <ClInclude Include="Src\Object\Actor\Weapon\WeaponBase.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

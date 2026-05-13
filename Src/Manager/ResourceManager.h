@@ -19,6 +19,7 @@ public:
 		PLAYER_FAST_RUN,
 		MAIN_STAGE,
 		PLAYER_SHADOW,
+		KATANA,
 	};
 
 	// 明示的にインスタンスを生成する

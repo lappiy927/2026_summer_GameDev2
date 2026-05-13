@@ -4,6 +4,7 @@
 #include "../Manager/Camera.h"
 #include "../Object/Actor/Stage.h"
 #include "../Object/Actor/Charactor/Player.h"
+#include "../Object/Actor/Weapon/Katana.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -26,6 +27,10 @@ void GameScene::Init(void)
 	// ステージの初期化
 	stage_ = new Stage();
 	stage_->Init();
+
+	//刀の初期化
+	katana_ = new Katana(player_);
+	katana_->Init();
 
 	// ステージモデルのコライダーをプレイヤーに登録
 	const ColliderBase* stageCollider =
@@ -52,6 +57,9 @@ void GameScene::Update(void)
 
 	// ステージの更新
 	stage_->Update();
+
+	//刀の更新
+	katana_->Update();
 }
 
 void GameScene::Draw(void)
@@ -63,7 +71,8 @@ void GameScene::Draw(void)
 
 	player_->Draw();
 
-
+	//刀の描画
+	katana_->Draw();
 }
 
 void GameScene::Release(void)
@@ -75,4 +84,8 @@ void GameScene::Release(void)
 	// ステージの解放
 	stage_->Release();
 	delete stage_;
+
+	//刀の開放
+	katana_->Release();
+	delete katana_;
 }

@@ -37,6 +37,10 @@ void ResourceManager::Init(void)
 	// PLAYERÉÇÉfÉã
 	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Player/Ç®éòól.mv1");
 	resourcesMap_.emplace(SRC::PLAYER, res);
+
+	//KATANAÉÇÉfÉã
+	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Weapon/ìÅ.mv1");
+	resourcesMap_.emplace(SRC::KATANA, res);
 }
 
 void ResourceManager::Release(void)
