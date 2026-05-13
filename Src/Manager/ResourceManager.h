@@ -19,11 +19,8 @@ public:
 		PLAYER_FAST_RUN,
 		MAIN_STAGE,
 		PLAYER_SHADOW,
-<<<<<<< HEAD
 		KATANA,
-=======
 		ENEMY,
->>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
 	};
 
 	// 明示的にインスタンスを生成する

@@ -6,11 +6,8 @@
 
 class Stage;
 class Player;
-<<<<<<< HEAD
 class Katana;
-=======
 class EnemyBase;
->>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
 
 class GameScene : public SceneBase
 {

@@ -4,11 +4,8 @@
 #include "../Manager/Camera.h"
 #include "../Object/Actor/Stage.h"
 #include "../Object/Actor/Charactor/Player.h"
-<<<<<<< HEAD
 #include "../Object/Actor/Weapon/Katana.h"
-=======
 #include "../Object/Actor/Charactor/Enemy/EnemyMob.h"
->>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -32,15 +29,12 @@ void GameScene::Init(void)
 	stage_ = new Stage();
 	stage_->Init();
 
-<<<<<<< HEAD
 	//刀の初期化
 	katana_ = new Katana(player_);
 	katana_->Init();
 
 	// ステージモデルのコライダーをプレイヤーに登録
-=======
 	// ステージコライダー取得
->>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
 	const ColliderBase* stageCollider =
 		stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
 
@@ -143,10 +137,8 @@ void GameScene::Update(void)
 	// ステージの更新
 	stage_->Update();
 
-<<<<<<< HEAD
 	//刀の更新
 	katana_->Update();
-=======
 	hit_ = false;
 
 	// エネミーの更新
@@ -173,7 +165,6 @@ void GameScene::Update(void)
 
 
 
->>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
 }
 
 void GameScene::Draw(void)
@@ -184,10 +175,8 @@ void GameScene::Draw(void)
 
 	player_->Draw();
 
-<<<<<<< HEAD
 	//刀の描画
 	katana_->Draw();
-=======
 	for (auto& enemy : enemies_)
 	{
 		enemy->Draw();
@@ -219,7 +208,6 @@ void GameScene::Draw(void)
 	}
 
 	
->>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
 }
 
 void GameScene::Release(void)
