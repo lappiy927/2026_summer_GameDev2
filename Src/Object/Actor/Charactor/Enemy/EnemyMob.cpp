@@ -127,3 +127,22 @@ void EnemyMob::AI()
         break;
     }
 }
+
+void EnemyMob::Damage(int damage)
+{
+    hp_ -= damage;
+
+
+    if (hp_ <= 0)
+    {
+        hp_ = 0;
+
+        isDead_ = true;
+
+    }
+}
+
+bool EnemyMob::IsDead() const
+{
+    return isDead_;
+}

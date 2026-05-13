@@ -33,6 +33,16 @@ void ColliderBase::SetFollow(const Transform* follow)
 	follow_ = follow;
 }
 
+void ColliderBase::SetEnable(bool enable)
+{
+	isEnable_ = enable;
+}
+
+bool ColliderBase::IsEnable() const
+{
+	return isEnable_;
+}
+
 VECTOR ColliderBase::GetRotPos(const VECTOR& localPos) const
 {
 	// 追従相手の回転に合わせて指定ローカル座標を回転し、

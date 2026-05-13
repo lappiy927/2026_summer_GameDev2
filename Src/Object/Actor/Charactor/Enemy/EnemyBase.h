@@ -29,11 +29,16 @@ public:
     void SetTarget(Player* player);
 
     // 死亡確認
-    bool IsDead() const;
+    virtual bool IsDead() const;
 
     void SetPos(const VECTOR& pos);
 
     bool IsHit(Player* player);
+
+    // ダメージ
+    virtual void Damage(int power);
+
+    ColliderBase* GetCollider(int type);
 
 protected:
 
@@ -76,8 +81,7 @@ protected:
     // プレイヤー発見
     bool SearchPlayer() const;
 
-    // ダメージ
-    void Damage(int power);
+  
 
     VECTOR knockbackPow_ = AsoUtility::VECTOR_ZERO;
     int knockbackTimer_ = 0;

@@ -1,4 +1,5 @@
 #include <DxLib.h>
+#include <algorithm>
 #include "../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
@@ -146,12 +147,37 @@ void GameScene::Update(void)
 	{
 		enemy->Update();
 
+		// 敵がプレイヤーに当たった
 		if (enemy->IsHit(player_))
 		{
 			hit_ = true;
 
 			player_->Damage(999);
 		}
+
+		ColliderCapsule* enemyCol =
+			dynamic_cast<ColliderCapsule*>(
+				enemy->GetCollider(
+					static_cast<int>(
+						EnemyBase::COLLIDER_TYPE::CAPSULE)));
+
+		if (enemyCol != nullptr)
+		{
+			bool hit =
+				katana_->GetCollider()->IsHit(enemyCol);
+
+			DrawFormatString(
+				0, 140,
+				0xff0000,
+				"SwordHit : %d",
+				hit);
+
+			if (hit)
+			{
+				enemy->Damage(50);
+
+			}
+		};
 	}
 
 	// プレイヤー死亡
@@ -162,6 +188,16 @@ void GameScene::Update(void)
 
 		return;
 	}
+
+	enemies_.erase(
+		std::remove_if(
+			enemies_.begin(),
+			enemies_.end(),
+			[](const std::shared_ptr<EnemyBase>& enemy)
+			{
+				return enemy->IsDead();
+			}),
+		enemies_.end());
 
 
 
@@ -177,6 +213,7 @@ void GameScene::Draw(void)
 
 	//刀の描画
 	katana_->Draw();
+
 	for (auto& enemy : enemies_)
 	{
 		enemy->Draw();

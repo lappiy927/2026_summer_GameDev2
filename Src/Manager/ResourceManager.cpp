@@ -35,18 +35,20 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::MAIN_STAGE, res);
 
 	// PLAYERモデル
-	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Player/お侍様.mv1");
+	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Player/Player.mv1");
 	resourcesMap_.emplace(SRC::PLAYER, res);
 
-<<<<<<< HEAD
+	// RUNモーション
+	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Player/Run.mv1");
+	resourcesMap_.emplace(SRC::PLAYER_RUN, res);
+
 	//KATANAモデル
 	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Weapon/刀.mv1");
 	resourcesMap_.emplace(SRC::KATANA, res);
-=======
+
 	// ENEMYモデル
 	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Enemy/mob.mv1");
 	resourcesMap_.emplace(SRC::ENEMY, res);
->>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
 }
 
 void ResourceManager::Release(void)

@@ -63,7 +63,7 @@ void EnemyBase::SetTarget(Player* player)
 
 bool EnemyBase::IsDead() const
 {
-	return isDead_;
+	return false;
 }
 
 void EnemyBase::SetPos(const VECTOR& pos)
@@ -85,6 +85,16 @@ bool EnemyBase::IsHit(Player* player)
 	if (!plCol) return false;
 
 	return myCol->IsHit(plCol);
+}
+
+ColliderBase* EnemyBase::GetCollider(int type)
+{
+	if (ownColliders_.count(type) == 0)
+	{
+		return nullptr;
+	}
+
+	return ownColliders_.at(type);
 }
 
 void EnemyBase::UpdateIdle()

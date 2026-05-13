@@ -56,10 +56,12 @@ public:
 
 	bool IsHit(const ColliderCapsule* other);
 
-protected:
-
 	// デバッグ用描画
 	void DrawDebug(int color) override;
+
+protected:
+
+	
 
 private:
 

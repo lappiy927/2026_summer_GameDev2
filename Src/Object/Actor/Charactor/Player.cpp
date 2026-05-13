@@ -68,7 +68,7 @@ void Player::InitAnimation(void)
 
 	animationController_->Add(
 		static_cast<int>(ANIM_TYPE::RUN), 20.0f,
-		Application::PATH_MODEL + "Player/Run.mv1");
+		Application::PATH_MODEL + "Charactor/Player/Run.mv1");
 
 	animationController_->Add(
 		static_cast<int>(ANIM_TYPE::FAST_RUN), 20.0f,

@@ -15,5 +15,14 @@ public:
 	 void InitPost() override;
 
 	 void AI() override;
+
+	 void Damage(int damage) override;
+
+	 bool IsDead() const override;
+
+private:
+
+	int hp_ = 100;
+	bool isDead_ = false;
 };
 

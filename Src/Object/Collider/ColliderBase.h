@@ -22,6 +22,7 @@ public:
 	{
 		STAGE,
 		PLAYER,
+		PLAYER_ATTACK,
 		ENEMY,
 		CAMERA,
 	};
@@ -53,6 +54,10 @@ public:
 		int maxTryCnt,
 		float pushDistance) const = 0;
 
+	void SetEnable(bool enable);
+
+	bool IsEnable() const;
+
 protected:
 
 	// デバッグ表示の色
@@ -70,6 +75,8 @@ protected:
 
 	// 有効フラグ
 	bool isValid_;
+
+	bool isEnable_ = true;
 
 	// ローカル座標をワールド座標に変換
 	VECTOR GetRotPos(const VECTOR& localPos)const;
