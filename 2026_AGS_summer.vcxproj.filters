@@ -102,10 +102,20 @@
     <ClCompile Include="Src\Object\Collider\ColliderSphere.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="Src\Object\Actor\Weapon\WeaponBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Object\Actor\Weapon\Katana.cpp">
+=======
+    <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyBase.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyMob.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scene\GameOverScene.cpp">
+>>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -197,10 +207,20 @@
     <ClInclude Include="Src\Object\Collider\ColliderSphere.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="Src\Object\Actor\Weapon\WeaponBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Actor\Weapon\Katana.h">
+=======
+    <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyBase.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyMob.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scene\GameOverScene.h">
+>>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

@@ -96,3 +96,8 @@ void ActorBase::ClearHitCollider(void)
 	hitColliders_.clear();
 }
 
+const VECTOR& ActorBase::GetPos() const
+{
+	return transform_.pos;
+}
+

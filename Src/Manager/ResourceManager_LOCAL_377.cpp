@@ -38,15 +38,9 @@ void ResourceManager::Init(void)
 	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Player/‚¨Ž˜—l.mv1");
 	resourcesMap_.emplace(SRC::PLAYER, res);
 
-<<<<<<< HEAD
 	//KATANAƒ‚ƒfƒ‹
 	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Weapon/“.mv1");
 	resourcesMap_.emplace(SRC::KATANA, res);
-=======
-	// ENEMYƒ‚ƒfƒ‹
-	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Enemy/mob.mv1");
-	resourcesMap_.emplace(SRC::ENEMY, res);
->>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
 }
 
 void ResourceManager::Release(void)

@@ -54,6 +54,8 @@ public:
 	bool IsHit(const ColliderModel* colliderModel,
 		bool isExclude = false, bool isTarget = false) const;
 
+	bool IsHit(const ColliderCapsule* other);
+
 protected:
 
 	// デバッグ用描画

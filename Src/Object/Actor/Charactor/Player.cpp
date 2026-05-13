@@ -94,10 +94,41 @@ void Player::UpdateProcess(void)
 
 	//ジャンプ処理
 	ProcessJump();
+
+	transform_.Update();
 }
 
 void Player::UpdateProcessPost(void)
 {
+}
+
+ColliderBase* Player::GetCollider(int type)
+{
+	if (ownColliders_.count(type) == 0)
+		return nullptr;
+
+	return ownColliders_.at(type);
+}
+
+void Player::SetPos(const VECTOR& pos)
+{
+	transform_.pos = pos;
+}
+
+void Player::Damage(int power)
+{
+	hp_ -= power;
+
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
+		isDead_ = true;
+	}
+}
+
+bool Player::IsDead() const
+{
+	return isDead_;
 }
 
 void Player::ProcessMove(void)
@@ -106,6 +137,11 @@ void Player::ProcessMove(void)
 
 	//移動量
 	movePow_ = AsoUtility::Lerp(movePow_, AsoUtility::VECTOR_ZERO, 0.05f);
+
+	if (CheckHitKey(KEY_INPUT_LSHIFT))
+	{
+		
+	}
 
 	//移動方向
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
@@ -121,8 +157,12 @@ void Player::ProcessMove(void)
 		if (ins.IsNew(KEY_INPUT_A)) { dir = AsoUtility::DIR_L; }
 		if (ins.IsNew(KEY_INPUT_S)) { dir = AsoUtility::DIR_B; }
 		if (ins.IsNew(KEY_INPUT_D)) { dir = AsoUtility::DIR_R; }
-		//右Shiftでダッシュ
-		if (ins.IsNew(KEY_INPUT_RSHIFT)) { isDash = true; }
+		
+		//左Shiftでダッシュ
+		if (CheckHitKey(KEY_INPUT_LSHIFT))
+		{
+			isDash = true;
+		}
 
 	}
 	else
@@ -198,7 +238,7 @@ void Player::ProcessJump(void)
 	auto& ins = InputManager::GetInstance();
 
 	// 持続ジャンプ処理
-	bool isHitKeyNew = ins.IsNew(KEY_INPUT_BACKSLASH)
+	bool isHitKeyNew = ins.IsNew(KEY_INPUT_SPACE)
 		|| ins.IsPadBtnNew(
 			InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN);
 
@@ -221,7 +261,7 @@ void Player::ProcessJump(void)
 	}
 
 	// 初期ジャンプ処理
-	bool isHitKey = ins.IsTrgDown(KEY_INPUT_BACKSLASH)
+	bool isHitKey = ins.IsTrgDown(KEY_INPUT_SPACE)
 		|| ins.IsPadBtnTrgDown(
 			InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN);
 

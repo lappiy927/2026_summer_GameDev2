@@ -8,6 +8,9 @@
 #include "../Object/Collider/ColliderSphere.h"
 #include "Camera.h"
 
+static int prevMouseX = 0;
+static int prevMouseY = 0;
+
 Camera::Camera(void)
 	:
 	followTransform_(nullptr),
@@ -22,6 +25,8 @@ Camera::Camera(void)
 	// ’Ž‹“_‚ÌˆÊ’u‚Í x = 320.0f, y = 240.0f, z = 1.0f
 	// ƒJƒƒ‰‚Ìã•ûŒü‚Í x = 0.0f, y = 1.0f, z = 0.0f
 	// ‰EãˆÊ’u‚©‚çZŽ²‚Ìƒvƒ‰ƒX•ûŒü‚ðŒ©‚é‚æ‚¤‚ÈƒJƒƒ‰
+
+	
 }
 
 Camera::~Camera(void)
@@ -96,6 +101,16 @@ void Camera::InitCollider(void)
 void Camera::InitPost(void)
 {
 	ChangeMode(MODE::FIXED_POINT);
+
+	SetMouseDispFlag(FALSE);
+
+	int cx = 640;
+	int cy = 360;
+
+	SetMousePoint(cx, cy);
+
+	prevMouseX = cx;
+	prevMouseY = cy;
 }
 
 const VECTOR& Camera::GetPos(void) const
@@ -371,40 +386,38 @@ void Camera::Collision(void)
 void Camera::RotKeyboard(bool isLimit)
 {
 
-	const auto& ins = InputManager::GetInstance();
+	int mouseX, mouseY;
 
-	// ƒJƒƒ‰‰ñ“]
-	if (ins.IsNew(KEY_INPUT_RIGHT))
-	{
-		// ‰E‰ñ“]
-		angles_.y += ROT_POW_RAD;
-	}
-	if (ins.IsNew(KEY_INPUT_LEFT))
-	{
-		// ¶‰ñ“]
-		angles_.y -= ROT_POW_RAD;
-	}
+	GetMousePoint(&mouseX, &mouseY);
 
-	// ã‰ñ“]
-	if (ins.IsNew(KEY_INPUT_UP))
+	int centerX = 640;
+	int centerY = 360;
+
+	int moveX = mouseX - centerX;
+	int moveY = mouseY - centerY;
+
+	// ¶‰E‰ñ“]
+	angles_.y += moveX * 0.003f;
+
+	// ã‰º‰ñ“]
+	angles_.x += moveY * 0.003f;
+
+	// ã‰º§ŒÀ
+	if (isLimit)
 	{
-		angles_.x += ROT_POW_RAD;
-		if (isLimit && angles_.x > LIMIT_X_UP_RAD)
+		if (angles_.x < -LIMIT_X_DW_RAD)
+		{
+			angles_.x = -LIMIT_X_DW_RAD;
+		}
+
+		if (angles_.x > LIMIT_X_UP_RAD)
 		{
 			angles_.x = LIMIT_X_UP_RAD;
 		}
 	}
 
-	// ‰º‰ñ“]
-	if (ins.IsNew(KEY_INPUT_DOWN))
-	{
-		angles_.x -= ROT_POW_RAD;
-		if (isLimit && angles_.x < -LIMIT_X_DW_RAD)
-		{
-			angles_.x = -LIMIT_X_DW_RAD;
-		}
-	}
-
+	// –ˆƒtƒŒ[ƒ€’†‰›‚Ö–ß‚·
+	SetMousePoint(centerX, centerY);
 }
 
 void Camera::RotGamePad(bool isLimit)

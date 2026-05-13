@@ -4,7 +4,11 @@
 #include "../Manager/Camera.h"
 #include "../Object/Actor/Stage.h"
 #include "../Object/Actor/Charactor/Player.h"
+<<<<<<< HEAD
 #include "../Object/Actor/Weapon/Katana.h"
+=======
+#include "../Object/Actor/Charactor/Enemy/EnemyMob.h"
+>>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -28,26 +32,107 @@ void GameScene::Init(void)
 	stage_ = new Stage();
 	stage_->Init();
 
+<<<<<<< HEAD
 	//刀の初期化
 	katana_ = new Katana(player_);
 	katana_->Init();
 
 	// ステージモデルのコライダーをプレイヤーに登録
+=======
+	// ステージコライダー取得
+>>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
 	const ColliderBase* stageCollider =
 		stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
+
+	// プレイヤーに登録
 	player_->AddHitCollider(stageCollider);
 
-	// カメラにプレイヤーを追従させる
+	for (int i = 0; i < 10; i++)
+	{
+		auto enemy = std::make_shared<EnemyMob>();
+
+		enemy->Init();
+
+		enemy->SetTarget(player_);
+
+		enemy->AddHitCollider(stageCollider);
+
+		VECTOR pos = VGet(0, 50, 0);
+
+		// 最大100回試行
+		for (int attempt = 0; attempt < 100; attempt++)
+		{
+			float x =
+				(rand() % 4000) - 2000.0f;
+
+			float z =
+				(rand() % 4000) - 2000.0f;
+
+			// 山除外
+			float distCenter =
+				sqrtf(x * x + z * z);
+
+			if (distCenter < 2600.0f)
+			{
+				continue;
+			}
+
+			pos = VGet(x, 50.0f, z);
+
+			// 敵同士の距離チェック
+			bool isNear = false;
+
+			for (auto& other : enemies_)
+			{
+				float dist =
+					VSize(
+						VSub(
+							other->GetPos(),
+							pos));
+
+				if (dist < 500.0f)
+				{
+					isNear = true;
+					break;
+				}
+			}
+
+			// 近くにいなければ確定
+			if (!isNear)
+			{
+				break;
+			}
+		}
+
+		enemy->SetPos(pos);
+
+		enemies_.push_back(enemy);
+	}
+	
+
+	// カメラにプレイヤーを追従
 	Camera* camera = sceMng_.GetCamera();
 	camera->ChangeMode(Camera::MODE::FOLLOW);
 	camera->SetFollow(&player_->GetTransform());
+
+	limitTime_ = 60.0f;
 }
 
 void GameScene::Update(void)
 {
+	limitTime_ -= sceMng_.GetDeltaTime();
+
+	if (limitTime_ <= 0.0f)
+	{
+		limitTime_ = 0.0f;
+
+		sceMng_.ChangeScene(
+			SceneManager::SCENE_ID::TITLE);
+	}
+
 	// シーン遷移
 	auto const& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))
+	if (ins.IsTrgDown(KEY_INPUT_RETURN))
 	{
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
@@ -58,21 +143,83 @@ void GameScene::Update(void)
 	// ステージの更新
 	stage_->Update();
 
+<<<<<<< HEAD
 	//刀の更新
 	katana_->Update();
+=======
+	hit_ = false;
+
+	// エネミーの更新
+	for (auto& enemy : enemies_)
+	{
+		enemy->Update();
+
+		if (enemy->IsHit(player_))
+		{
+			hit_ = true;
+
+			player_->Damage(999);
+		}
+	}
+
+	// プレイヤー死亡
+	if (player_->IsDead())
+	{
+		sceMng_.ChangeScene(
+			SceneManager::SCENE_ID::GAMEOVER);
+
+		return;
+	}
+
+
+
+>>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
 }
 
 void GameScene::Draw(void)
 {
-	DrawString(0, 0, "GameScene", 0xffffff);
 
 	// 描画
 	stage_->Draw();
 
 	player_->Draw();
 
+<<<<<<< HEAD
 	//刀の描画
 	katana_->Draw();
+=======
+	for (auto& enemy : enemies_)
+	{
+		enemy->Draw();
+
+		VECTOR pos = enemy->GetPos();
+
+		DrawFormatString(
+			0, 40,
+			0xffffff,
+			"Enemy : %.2f %.2f %.2f",
+			pos.x, pos.y, pos.z);
+
+		DrawFormatString(0, 80, 0xffffff,
+			"HitCheck: %d",
+			enemy->IsHit(player_) ? 1 : 0);
+	}
+
+	DrawFormatString(
+		0, 20,
+		0x000000,
+		"TIME : %.1f",
+		limitTime_);
+
+	DrawString(0, 0, "GameScene", 0xffffff);
+
+	if (hit_)
+	{
+		DrawString(0, 100, "HIT!", 0xff0000);
+	}
+
+	
+>>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
 }
 
 void GameScene::Release(void)

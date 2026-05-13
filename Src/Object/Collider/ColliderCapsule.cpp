@@ -168,6 +168,38 @@ bool ColliderCapsule::IsHit(const ColliderModel* colliderModel, bool isExclude, 
 	return ret;
 }
 
+bool ColliderCapsule::IsHit(const ColliderCapsule* other)
+{
+	if (other == nullptr)
+	{
+		return false;
+	}
+
+	// ©•ª‚Ì’†S
+	VECTOR myPos =
+		VScale(
+			VAdd(
+				GetRotPos(localPosTop_),
+				GetRotPos(localPosDown_)),
+				0.5f);
+
+	// ‘Šè‚Ì’†S
+	VECTOR otherPos =
+		VScale(
+			VAdd(
+				other->GetRotPos(other->localPosTop_),
+				other->GetRotPos(other->localPosDown_)),
+			0.5f);
+
+	// ‹——£
+	float dist = VSize(VSub(myPos, otherPos));
+
+	// ”¼Œa‡Œv
+	float radiusSum = radius_ + other->radius_;
+
+	return dist <= radiusSum;
+}
+
 void ColliderCapsule::DrawDebug(int color)
 {
 	// ã‚Ì‹…‘Ì

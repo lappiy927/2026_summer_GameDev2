@@ -21,6 +21,15 @@ public:
 	//デストラクタ
 	~Player(void) override;
 
+	ColliderBase* GetCollider(int type);
+
+	void SetPos(const VECTOR& pos);
+
+	void Damage(int power);
+
+	bool IsDead() const;
+
+
 protected:
 
 	// リソースロード
@@ -41,6 +50,7 @@ protected:
 	//更新系
 	virtual void UpdateProcess(void);
 	virtual void UpdateProcessPost(void);
+
 
 private:
 
@@ -96,11 +106,17 @@ private:
 	// 衝突判定用カプセル球体半径
 	static constexpr float COL_CAPSULE_RADIUS = 20.0f;
 
+	int hp_ = 1;
+	bool isDead_ = false;
+
+
 	// 操作
 	void ProcessMove(void);
 	void ProcessJump(void);
 
 	// 衝突判定
 	void CollisionReserve(void) override;
+
+
 };
 

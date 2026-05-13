@@ -112,6 +112,7 @@
       <AdditionalIncludeDirectories>C:\DxLib</AdditionalIncludeDirectories>
       <CompileAsManaged>false</CompileAsManaged>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -130,6 +131,7 @@
       <AdditionalIncludeDirectories>C:\DxLib</AdditionalIncludeDirectories>
       <CompileAsManaged>false</CompileAsManaged>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -138,7 +140,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <ClCompile Include="Src\Object\Actor\Weapon\Katana.cpp" />
+=======
+    <ClCompile Include="Src\Scene\GameOverScene.cpp" />
+    <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyMob.cpp" />
+    <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyBase.cpp" />
+>>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
     <ClCompile Include="Src\Object\Collider\ColliderSphere.cpp" />
     <ClCompile Include="Src\Object\Collider\ColliderModel.cpp" />
     <ClCompile Include="Src\Object\Collider\ColliderLine.cpp" />
@@ -171,7 +179,13 @@
     <ClCompile Include="Src\Object\Actor\Weapon\WeaponBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <ClInclude Include="Src\Object\Actor\Weapon\Katana.h" />
+=======
+    <ClInclude Include="Src\Scene\GameOverScene.h" />
+    <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyMob.h" />
+    <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyBase.h" />
+>>>>>>> b141a3e7c223090454105bdc85fa58d72234d14e
     <ClInclude Include="Src\Object\Collider\ColliderSphere.h" />
     <ClInclude Include="Src\Object\Collider\ColliderModel.h" />
     <ClInclude Include="Src\Object\Collider\ColliderLine.h" />
