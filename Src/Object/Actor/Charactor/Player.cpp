@@ -237,11 +237,13 @@ void Player::ProcessMove(void)
 			{
 				animationController_->Play(
 					static_cast<int>(ANIM_TYPE::FAST_RUN), true);
+				animType_ = ANIM_TYPE::FAST_RUN;
 			}
 			else
 			{
 				animationController_->Play(
 					static_cast<int>(ANIM_TYPE::RUN), true);
+				animType_ = ANIM_TYPE::RUN;
 			}
 		}
 
