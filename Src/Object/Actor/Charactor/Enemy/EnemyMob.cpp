@@ -56,7 +56,7 @@ void EnemyMob::InitCollider()
             ColliderBase::TAG::ENEMY,
             &transform_,
             VGet(0.0f, 100.0f, 0.0f),
-            VGet(0.0f, -500.0f, 0.0f));
+            VGet(0.0f, -2000.0f, 0.0f));
 
     ownColliders_.emplace(
         static_cast<int>(COLLIDER_TYPE::LINE),
@@ -67,9 +67,9 @@ void EnemyMob::InitCollider()
         new ColliderCapsule(
             ColliderBase::TAG::ENEMY,
             &transform_,
-            VGet(0.0f, 40.0f, 0.0f),
+            VGet(0.0f, 120.0f, 0.0f),
             VGet(0.0f, 0.0f, 0.0f),
-            20.0f);
+            40.0f);
 
     ownColliders_.emplace(
         static_cast<int>(COLLIDER_TYPE::CAPSULE),

@@ -59,10 +59,10 @@ void GameScene::Init(void)
 		for (int attempt = 0; attempt < 100; attempt++)
 		{
 			float x =
-				(rand() % 4000) - 2000.0f;
+				(rand() % 7000) - 3500.0f;
 
 			float z =
-				(rand() % 4000) - 2000.0f;
+				(rand() % 7000) - 3500.0f;
 
 			// ŽR’†S‚©‚ç‚Ì‹——£
 			float centerDist = sqrtf(x * x + z * z);
@@ -73,7 +73,7 @@ void GameScene::Init(void)
 				continue;
 			}
 
-			pos = VGet(x, 300.0f, z);
+			pos = VGet(x, 2000.0f, z);
 
 			bool isNear = false;
 

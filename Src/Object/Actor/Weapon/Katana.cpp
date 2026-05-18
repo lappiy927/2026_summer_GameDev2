@@ -39,6 +39,9 @@ void Katana::Update(void)
 	case Player::ANIM_TYPE::FAST_RUN:
 		UpdateDash();
 		break;
+	case Player::ANIM_TYPE::ATTACK:
+		UpdateAttack();
+		break;
 	}
 
 	UpdateTransform();
@@ -68,9 +71,11 @@ void Katana::Update(void)
 	}
 
 	attackCollider_->SetEnable(isAttack_);
-
 	dynamic_cast<ColliderCapsule*>(attackCollider_)->DrawDebug(0xff0000);
+
+
 }
+
 
 ColliderCapsule* Katana::GetCollider() const
 {
@@ -121,6 +126,7 @@ void Katana::UpdateDash(void)
 
 void Katana::UpdateAttack(void)
 {
+	currentOffset_ = OFFSET_ATTACK;
 }
 
 void Katana::UpdateTransform(void)
@@ -141,4 +147,11 @@ void Katana::UpdateTransform(void)
 	MATRIX finalMatrix = MMult(localTrans, withHand);
 
 	MV1SetMatrix(transform_.modelId, finalMatrix);
+
+	transform_.pos = VGet(
+		finalMatrix.m[3][0],
+		finalMatrix.m[3][1],
+		finalMatrix.m[3][2]);
+
+	transform_.Update();
 }
