@@ -39,9 +39,6 @@ void Katana::Update(void)
 	case Player::ANIM_TYPE::FAST_RUN:
 		UpdateDash();
 		break;
-	case Player::ANIM_TYPE::ATTACK:
-		UpdateAttack();
-		break;
 	}
 
 	UpdateTransform();
@@ -71,11 +68,9 @@ void Katana::Update(void)
 	}
 
 	attackCollider_->SetEnable(isAttack_);
+
 	dynamic_cast<ColliderCapsule*>(attackCollider_)->DrawDebug(0xff0000);
-
-
 }
-
 
 ColliderCapsule* Katana::GetCollider() const
 {
@@ -164,13 +159,6 @@ void Katana::UpdateTransform(void)
 	finalMatrix.m[3][2] = handPos.z;
 
 	MV1SetMatrix(transform_.modelId, finalMatrix);
-
-	transform_.pos = VGet(
-		finalMatrix.m[3][0],
-		finalMatrix.m[3][1],
-		finalMatrix.m[3][2]);
-
-	transform_.Update();
 
 	// 端点もrotMatrixで変換（刀モデルと同じ行列）
 	VECTOR rotatedTop = VTransform(VGet(0.0f, -100.0f, 0.0f), rotMatrix);

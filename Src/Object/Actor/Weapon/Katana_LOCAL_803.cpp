@@ -131,37 +131,20 @@ void Katana::UpdateAttack(void)
 
 void Katana::UpdateTransform(void)
 {
+
+	MATRIX localRot = Quaternion::Euler(currentOffset_.rotEuler).ToMatrix();
+	MATRIX localTrans = MGetTranslate(currentOffset_.localPos);
+	MATRIX scaleMatrix = MGetScale(VGet(0.01f, 0.01f, 0.01f));
+
 	int playerModelId = player_->GetTransform().modelId;
 	int rightHandFrame = MV1SearchFrame(playerModelId, "hand.R");
 	if (rightHandFrame == -1) return;
 
 	MATRIX handMatrix = MV1GetFrameLocalWorldMatrix(playerModelId, rightHandFrame);
 
-	VECTOR handPos = VGet(
-		handMatrix.m[3][0],
-		handMatrix.m[3][1],
-		handMatrix.m[3][2]);
-
-	// 行列の各列を正規化してスケールを除去
-	MATRIX handRotOnly = MGetIdent();
-	VECTOR col0 = VNorm(VGet(handMatrix.m[0][0], handMatrix.m[0][1], handMatrix.m[0][2]));
-	VECTOR col1 = VNorm(VGet(handMatrix.m[1][0], handMatrix.m[1][1], handMatrix.m[1][2]));
-	VECTOR col2 = VNorm(VGet(handMatrix.m[2][0], handMatrix.m[2][1], handMatrix.m[2][2]));
-	handRotOnly.m[0][0] = col0.x; handRotOnly.m[0][1] = col0.y; handRotOnly.m[0][2] = col0.z;
-	handRotOnly.m[1][0] = col1.x; handRotOnly.m[1][1] = col1.y; handRotOnly.m[1][2] = col1.z;
-	handRotOnly.m[2][0] = col2.x; handRotOnly.m[2][1] = col2.y; handRotOnly.m[2][2] = col2.z;
-	handRotOnly.m[3][0] = 0.0f;   handRotOnly.m[3][1] = 0.0f;   handRotOnly.m[3][2] = 0.0f;
-
-	MATRIX offsetRot = Quaternion::Euler(currentOffset_.rotEuler).ToMatrix();
-
-	// ★ 回転のみ合成（スケールは後で独立して適用）
-	MATRIX rotMatrix = MMult(offsetRot, handRotOnly);
-
-	// 最終行列（回転＋位置）
-	MATRIX finalMatrix = rotMatrix;
-	finalMatrix.m[3][0] = handPos.x;
-	finalMatrix.m[3][1] = handPos.y;
-	finalMatrix.m[3][2] = handPos.z;
+	MATRIX scaleWithRot = MMult(scaleMatrix, localRot);
+	MATRIX withHand = MMult(scaleWithRot, handMatrix);
+	MATRIX finalMatrix = MMult(localTrans, withHand);
 
 	MV1SetMatrix(transform_.modelId, finalMatrix);
 
@@ -171,17 +154,4 @@ void Katana::UpdateTransform(void)
 		finalMatrix.m[3][2]);
 
 	transform_.Update();
-
-	// 端点もrotMatrixで変換（刀モデルと同じ行列）
-	VECTOR rotatedTop = VTransform(VGet(0.0f, -100.0f, 0.0f), rotMatrix);
-	VECTOR rotatedDown = VTransform(VGet(0.0f, -300.0f, 0.0f), rotMatrix);
-
-	// 位置オフセットもrotMatrixで変換
-	VECTOR offset = VTransform(currentOffset_.localPos, rotMatrix);
-
-	transform_.pos = handPos;
-	transform_.quaRot = Quaternion::Identity();
-
-	attackCollider_->SetLocalPosTop(VAdd(rotatedTop, offset));
-	attackCollider_->SetLocalPosDown(VAdd(rotatedDown, offset));
 }

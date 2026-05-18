@@ -165,13 +165,14 @@ void Katana::UpdateTransform(void)
 
 	MV1SetMatrix(transform_.modelId, finalMatrix);
 
+<<<<<<< .merge_file_6NJ73n
 	transform_.pos = VGet(
 		finalMatrix.m[3][0],
 		finalMatrix.m[3][1],
 		finalMatrix.m[3][2]);
 
 	transform_.Update();
-
+=======
 	// 端点もrotMatrixで変換（刀モデルと同じ行列）
 	VECTOR rotatedTop = VTransform(VGet(0.0f, -100.0f, 0.0f), rotMatrix);
 	VECTOR rotatedDown = VTransform(VGet(0.0f, -300.0f, 0.0f), rotMatrix);
@@ -184,4 +185,5 @@ void Katana::UpdateTransform(void)
 
 	attackCollider_->SetLocalPosTop(VAdd(rotatedTop, offset));
 	attackCollider_->SetLocalPosDown(VAdd(rotatedDown, offset));
+>>>>>>> .merge_file_AYZJzW
 }
