@@ -156,6 +156,11 @@ void Player::PlayAttackAnimation()
 		false);
 }
 
+Player::ANIM_TYPE Player::GetAnimType() const
+{
+	return animType_;
+}
+
 void Player::ProcessMove(void)
 {
 	if (isAttack_)
