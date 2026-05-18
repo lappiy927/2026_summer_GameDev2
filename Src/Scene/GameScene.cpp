@@ -59,19 +59,21 @@ void GameScene::Init(void)
 		for (int attempt = 0; attempt < 100; attempt++)
 		{
 			float x =
-				(rand() % 1600) - 800.0f;
+				(rand() % 4000) - 2000.0f;
 
 			float z =
-				(rand() % 1600) - 800.0f;
+				(rand() % 4000) - 2000.0f;
 
-			//// 山エリア除外
-			//if (x > -800 && x < 800 &&
-			//	z > -800 && z < 800)
-			//{
-			//	continue;
-			//}
+			// 山中心からの距離
+			float centerDist = sqrtf(x * x + z * z);
 
-			pos = VGet(x, 50.0f, z);
+			// 山の内側ならやり直し
+			if (centerDist < 600.0f)
+			{
+				continue;
+			}
+
+			pos = VGet(x, 300.0f, z);
 
 			bool isNear = false;
 
@@ -83,7 +85,7 @@ void GameScene::Init(void)
 							other->GetPos(),
 							pos));
 
-				if (dist < 500.0f)
+				if (dist < 200.0f)
 				{
 					isNear = true;
 					break;
