@@ -13,6 +13,7 @@ public:
 		RUN,
 		FAST_RUN,
 		JUMP,
+		ATTACK,
 	};
 
 	//コンストラクタ
@@ -28,6 +29,8 @@ public:
 	void Damage(int power);
 
 	bool IsDead() const;
+
+	void PlayAttackAnimation();
 
 
 protected:
@@ -116,6 +119,9 @@ private:
 
 	// 衝突判定
 	void CollisionReserve(void) override;
+
+	bool isAttack_ = false;
+	float attackTimer_ = 0.0f;
 
 
 };

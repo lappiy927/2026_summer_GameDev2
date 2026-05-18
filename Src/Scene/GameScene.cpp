@@ -54,27 +54,25 @@ void GameScene::Init(void)
 
 		VECTOR pos = VGet(0, 50, 0);
 
-		// 最大100回試行
+		bool found = false;
+
 		for (int attempt = 0; attempt < 100; attempt++)
 		{
 			float x =
-				(rand() % 4000) - 2000.0f;
+				(rand() % 1600) - 800.0f;
 
 			float z =
-				(rand() % 4000) - 2000.0f;
+				(rand() % 1600) - 800.0f;
 
-			// 山除外
-			float distCenter =
-				sqrtf(x * x + z * z);
-
-			if (distCenter < 2600.0f)
-			{
-				continue;
-			}
+			//// 山エリア除外
+			//if (x > -800 && x < 800 &&
+			//	z > -800 && z < 800)
+			//{
+			//	continue;
+			//}
 
 			pos = VGet(x, 50.0f, z);
 
-			// 敵同士の距離チェック
 			bool isNear = false;
 
 			for (auto& other : enemies_)
@@ -92,18 +90,21 @@ void GameScene::Init(void)
 				}
 			}
 
-			// 近くにいなければ確定
 			if (!isNear)
 			{
+				found = true;
 				break;
 			}
 		}
 
-		enemy->SetPos(pos);
+		// 有効位置が見つかった時だけ生成
+		if (found)
+		{
+			enemy->SetPos(pos);
 
-		enemies_.push_back(enemy);
+			enemies_.push_back(enemy);
+		}
 	}
-	
 
 	// カメラにプレイヤーを追従
 	Camera* camera = sceMng_.GetCamera();
@@ -214,6 +215,8 @@ void GameScene::Draw(void)
 	//刀の描画
 	katana_->Draw();
 
+	int y = 40;
+
 	for (auto& enemy : enemies_)
 	{
 		enemy->Draw();
@@ -221,10 +224,12 @@ void GameScene::Draw(void)
 		VECTOR pos = enemy->GetPos();
 
 		DrawFormatString(
-			0, 40,
+			0, y,
 			0xffffff,
 			"Enemy : %.2f %.2f %.2f",
 			pos.x, pos.y, pos.z);
+
+		y += 20;
 
 		DrawFormatString(0, 80, 0xffffff,
 			"HitCheck: %d",

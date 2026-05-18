@@ -72,11 +72,15 @@ void Player::InitAnimation(void)
 
 	animationController_->Add(
 		static_cast<int>(ANIM_TYPE::FAST_RUN), 20.0f,
-		Application::PATH_MODEL + "Player/FastRun.mv1");
+		Application::PATH_MODEL + "Charactor/Player/FastRun.mv1");
 
 	animationController_->Add(
 		static_cast<int>(ANIM_TYPE::JUMP), 60.0f,
 		Application::PATH_MODEL + "Player/JumpRising.mv1");
+
+	animationController_->Add(
+		static_cast<int>(ANIM_TYPE::ATTACK), 50.0f,
+		Application::PATH_MODEL + "Charactor/Player/Attack.mv1");
 
 	//初期アニメーション再生
 	animationController_->Play(
@@ -89,6 +93,16 @@ void Player::InitPost(void)
 
 void Player::UpdateProcess(void)
 {
+	if (isAttack_)
+	{
+		attackTimer_ -= scnMng_.GetDeltaTime();
+
+		if (attackTimer_ <= 0.0f)
+		{
+			isAttack_ = false;
+		}
+	}
+
 	// 移動操作
 	ProcessMove();
 
@@ -131,8 +145,24 @@ bool Player::IsDead() const
 	return isDead_;
 }
 
+void Player::PlayAttackAnimation()
+{
+	isAttack_ = true;
+
+	attackTimer_ = 0.5f;
+
+	animationController_->Play(
+		static_cast<int>(ANIM_TYPE::ATTACK),
+		false);
+}
+
 void Player::ProcessMove(void)
 {
+	if (isAttack_)
+	{
+		return;
+	}
+
 	auto& ins = InputManager::GetInstance();
 
 	//移動量

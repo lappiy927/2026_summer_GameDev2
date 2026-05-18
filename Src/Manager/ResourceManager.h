@@ -20,6 +20,7 @@ public:
 		MAIN_STAGE,
 		PLAYER_SHADOW,
 		KATANA,
+		ATTACK,
 		ENEMY,
 	};
 

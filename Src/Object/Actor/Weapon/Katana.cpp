@@ -79,6 +79,8 @@ void Katana::Update(void)
 		isAttack_ = true;
 
 		attackTimer_ = 0.2f;
+
+		player_->PlayAttackAnimation();
 	}
 
 	oldMouse_ = mouse;

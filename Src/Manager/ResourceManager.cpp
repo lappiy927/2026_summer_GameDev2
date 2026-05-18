@@ -42,6 +42,14 @@ void ResourceManager::Init(void)
 	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Player/Run.mv1");
 	resourcesMap_.emplace(SRC::PLAYER_RUN, res);
 
+	// FAST_RUNモーション
+	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Player/FastRun.mv1");
+	resourcesMap_.emplace(SRC::PLAYER_FAST_RUN, res);
+
+	// ATTACKモーション
+	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Player/Attack.mv1");
+	resourcesMap_.emplace(SRC::ATTACK, res);
+
 	//KATANAモデル
 	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Weapon/刀.mv1");
 	resourcesMap_.emplace(SRC::KATANA, res);
