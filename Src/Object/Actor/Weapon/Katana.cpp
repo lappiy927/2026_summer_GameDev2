@@ -18,58 +18,30 @@ Katana::~Katana(void)
 
 void Katana::Init(void)
 {
-	//モデルの読み込み
-	transform_.SetModel(
-		resMng_.Load(
-			ResourceManager::SRC::KATANA).handleId_);
+	InitLoad();
 
-	attackCollider_ = new ColliderCapsule(
-		ColliderBase::TAG::PLAYER_ATTACK,
-		&transform_,
-		VGet(0, 0, 100),
-		VGet(0, 0, 300),
-		150.0f);
+	InitTransform();
+
+	InitCollider();
 }
 
 void Katana::Update(void)
 {
 
-	// プレイヤーのモデルIDを取得
-	int playerModelId = player_->GetTransform().modelId;
-
-	// プレイヤーの右手のフレームIDを取得
-	int rightHandFrame = MV1SearchFrame(playerModelId, "hand.R");
-
-
-	if (rightHandFrame != -1) {
-
-		// 刀の位置を手に追従させる
-		MATRIX handMatrix =
-			MV1GetFrameLocalWorldMatrix(playerModelId, rightHandFrame);
-
-		// 位置取得
-		VECTOR handPos = VGet(
-			handMatrix.m[3][0],
-			handMatrix.m[3][1],
-			handMatrix.m[3][2]
-		);
-
-		transform_.pos = handPos;
-
-		//transform_.Update();
-
-		// 回転用行列作成
-		MATRIX rotMatrix = handMatrix;
-
-		// 手の位置に追従
-		MV1SetPosition(transform_.modelId, handPos);
-
-		// 手の回転に追従
-		MV1SetRotationMatrix(transform_.modelId, rotMatrix);
-
-		// サイズ固定
-		MV1SetScale(transform_.modelId, VGet(0.01f, 0.01f, 0.01f));
+	switch (player_->GetAnimType())
+	{
+	case Player::ANIM_TYPE::IDLE:
+		UpdateIdle();
+		break;
+	case Player::ANIM_TYPE::RUN:
+		UpdateMove();
+		break;
+	case Player::ANIM_TYPE::FAST_RUN:
+		UpdateDash();
+		break;
 	}
+
+	UpdateTransform();
 
 	bool mouse =
 		(GetMouseInput() & MOUSE_INPUT_LEFT);
@@ -103,4 +75,70 @@ void Katana::Update(void)
 ColliderCapsule* Katana::GetCollider() const
 {
 	return attackCollider_;
+}
+
+void Katana::InitLoad(void)
+{
+	//モデルの読み込み
+	transform_.SetModel(
+		resMng_.Load(
+			ResourceManager::SRC::KATANA).handleId_);
+}
+
+void Katana::InitTransform(void)
+{
+	transform_.scl = AsoUtility::VECTOR_ONE;
+	transform_.quaRot = Quaternion::Identity();
+	transform_.quaRotLocal = Quaternion::Identity();
+	transform_.pos = VGet(0.0f, 0.0f, 0.0f);
+	transform_.Update();
+}
+
+void Katana::InitCollider(void)
+{
+	attackCollider_ = new ColliderCapsule(
+		ColliderBase::TAG::PLAYER_ATTACK,
+		&transform_,
+		VGet(0, 0, 100),
+		VGet(0, 0, 300),
+		150.0f);
+}
+
+void Katana::UpdateIdle(void)
+{
+	currentOffset_ = OFFSET_IDLE;
+}
+
+void Katana::UpdateMove(void)
+{
+	currentOffset_ = OFFSET_MOVE;
+}
+
+void Katana::UpdateDash(void)
+{
+	currentOffset_ = OFFSET_MOVE;
+}
+
+void Katana::UpdateAttack(void)
+{
+}
+
+void Katana::UpdateTransform(void)
+{
+
+	MATRIX localRot = Quaternion::Euler(currentOffset_.rotEuler).ToMatrix();
+	MATRIX localTrans = MGetTranslate(currentOffset_.localPos);
+	MATRIX scaleMatrix = MGetScale(VGet(0.01f, 0.01f, 0.01f));
+
+	int playerModelId = player_->GetTransform().modelId;
+	int rightHandFrame = MV1SearchFrame(playerModelId, "hand.R");
+	if (rightHandFrame == -1) return;
+
+	MATRIX handMatrix = MV1GetFrameLocalWorldMatrix(playerModelId, rightHandFrame);
+
+	MATRIX scaleWithRot = MMult(scaleMatrix, localRot);
+	MATRIX withHand = MMult(scaleWithRot, handMatrix);
+	MATRIX finalMatrix = MMult(localTrans, withHand);
+
+	MV1SetMatrix(transform_.modelId, finalMatrix);
 }

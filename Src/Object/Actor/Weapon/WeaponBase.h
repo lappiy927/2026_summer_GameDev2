@@ -30,6 +30,23 @@ protected:
 	// モデル制御の基本情報
 	Transform transform_;
 
+	// リソースロード
+	virtual void InitLoad(void) = 0;
+
+	// 大きさ、回転、座標の初期化
+	virtual void InitTransform(void) = 0;
+
+	// 衝突判定の初期化
+	virtual void InitCollider(void) = 0;
+
+	//待機時の更新
+	virtual void UpdateIdle(void) = 0;
+	//移動(歩き)時の更新
+	virtual void UpdateMove(void) = 0;
+	//移動(ダッシュ)時の更新
+	virtual void UpdateDash(void) = 0;
+	//攻撃時の更新
+	virtual void UpdateAttack(void) = 0;
 
 	Player* player_;
 
