@@ -54,9 +54,9 @@ private:
     bool oldMouse_ = false;
 
     // 状態ごとのオフセット定数
-    static constexpr WeaponOffset OFFSET_IDLE = { {0.0f,  0.0f, 0.0f}, {0.0f,0.0f, 0.0f} };
-    static constexpr WeaponOffset OFFSET_MOVE = { {2.0f,  0.0f, -5.0f}, {DX_PI_F / 2.0f,DX_PI_F, 0.0f} };
-    static constexpr WeaponOffset OFFSET_ATTACK = { {0.0f, 20.0f,10.0f}, {DX_PI_F / 4.f,DX_PI_F, 0.0f} };
+    static constexpr WeaponOffset OFFSET_IDLE = { {0.0f, 300.0f, 0.0f}, {0.0f, 0.0f, 0.0f} };
+    static constexpr WeaponOffset OFFSET_MOVE = { {2.0f,  300.0f, -5.0f}, {DX_PI_F / 2.0f,DX_PI_F, 0.0f} };
+    static constexpr WeaponOffset OFFSET_ATTACK = { {0.0f, 300.0f,10.0f}, {DX_PI_F / 4.f,DX_PI_F, 0.0f} };
 
     // 現在のオフセット
     WeaponOffset currentOffset_ = OFFSET_IDLE;
