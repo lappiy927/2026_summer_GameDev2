@@ -79,7 +79,7 @@ void Player::InitAnimation(void)
 		Application::PATH_MODEL + "Player/JumpRising.mv1");
 
 	animationController_->Add(
-		static_cast<int>(ANIM_TYPE::ATTACK), 50.0f,
+		static_cast<int>(ANIM_TYPE::ATTACK), 80.0f,
 		Application::PATH_MODEL + "Charactor/Player/Attack.mv1");
 
 	//初期アニメーション再生
@@ -93,21 +93,17 @@ void Player::InitPost(void)
 
 void Player::UpdateProcess(void)
 {
-	if (isAttack_)
-	{
-		attackTimer_ -= scnMng_.GetDeltaTime();
 
-		if (attackTimer_ <= 0.0f)
-		{
-			isAttack_ = false;
-		}
-	}
 
 	// 移動操作
 	ProcessMove();
 
 	//ジャンプ処理
 	ProcessJump();
+
+	ProcessAttack();
+
+
 
 	transform_.Update();
 }
@@ -154,6 +150,7 @@ void Player::PlayAttackAnimation()
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::ATTACK),
 		false);
+	animType_ = ANIM_TYPE::ATTACK;
 }
 
 Player::ANIM_TYPE Player::GetAnimType() const
@@ -315,6 +312,36 @@ void Player::ProcessJump(void)
 			static_cast<int>(ANIM_TYPE::JUMP), false);
 	}
 
+}
+
+void Player::ProcessAttack(void)
+{
+	bool mouse =
+		(GetMouseInput() & MOUSE_INPUT_LEFT);
+
+	if (mouse && !oldMouse_)
+	{
+		isAttack_ = true;
+
+		attackTimer_ = 3.0f;
+
+		PlayAttackAnimation();
+	}
+
+	oldMouse_ = mouse;
+
+	if (isAttack_)
+	{
+		attackTimer_ -= scnMng_.GetDeltaTime();
+
+		if (attackTimer_ <= 0.0f)
+		{
+			isAttack_ = false;
+		}
+	}
+
+
+	
 }
 
 void Player::CollisionReserve(void)

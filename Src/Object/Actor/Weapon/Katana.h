@@ -21,6 +21,8 @@ public:
 
     void Init(void)override;
     void Update(void)override;
+    void Draw(void) override;
+    void Release(void) override;
 
     ColliderCapsule* GetCollider() const;
 
@@ -49,7 +51,7 @@ private:
 
     float attackTimer_ = 0.0f;
 
-    bool oldMouse_ = false;
+   
 
     // 状態ごとのオフセット定数
     static constexpr WeaponOffset OFFSET_IDLE = { {0.0f, 300.0f, 0.0f}, {0.0f, 0.0f, 0.0f} };

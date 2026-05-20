@@ -85,13 +85,13 @@ void EnemyMob::InitAnimation()
     animationController_->Add(
         0,
         20.0f,
-        Application::PATH_MODEL + "Player/Idle.mv1");
+        Application::PATH_MODEL + "Charactor/Enemy/EnemyAnime/EnemyIdle.mv1");
 
     // ‘–‚è
     animationController_->Add(
         1,
         20.0f,
-        Application::PATH_MODEL + "Player/Run.mv1");
+        Application::PATH_MODEL + "Charactor/Enemy/EnemyAnime/EnemyRun.mv1");
 
     // ‰ŠúƒAƒjƒ
     animationController_->Play(0, true);

@@ -1,5 +1,7 @@
 #pragma once
 #include "CharactorBase.h"
+#include "../../Collider/ColliderCapsule.h"
+
 
 class Player : public CharactorBase
 {
@@ -115,10 +117,16 @@ private:
 	int hp_ = 1;
 	bool isDead_ = false;
 
+	bool oldMouse_ = false;
+
+	ColliderCapsule* attackCollider_ = nullptr;
+
+
 
 	// ëÄçÏ
 	void ProcessMove(void);
 	void ProcessJump(void);
+	void ProcessAttack(void);
 
 	// è’ìÀîªíË
 	void CollisionReserve(void) override;

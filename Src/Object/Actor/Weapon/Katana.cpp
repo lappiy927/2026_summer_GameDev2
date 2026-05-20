@@ -27,6 +27,7 @@ void Katana::Init(void)
 
 void Katana::Update(void)
 {
+	attackCollider_->SetEnable(false);
 
 	switch (player_->GetAnimType())
 	{
@@ -41,41 +42,27 @@ void Katana::Update(void)
 		break;
 	case Player::ANIM_TYPE::ATTACK:
 		UpdateAttack();
+		attackCollider_->SetEnable(true);
 		break;
 	}
 
 	UpdateTransform();
 
-	bool mouse =
-		(GetMouseInput() & MOUSE_INPUT_LEFT);
-
-	if (mouse && !oldMouse_)
-	{
-		isAttack_ = true;
-
-		attackTimer_ = 0.2f;
-
-		player_->PlayAttackAnimation();
-	}
-
-	oldMouse_ = mouse;
 	
-	if (isAttack_)
-	{
-		attackTimer_ -= scnMng_.GetDeltaTime();
-
-		if (attackTimer_ <= 0.0f)
-		{
-			isAttack_ = false;
-		}
-	}
-
-	attackCollider_->SetEnable(isAttack_);
-	dynamic_cast<ColliderCapsule*>(attackCollider_)->DrawDebug(0xff0000);
 
 
 }
 
+void Katana::Draw(void)
+{
+	WeaponBase::Draw();
+	//dynamic_cast<ColliderCapsule*>(attackCollider_)->DrawDebug(0xff0000);
+
+}
+
+void Katana::Release(void)
+{
+}
 
 ColliderCapsule* Katana::GetCollider() const
 {
@@ -106,7 +93,7 @@ void Katana::InitCollider(void)
 		&transform_,
 		VGet(0, 0, 100),
 		VGet(0, 0, 300),
-		150.0f);
+		100.0f);
 }
 
 void Katana::UpdateIdle(void)
@@ -137,12 +124,13 @@ void Katana::UpdateTransform(void)
 
 	MATRIX handMatrix = MV1GetFrameLocalWorldMatrix(playerModelId, rightHandFrame);
 
+	// 手の位置を取得
 	VECTOR handPos = VGet(
 		handMatrix.m[3][0],
 		handMatrix.m[3][1],
 		handMatrix.m[3][2]);
 
-	// 行列の各列を正規化してスケールを除去
+	// 行列の各列を正規化してスケールを除去した純粋な回転行列を作る
 	MATRIX handRotOnly = MGetIdent();
 	VECTOR col0 = VNorm(VGet(handMatrix.m[0][0], handMatrix.m[0][1], handMatrix.m[0][2]));
 	VECTOR col1 = VNorm(VGet(handMatrix.m[1][0], handMatrix.m[1][1], handMatrix.m[1][2]));
@@ -152,9 +140,8 @@ void Katana::UpdateTransform(void)
 	handRotOnly.m[2][0] = col2.x; handRotOnly.m[2][1] = col2.y; handRotOnly.m[2][2] = col2.z;
 	handRotOnly.m[3][0] = 0.0f;   handRotOnly.m[3][1] = 0.0f;   handRotOnly.m[3][2] = 0.0f;
 
+	// オフセット回転を合成
 	MATRIX offsetRot = Quaternion::Euler(currentOffset_.rotEuler).ToMatrix();
-
-	// ★ 回転のみ合成（スケールは後で独立して適用）
 	MATRIX rotMatrix = MMult(offsetRot, handRotOnly);
 
 	// 最終行列（回転＋位置）
@@ -165,14 +152,7 @@ void Katana::UpdateTransform(void)
 
 	MV1SetMatrix(transform_.modelId, finalMatrix);
 
-	transform_.pos = VGet(
-		finalMatrix.m[3][0],
-		finalMatrix.m[3][1],
-		finalMatrix.m[3][2]);
-
-	transform_.Update();
-
-	// 端点もrotMatrixで変換（刀モデルと同じ行列）
+	// コライダー端点をrotMatrixで変換（刀モデルと同じ行列）
 	VECTOR rotatedTop = VTransform(VGet(0.0f, -100.0f, 0.0f), rotMatrix);
 	VECTOR rotatedDown = VTransform(VGet(0.0f, -300.0f, 0.0f), rotMatrix);
 

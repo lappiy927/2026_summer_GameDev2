@@ -175,6 +175,10 @@ bool ColliderCapsule::IsHit(const ColliderCapsule* other)
 		return false;
 	}
 
+	if (!isEnable_) {
+		return false;
+	}
+
 	// ©•ª‚Ì’†S
 	VECTOR myPos =
 		VScale(
