@@ -7,6 +7,7 @@
 class Stage;
 class Player;
 class Katana;
+class Door;
 class EnemyBase;
 
 class GameScene : public SceneBase
@@ -37,10 +38,14 @@ private:
 	Stage* stage_;
 	Player* player_;
 	Katana* katana_;
+	Door* door_;
+
 
 	std::vector<std::shared_ptr<EnemyBase>> enemies_;
 
 	float limitTime_;
 
 	bool hit_ = false;
+
+	bool isBossRoomOpen_ = false;
 };

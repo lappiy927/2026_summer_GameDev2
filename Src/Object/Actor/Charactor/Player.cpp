@@ -13,6 +13,7 @@ Player::Player(void)
 	:
 	CharactorBase()
 {
+	isPlayer_ = true;
 }
 
 Player::~Player(void)
@@ -253,6 +254,10 @@ void Player::ProcessMove(void)
 		//ˆÚ“®—Ê‚ðŒvŽZ
 		movePow_ = VScale(moveDir_, moveSpeed_);
 
+		if (isSteepSlope_)
+		{
+			movePow_ = VScale(movePow_, 0.5f);
+		}
 	}
 	else
 	{

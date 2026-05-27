@@ -63,11 +63,15 @@ protected:
 	// ジャンプ判定
 	bool isJump_;
 
+	bool isPlayer_ = false;
+
 	// 丸影画像
 	int imgShadow_;
 
 	// ジャンプの入力受付時間
 	float stepJump_;
+
+	bool isSteepSlope_ = false;
 
 	void InitLoad(void) override;
 

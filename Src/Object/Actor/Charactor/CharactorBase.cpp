@@ -144,6 +144,8 @@ void CharactorBase::Collision(void)
 
 void CharactorBase::CollisionGravity(void)
 {
+	isSteepSlope_ = false;
+
 	if (VSize(jumpPow_) <= 0.001f)
 	{
 		return;
@@ -203,8 +205,50 @@ void CharactorBase::CollisionGravity(void)
 					VAdd(hit.HitPosition, VScale(AsoUtility::DIR_U, 2.0f));
 			}
 
-			// ジャンプ判定
-			isJump_ = false;
+			float slopeLimit = 0.95f;
+
+			if (hit.Normal.y >= slopeLimit)
+			{
+				if (transform_.pos.y < hit.HitPosition.y)
+				{
+					transform_.pos =
+						VAdd(hit.HitPosition,
+							VScale(AsoUtility::DIR_U, 2.0f));
+				}
+
+				// ジャンプ判定
+				isJump_ = false;
+			}
+			else
+			{
+				if (isPlayer_)
+				{
+					isSteepSlope_ = true;
+
+					// 急斜面は滑る
+					VECTOR slideDir =
+					{
+						hit.Normal.x,
+						0.0f,
+						hit.Normal.z
+					};
+
+					slideDir = VNorm(slideDir);
+
+					float slidePower =
+						(1.0f - hit.Normal.y) * 20.0f;
+
+					transform_.pos =
+						VAdd(transform_.pos,
+							VScale(slideDir, slidePower));
+				}
+
+				// 登れなくする
+				movePow_.x = 0.0f;
+				movePow_.z = 0.0f;
+			}
+
+		
 		}
 		// 検出した地面ポリゴン情報の後始末
 		MV1CollResultPolyDimTerminate(hits);
@@ -221,6 +265,12 @@ void CharactorBase::CollisionGravity(void)
 
 void CharactorBase::CollisionCapsule(void)
 {
+	if (isSteepSlope_)
+	{
+		return;
+	}
+
+
 	// カプセルコライダ
 	int capsuleType = static_cast<int>(COLLIDER_TYPE::CAPSULE);
 

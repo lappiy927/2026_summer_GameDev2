@@ -3,7 +3,8 @@
 #include "../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
-#include "../Object/Actor/Stage.h"
+#include "../Object/Actor/Stage/Stage.h"
+#include "../Object/Actor/Stage/Door.h"
 #include "../Object/Actor/Charactor/Player.h"
 #include "../Object/Actor/Weapon/Katana.h"
 #include "../Object/Actor/Charactor/Enemy/EnemyMob.h"
@@ -33,6 +34,9 @@ void GameScene::Init(void)
 	//刀の初期化
 	katana_ = new Katana(player_);
 	katana_->Init();
+
+	door_ = new Door();
+	door_->Init();
 
 	// ステージモデルのコライダーをプレイヤーに登録
 	// ステージコライダー取得
@@ -113,7 +117,7 @@ void GameScene::Init(void)
 	camera->ChangeMode(Camera::MODE::FOLLOW);
 	camera->SetFollow(&player_->GetTransform());
 
-	limitTime_ = 60.0f;
+	limitTime_ = 500.0f;
 }
 
 void GameScene::Update(void)
@@ -144,6 +148,8 @@ void GameScene::Update(void)
 	//刀の更新
 	katana_->Update();
 	hit_ = false;
+
+	door_->Update();
 
 	// エネミーの更新
 	for (auto& enemy : enemies_)
@@ -202,6 +208,13 @@ void GameScene::Update(void)
 			}),
 		enemies_.end());
 
+	if (enemies_.empty() && !isBossRoomOpen_)
+	{
+		isBossRoomOpen_ = true;
+
+		door_->Open();
+	}
+
 
 
 }
@@ -216,6 +229,8 @@ void GameScene::Draw(void)
 
 	//刀の描画
 	katana_->Draw();
+
+	door_->Draw();
 
 	int y = 40;
 
@@ -251,6 +266,14 @@ void GameScene::Draw(void)
 		DrawString(0, 100, "HIT!", 0xff0000);
 	}
 
+	if (isBossRoomOpen_)
+	{
+		DrawString(
+			500,
+			0,
+			"BOSS ROOM OPEN",
+			0xff0000);
+	}
 	
 }
 
@@ -267,4 +290,8 @@ void GameScene::Release(void)
 	//刀の開放
 	katana_->Release();
 	delete katana_;
+
+	// ドアの解放
+	door_->Release();
+	delete door_;
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "ActorBase.h"
+#include "../ActorBase.h"
 
 class Stage :public ActorBase
 {
