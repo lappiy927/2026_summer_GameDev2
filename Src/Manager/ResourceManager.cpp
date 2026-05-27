@@ -63,7 +63,7 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::KATANA, res);
 
 	// ENEMYƒ‚ƒfƒ‹
-	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Enemy/mob.mv1");
+	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Enemy/MobEnemy.mv1");
 	resourcesMap_.emplace(SRC::ENEMY, res);
 }
 
