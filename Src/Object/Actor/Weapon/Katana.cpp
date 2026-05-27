@@ -56,7 +56,7 @@ void Katana::Update(void)
 void Katana::Draw(void)
 {
 	WeaponBase::Draw();
-	//dynamic_cast<ColliderCapsule*>(attackCollider_)->DrawDebug(0xff0000);
+	dynamic_cast<ColliderCapsule*>(attackCollider_)->DrawDebug(0xff0000);
 
 }
 
@@ -140,28 +140,24 @@ void Katana::UpdateTransform(void)
 	handRotOnly.m[2][0] = col2.x; handRotOnly.m[2][1] = col2.y; handRotOnly.m[2][2] = col2.z;
 	handRotOnly.m[3][0] = 0.0f;   handRotOnly.m[3][1] = 0.0f;   handRotOnly.m[3][2] = 0.0f;
 
-	// オフセット回転を合成
+	// オフセット回転を合成（順序を修正）
 	MATRIX offsetRot = Quaternion::Euler(currentOffset_.rotEuler).ToMatrix();
 	MATRIX rotMatrix = MMult(offsetRot, handRotOnly);
 
+	VECTOR rotatedTop = VTransform(VGet(0.0f, 0.0f, 0.0f), rotMatrix);
+	VECTOR rotatedDown = VTransform(VGet(0.0f, 150.0f, 0.0f), rotMatrix);
+
+	VECTOR offset = VTransform(currentOffset_.localPos, rotMatrix);
+	VECTOR finalPos = VAdd(handPos, offset);
+
 	// 最終行列（回転＋位置）
 	MATRIX finalMatrix = rotMatrix;
-	finalMatrix.m[3][0] = handPos.x;
-	finalMatrix.m[3][1] = handPos.y;
-	finalMatrix.m[3][2] = handPos.z;
+	finalMatrix.m[3][0] = finalPos.x;
+	finalMatrix.m[3][1] = finalPos.y;
+	finalMatrix.m[3][2] = finalPos.z;
 
 	MV1SetMatrix(transform_.modelId, finalMatrix);
 
-	// コライダー端点をrotMatrixで変換（刀モデルと同じ行列）
-	VECTOR rotatedTop = VTransform(VGet(0.0f, -100.0f, 0.0f), rotMatrix);
-	VECTOR rotatedDown = VTransform(VGet(0.0f, -300.0f, 0.0f), rotMatrix);
-
-	// 位置オフセットもrotMatrixで変換
-	VECTOR offset = VTransform(currentOffset_.localPos, rotMatrix);
-
-	transform_.pos = handPos;
-	transform_.quaRot = Quaternion::Identity();
-
-	attackCollider_->SetLocalPosTop(VAdd(rotatedTop, offset));
-	attackCollider_->SetLocalPosDown(VAdd(rotatedDown, offset));
+	attackCollider_->SetLocalPosTop(VAdd(rotatedTop, finalPos));
+	attackCollider_->SetLocalPosDown(VAdd(rotatedDown, finalPos));
 }
