@@ -36,6 +36,7 @@
     <ClCompile Include="Src\Object\Common\Transform.cpp" />
     <ClCompile Include="Src\Object\Actor\Weapon\WeaponBase.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\Door.cpp" />
+    <ClCompile Include="Src\Scene\GameClearScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Actor\Weapon\Katana.h" />
@@ -73,6 +74,7 @@
     <ClInclude Include="Src\Object\Common\Transform.h" />
     <ClInclude Include="Src\Object\Actor\Weapon\WeaponBase.h" />
     <ClInclude Include="Src\Object\Actor\Stage\Door.h" />
+    <ClInclude Include="Src\Scene\GameClearScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

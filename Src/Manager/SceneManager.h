@@ -27,6 +27,7 @@ public:
 		GAME,
 		GAMEOVER,
 		DEBUG,
+		GAMECLEAR,
 	};
 
 	// インスタンスの生成
