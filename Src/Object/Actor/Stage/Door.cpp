@@ -18,23 +18,23 @@ void Door::Init(void)
 
 void Door::Update(void)
 {
+	// 開く
 	if (isOpen_)
 	{
-		if (slideAmount_ < 100.0f)
+		if (slideAmount_ < 150.0f)
 		{
 			slideAmount_ += 2.0f;
 		}
 	}
-	else
-	{
-		if (slideAmount_ > 0.0f)
-		{
-			slideAmount_ -= 2.0f;
-		}
-	}
 
-	leftPos_.x = -50.0f - slideAmount_;
-	rightPos_.x = 50.0f + slideAmount_;
+	// 基準位置へ戻す
+	leftPos_ = leftBasePos_;
+	rightPos_ = rightBasePos_;
+
+	// 左右へ開く
+	leftPos_.z -= slideAmount_;
+	rightPos_.z += slideAmount_;
+
 }
 
 void Door::Draw(void)
@@ -44,6 +44,18 @@ void Door::Draw(void)
 
 	MV1SetPosition(rightHandle_, rightPos_);
 	MV1DrawModel(rightHandle_);
+
+	DrawFormatString(
+		0, 400,
+		0xffffff,
+		"door : %.2f %.2f %.2f",
+		rightPos_.x, rightPos_.y, rightPos_.z);
+
+	DrawFormatString(
+		0, 450,
+		0xffffff,
+		"door : %.2f %.2f %.2f",
+		leftPos_.x, leftPos_.y, leftPos_.z);
 }
 
 void Door::Release(void)
@@ -69,8 +81,16 @@ void Door::InitLoad(void)
 
 void Door::InitTransform(void)
 {
-	leftPos_ = VGet(50.0f, -9.0f, 0.0f);
-	rightPos_ = VGet(50.0f, -9.0f, 0.0f);
+	leftBasePos_ = VGet(230.0f, 400.0f, 0.0f);
+	rightBasePos_ = VGet(230.0f,400.0f, 0.0f);
+
+	leftPos_ = leftBasePos_;
+	rightPos_ = rightBasePos_;
+
+	
+	MV1SetScale(leftHandle_, VGet(0.3f, 0.3f, 0.3f));
+	MV1SetScale(rightHandle_, VGet(0.3f, 0.3f, 0.3f));
+
 }
 
 void Door::InitCollider(void)

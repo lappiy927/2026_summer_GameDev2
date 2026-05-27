@@ -48,6 +48,18 @@ void Application::Init(void)
 		return;
 	}
 
+	SetUseLighting(FALSE);
+
+	// ŠÂ‹«Œõ‚ğ‹­‚­‚·‚é
+	SetGlobalAmbientLight(
+		GetColorF(0.8f, 0.8f, 0.8f, 1.0f));
+
+	int light =
+		CreateDirLightHandle(
+			VGet(0.0f, -1.0f, 0.0f));
+
+	SetLightEnableHandle(light, TRUE);
+
 	// Effekseer‚Ì‰Šú‰»
 	InitEffekseer();
 

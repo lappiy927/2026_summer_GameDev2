@@ -215,8 +215,24 @@ void GameScene::Update(void)
 		door_->Open();
 	}
 
+	if (isBossRoomOpen_)
+	{
+		VECTOR playerPos = player_->GetPos();
 
+		// ドア中央位置
+		VECTOR goalPos = VGet(200.0f, 400.0f, 100.0f);
 
+		float dist =
+		VSize(
+			VSub(playerPos, goalPos));
+
+		//　ドアに近づいた
+		if (dist < 150.0f)
+		{
+			sceMng_.ChangeScene(
+				SceneManager::SCENE_ID::TITLE);
+		}
+	}
 }
 
 void GameScene::Draw(void)

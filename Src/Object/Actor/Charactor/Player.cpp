@@ -142,18 +142,6 @@ bool Player::IsDead() const
 	return isDead_;
 }
 
-void Player::PlayAttackAnimation()
-{
-	isAttack_ = true;
-
-	attackTimer_ = 0.5f;
-
-	animationController_->Play(
-		static_cast<int>(ANIM_TYPE::ATTACK),
-		false);
-	animType_ = ANIM_TYPE::ATTACK;
-}
-
 Player::ANIM_TYPE Player::GetAnimType() const
 {
 	return animType_;
@@ -328,15 +316,19 @@ void Player::ProcessAttack(void)
 	{
 		isAttack_ = true;
 
-		attackTimer_ = 3.0f;
+		attackTimer_ = 1.0f;
 
-		PlayAttackAnimation();
+		animationController_->Play(
+			static_cast<int>(ANIM_TYPE::ATTACK),
+			false);
+		animType_ = ANIM_TYPE::ATTACK;
 	}
 
 	oldMouse_ = mouse;
 
 	if (isAttack_)
 	{
+		movePow_ = AsoUtility::VECTOR_ZERO;
 		attackTimer_ -= scnMng_.GetDeltaTime();
 
 		if (attackTimer_ <= 0.0f)

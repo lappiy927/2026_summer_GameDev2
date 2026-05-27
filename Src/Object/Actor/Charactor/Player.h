@@ -32,7 +32,7 @@ public:
 
 	bool IsDead() const;
 
-	void PlayAttackAnimation();
+	
 
 	ANIM_TYPE animType_;
 	ANIM_TYPE GetAnimType() const;
