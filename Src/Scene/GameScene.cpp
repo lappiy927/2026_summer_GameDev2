@@ -227,7 +227,7 @@ void GameScene::Update(void)
 			VSub(playerPos, goalPos));
 
 		//Å@ÉhÉAÇ…ãﬂÇ√Ç¢ÇΩ
-		if (dist < 150.0f)
+		if (dist < 868.0f)
 		{
 			sceMng_.ChangeScene(
 				SceneManager::SCENE_ID::TITLE);
