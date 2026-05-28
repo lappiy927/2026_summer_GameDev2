@@ -48,17 +48,23 @@ void Application::Init(void)
 		return;
 	}
 
-	SetUseLighting(FALSE);
+	SetUseLighting(TRUE);
 
 	// 環境光を強くする
 	SetGlobalAmbientLight(
-		GetColorF(0.8f, 0.8f, 0.8f, 1.0f));
+		GetColorF(0.5f, 0.5f, 0.5f, 1.0f));
 
+	// 平行光源
 	int light =
 		CreateDirLightHandle(
-			VGet(0.0f, -1.0f, 0.0f));
+			VGet(-1.0f, -1.0f, -1.0f));
 
 	SetLightEnableHandle(light, TRUE);
+
+	// ライト色
+	SetLightDifColorHandle(
+		light,
+		GetColorF(1.0f, 1.0f, 1.0f, 1.0f));
 
 	// Effekseerの初期化
 	InitEffekseer();
