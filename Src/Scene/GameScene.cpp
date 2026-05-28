@@ -46,7 +46,7 @@ void GameScene::Init(void)
 	// ƒvƒŒƒCƒ„[‚É“o˜^
 	player_->AddHitCollider(stageCollider);
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		auto enemy = std::make_shared<EnemyMob>();
 
@@ -230,7 +230,7 @@ void GameScene::Update(void)
 		if (dist < 868.0f)
 		{
 			sceMng_.ChangeScene(
-				SceneManager::SCENE_ID::TITLE);
+				SceneManager::SCENE_ID::GAMECLEAR);
 		}
 	}
 }
