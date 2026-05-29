@@ -159,11 +159,6 @@ void Player::ProcessMove(void)
 	//ˆÚ“®—Ê
 	movePow_ = AsoUtility::Lerp(movePow_, AsoUtility::VECTOR_ZERO, 0.05f);
 
-	if (CheckHitKey(KEY_INPUT_LSHIFT))
-	{
-		
-	}
-
 	//ˆÚ“®•ûŒü
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
 

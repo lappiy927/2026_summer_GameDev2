@@ -37,6 +37,8 @@
     <ClCompile Include="Src\Object\Actor\Weapon\WeaponBase.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\Door.cpp" />
     <ClCompile Include="Src\Scene\GameClearScene.cpp" />
+    <ClCompile Include="Src\Scene\BossScene.cpp" />
+    <ClCompile Include="Src\Object\Actor\Stage\BossStage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Actor\Weapon\Katana.h" />
@@ -75,6 +77,8 @@
     <ClInclude Include="Src\Object\Actor\Weapon\WeaponBase.h" />
     <ClInclude Include="Src\Object\Actor\Stage\Door.h" />
     <ClInclude Include="Src\Scene\GameClearScene.h" />
+    <ClInclude Include="Src\Scene\BossScene.h" />
+    <ClInclude Include="Src\Object\Actor\Stage\BossStage.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

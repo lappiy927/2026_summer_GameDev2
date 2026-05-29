@@ -77,7 +77,7 @@ private:
 	static constexpr float SPEED_MOVE = 5.0f;
 
 	// 移動速度(ダッシュ)
-	static constexpr float SPEED_DASH = 10.0f;
+	static constexpr float SPEED_DASH = 20.0f;
 
 	// 衝突判定用線分開始
 	static constexpr VECTOR

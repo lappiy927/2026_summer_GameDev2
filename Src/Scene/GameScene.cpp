@@ -230,7 +230,7 @@ void GameScene::Update(void)
 		if (dist < 868.0f)
 		{
 			sceMng_.ChangeScene(
-				SceneManager::SCENE_ID::GAMECLEAR);
+				SceneManager::SCENE_ID::BOSS);
 		}
 	}
 }
@@ -249,6 +249,14 @@ void GameScene::Draw(void)
 	door_->Draw();
 
 	int y = 40;
+
+	VECTOR pPos = player_->GetPos();
+
+	DrawFormatString(
+		0, 100,
+		0xffffff,
+		"Player : %.2f %.2f %.2f",
+		pPos.x, pPos.y, pPos.z);
 
 	for (auto& enemy : enemies_)
 	{
