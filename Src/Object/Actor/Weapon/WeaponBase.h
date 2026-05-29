@@ -47,6 +47,8 @@ protected:
 	virtual void UpdateDash(void) = 0;
 	//攻撃時の更新
 	virtual void UpdateAttack(void) = 0;
+	//ジャンプ時の更新
+	virtual void UpdateJump(void) = 0;
 
 	Player* player_;
 

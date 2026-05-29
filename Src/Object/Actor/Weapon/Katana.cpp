@@ -42,15 +42,13 @@ void Katana::Update(void)
 		break;
 	case Player::ANIM_TYPE::ATTACK:
 		UpdateAttack();
-		attackCollider_->SetEnable(true);
+		break;
+	case Player::ANIM_TYPE::JUMP:
+		UpdateJump();
 		break;
 	}
 
 	UpdateTransform();
-
-	
-
-
 }
 
 void Katana::Draw(void)
@@ -58,10 +56,6 @@ void Katana::Draw(void)
 	WeaponBase::Draw();
 	dynamic_cast<ColliderCapsule*>(attackCollider_)->DrawDebug(0xff0000);
 
-}
-
-void Katana::Release(void)
-{
 }
 
 ColliderCapsule* Katana::GetCollider() const
@@ -114,6 +108,12 @@ void Katana::UpdateDash(void)
 void Katana::UpdateAttack(void)
 {
 	currentOffset_ = OFFSET_ATTACK;
+	attackCollider_->SetEnable(true);
+}
+
+void Katana::UpdateJump(void)
+{
+	currentOffset_ = OFFSET_JUMP;
 }
 
 void Katana::UpdateTransform(void)

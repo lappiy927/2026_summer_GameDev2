@@ -22,7 +22,6 @@ public:
     void Init(void)override;
     void Update(void)override;
     void Draw(void) override;
-    void Release(void) override;
 
     ColliderCapsule* GetCollider() const;
 
@@ -41,6 +40,7 @@ private:
     void UpdateMove(void)override;
     void UpdateDash(void)override;
     void UpdateAttack(void)override;
+    void UpdateJump(void)override;
 
     //刀の追従用処理
     void UpdateTransform(void);
@@ -54,9 +54,10 @@ private:
    
 
     // 状態ごとのオフセット定数
-    static constexpr WeaponOffset OFFSET_IDLE = { {-3.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} };
+    static constexpr WeaponOffset OFFSET_IDLE = { {3.0f, 0.0f, -7.0f}, {DX_PI_F / 2, DX_PI_F, 0.0f} };
     static constexpr WeaponOffset OFFSET_MOVE = { {-1.0f,  0.0f, -7.0f}, {DX_PI_F / 2.0f,DX_PI_F, DX_PI_F / 4.0f} };
     static constexpr WeaponOffset OFFSET_ATTACK = { {3.0f, 0.0f,-5.0f}, {DX_PI_F / 4.0f,DX_PI_F, DX_PI_F / 4.0f} };
+    static constexpr WeaponOffset OFFSET_JUMP = { {3.0f, 0.0f, -7.0f}, {DX_PI_F / 2, DX_PI_F, 0.0f} };
 
     // 現在のオフセット
     WeaponOffset currentOffset_ = OFFSET_IDLE;
