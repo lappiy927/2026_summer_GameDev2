@@ -14,5 +14,9 @@ public:
 	void Draw() override;
 	void Release() override;
 
+private:
+
+	int fontHandle;
+
 };
 

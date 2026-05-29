@@ -13,6 +13,7 @@ GameOverScene::~GameOverScene()
 
 void GameOverScene::Init()
 {
+
 }
 
 void GameOverScene::Update()
@@ -26,11 +27,18 @@ void GameOverScene::Update()
 
 void GameOverScene::Draw()
 {
-	DrawString(
-		500,
+	fontHandle =
+		CreateFontToHandle(
+			"Meiryo",
+			128,
+			6);
+
+	DrawStringToHandle(
+		300,
 		300,
 		"GAME OVER",
-		GetColor(255, 0, 0));
+		0xff0000,
+		fontHandle);
 }
 
 void GameOverScene::Release()

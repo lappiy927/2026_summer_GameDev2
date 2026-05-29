@@ -140,6 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Actor\Charactor\Enemy\Boss.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\BossStage.cpp" />
     <ClCompile Include="Src\Scene\BossScene.cpp" />
     <ClCompile Include="Src\Scene\GameClearScene.cpp" />
@@ -180,6 +181,7 @@
     <ClCompile Include="Src\Object\Actor\Weapon\WeaponBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Actor\Charactor\Enemy\Boss.h" />
     <ClInclude Include="Src\Object\Actor\Stage\BossStage.h" />
     <ClInclude Include="Src\Scene\BossScene.h" />
     <ClInclude Include="Src\Scene\GameClearScene.h" />

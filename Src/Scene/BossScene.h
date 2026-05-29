@@ -6,6 +6,7 @@
 
 class BossStage;
 class Player;
+class Boss;
 class Katana;
 
 class BossScene :
@@ -36,6 +37,13 @@ private:
 	BossStage* bossStage_;
 	Player* player_;
 	Katana* katana_;
+	Boss* boss_;
 
+	float limitTime_;
+
+	bool hit_ = false;
+
+	float clearTimer_ = 0.0f;
+	bool isClear_ = false;
 };
 

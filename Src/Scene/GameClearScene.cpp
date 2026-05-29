@@ -26,11 +26,20 @@ void GameClearScene::Update()
 
 void GameClearScene::Draw()
 {
-	DrawString(
-		500,
+
+	fontHandle =
+		CreateFontToHandle(
+			"Meiryo",
+			128,
+			6);
+
+
+	DrawStringToHandle(
+		300,
 		300,
 		"GAME CLEAR",
-		GetColor(255, 0, 0));
+		0xff0000,
+		fontHandle);
 }
 
 void GameClearScene::Release()

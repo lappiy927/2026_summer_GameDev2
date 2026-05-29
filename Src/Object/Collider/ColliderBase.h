@@ -24,6 +24,7 @@ public:
 		PLAYER,
 		PLAYER_ATTACK,
 		ENEMY,
+		BOSS,
 		CAMERA,
 	};
 

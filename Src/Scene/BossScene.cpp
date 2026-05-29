@@ -5,6 +5,7 @@
 #include "../Manager/Camera.h"
 #include "../Object/Actor/Stage/BossStage.h"
 #include "../Object/Actor/Charactor/Player.h"
+#include "../Object/Actor/Charactor/Enemy/Boss.h"
 #include "../Object/Actor/Weapon/Katana.h"
 #include "BossScene.h"
 
@@ -25,6 +26,11 @@ void BossScene::Init(void)
 	player_ = new Player();
 	player_->Init();
 
+	// ボス生成
+	boss_ = new Boss();
+	boss_->Init();
+	boss_->SetTarget(player_);
+
 	// ボスステージの初期化
 	bossStage_ = new BossStage();
 	bossStage_->Init();
@@ -40,6 +46,9 @@ void BossScene::Init(void)
 
 	// プレイヤーに登録
 	player_->AddHitCollider(stageCollider);
+
+	// ボスに登録
+	boss_->AddHitCollider(stageCollider);
 
 	// カメラにプレイヤーを追従
 	Camera* camera = sceMng_.GetCamera();
@@ -59,14 +68,68 @@ void BossScene::Update(void)
 	// プレイヤーの更新
 	player_->Update();
 
+	// ボスの更新
+	boss_->Update();
+
 	// ステージの更新
 	bossStage_->Update();
 
 	//刀の更新
 	katana_->Update();
 
-	// プレイヤー死亡
-	if (player_->IsDead())
+	// 敵がプレイヤーに当たった
+	if (!boss_->IsDead())
+	{
+		if (boss_->IsHit(player_))
+		{
+			hit_ = true;
+
+			player_->Damage(999);
+		}
+	}
+
+	if (!boss_->IsDead())
+	{
+		ColliderCapsule* enemyCol =
+			dynamic_cast<ColliderCapsule*>(
+				boss_->GetCollider(
+					static_cast<int>(
+						EnemyBase::COLLIDER_TYPE::CAPSULE)));
+
+		if (enemyCol != nullptr)
+		{
+			bool hit =
+				katana_->GetCollider()->IsHit(enemyCol);
+
+			DrawFormatString(
+				0, 140,
+				0xff0000,
+				"SwordHit : %d",
+				hit);
+
+			if (hit)
+			{
+				boss_->Damage(50);
+			}
+		}
+	}
+	
+
+	if (boss_->IsDead()) 
+	{
+		isClear_ = true;
+
+		clearTimer_ += sceMng_.GetDeltaTime();
+
+		if (clearTimer_ >= 2.0f)
+		{
+			sceMng_.ChangeScene(
+				SceneManager::SCENE_ID::GAMECLEAR);
+
+			return;
+		}
+	}
+	else if (player_->IsDead())
 	{
 		sceMng_.ChangeScene(
 			SceneManager::SCENE_ID::GAMEOVER);
@@ -81,6 +144,12 @@ void BossScene::Draw(void)
 	bossStage_->Draw();
 
 	player_->Draw();
+
+	if (!boss_->IsDead())
+	{
+		boss_->Draw();
+
+	}
 
 	//刀の描画
 	katana_->Draw();
@@ -101,6 +170,10 @@ void BossScene::Release(void)
 	// プレイヤーの解放
 	player_->Release();
 	delete player_;
+
+	// ボスの解放
+	boss_->Release();
+	delete boss_;
 
 	// ステージの解放
 	bossStage_->Release();

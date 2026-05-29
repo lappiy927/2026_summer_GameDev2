@@ -25,6 +25,7 @@ public:
 		KATANA,
 		ATTACK,
 		ENEMY,
+		BOSS,
 	};
 
 	// 明示的にインスタンスを生成する
