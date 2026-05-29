@@ -65,7 +65,7 @@ void Player::InitAnimation(void)
 
 	animationController_->Add(
 		static_cast<int>(ANIM_TYPE::IDLE), 20.0f,
-		Application::PATH_MODEL + "Player/Idle.mv1");
+		Application::PATH_MODEL + "Charactor/Player/Idle.mv1");
 
 	animationController_->Add(
 		static_cast<int>(ANIM_TYPE::RUN), 20.0f,
@@ -77,7 +77,7 @@ void Player::InitAnimation(void)
 
 	animationController_->Add(
 		static_cast<int>(ANIM_TYPE::JUMP), 60.0f,
-		Application::PATH_MODEL + "Player/JumpRising.mv1");
+		Application::PATH_MODEL + "Charactor/Player/Jump.mv1");
 
 	animationController_->Add(
 		static_cast<int>(ANIM_TYPE::ATTACK), 80.0f,
@@ -86,6 +86,7 @@ void Player::InitAnimation(void)
 	//初期アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::IDLE), true);
+	animType_ = ANIM_TYPE::IDLE;
 }
 
 void Player::InitPost(void)
@@ -250,6 +251,7 @@ void Player::ProcessMove(void)
 			//IDLE状態に戻す
 			animationController_->Play(
 				static_cast<int>(ANIM_TYPE::IDLE), true);
+			animType_ = ANIM_TYPE::IDLE;
 		}
 	}
 
@@ -298,6 +300,7 @@ void Player::ProcessJump(void)
 		// アニメーション再生
 		animationController_->Play(
 			static_cast<int>(ANIM_TYPE::JUMP), false);
+		animType_ = ANIM_TYPE::JUMP;
 	}
 
 }
