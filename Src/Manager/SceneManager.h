@@ -29,6 +29,7 @@ public:
 		GAMEOVER,
 		DEBUG,
 		GAMECLEAR,
+		MENU,
 	};
 
 	// インスタンスの生成

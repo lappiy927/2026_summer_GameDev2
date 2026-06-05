@@ -195,7 +195,7 @@ void Player::ProcessMove(void)
 		//右Shiftでダッシュ
 		if (ins.IsPadBtnNew(
 			InputManager::JOYPAD_NO::PAD1,
-			InputManager::JOYPAD_BTN::R_TRIGGER)) {
+			InputManager::JOYPAD_BTN::L_TRIGGER)) {
 			isDash = true;
 		}
 	}
@@ -307,10 +307,17 @@ void Player::ProcessJump(void)
 
 void Player::ProcessAttack(void)
 {
+	auto& ins = InputManager::GetInstance();
+
 	bool mouse =
 		(GetMouseInput() & MOUSE_INPUT_LEFT);
 
-	if (mouse && !oldMouse_)
+	bool padAttack =
+		ins.IsPadBtnTrgDown(
+			InputManager::JOYPAD_NO::PAD1,
+			InputManager::JOYPAD_BTN::R_TRIGGER);
+
+	if ((mouse || padAttack) && !isAttack_)
 	{
 		isAttack_ = true;
 
@@ -322,8 +329,6 @@ void Player::ProcessAttack(void)
 		animType_ = ANIM_TYPE::ATTACK;
 	}
 
-	oldMouse_ = mouse;
-
 	if (isAttack_)
 	{
 		movePow_ = AsoUtility::VECTOR_ZERO;
@@ -334,9 +339,6 @@ void Player::ProcessAttack(void)
 			isAttack_ = false;
 		}
 	}
-
-
-	
 }
 
 void Player::CollisionReserve(void)

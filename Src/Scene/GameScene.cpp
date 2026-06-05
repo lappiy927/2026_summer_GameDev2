@@ -134,9 +134,10 @@ void GameScene::Update(void)
 
 	// シーン遷移
 	auto const& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_RETURN))
+	
+	if (CheckHitKey(KEY_INPUT_ESCAPE))
 	{
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
+		sceMng_.ChangeScene(SceneManager::SCENE_ID::MENU);
 	}
 
 	// プレイヤーの更新
@@ -298,6 +299,11 @@ void GameScene::Draw(void)
 			"BOSS ROOM OPEN",
 			0xff0000);
 	}
+
+	DrawFormatString(
+		0, 600, 0xffffff,
+		"ESC=%d",
+		CheckHitKey(KEY_INPUT_ESCAPE));
 	
 }
 

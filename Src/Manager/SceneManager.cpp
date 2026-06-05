@@ -8,6 +8,7 @@
 #include "../Scene/BossScene.h"
 #include "../Scene/GameOverScene.h"
 #include"../Scene/GameClearScene.h"
+#include "../Scene/MenuScene.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "../Scene/DebugScene.h"
@@ -263,6 +264,9 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 		break;
 	case SCENE_ID::GAMECLEAR:
 		scene_ = new GameClearScene();
+		break;
+	case SCENE_ID::MENU:
+		scene_ = new MenuScene();
 		break;
 	}
 
