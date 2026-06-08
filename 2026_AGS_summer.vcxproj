@@ -180,6 +180,7 @@
     <ClCompile Include="Src\Object\Actor\Stage\Stage.cpp" />
     <ClCompile Include="Src\Object\Common\Transform.cpp" />
     <ClCompile Include="Src\Object\Actor\Weapon\WeaponBase.cpp" />
+    <ClCompile Include="Src\Object\TutorialUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Scene\MenuScene.h" />
@@ -222,6 +223,7 @@
     <ClInclude Include="Src\Object\Actor\Stage\Stage.h" />
     <ClInclude Include="Src\Object\Common\Transform.h" />
     <ClInclude Include="Src\Object\Actor\Weapon\WeaponBase.h" />
+    <ClInclude Include="Src\Object\TutorialUI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
