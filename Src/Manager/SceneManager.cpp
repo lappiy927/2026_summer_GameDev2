@@ -92,7 +92,7 @@ void SceneManager::Init3D(void)
 void SceneManager::Update(void)
 {
 
-	if (scene_ == nullptr)
+	if (sceneStack_.empty())
 	{
 		return;
 	}
@@ -116,39 +116,33 @@ void SceneManager::Update(void)
 		camera_->Update();
 
 		// 各シーンの更新処理
-		scene_->Update();
+		if (!sceneStack_.empty())
+		{
+			sceneStack_.top()->Update();
+		}
 	}
-
-
-
 }
 
 void SceneManager::Draw(void)
 {
 
-	// 描画先グラフィック領域の指定
-	// (３Ｄ描画で使用するカメラの設定などがリセットされる)
 	SetDrawScreen(DX_SCREEN_BACK);
 
-	// 画面を初期化
 	ClearDrawScreen();
 
-	// カメラ設定
 	camera_->SetBeforeDraw();
 
-	// Effekseerにより再生中のエフェクトを更新する。
 	UpdateEffekseer3D();
 
-	// 各シーンの描画処理
-	scene_->Draw();
+	if (!sceneStack_.empty())
+	{
+		sceneStack_.top()->Draw();
+	}
 
-	// カメラ描画
 	camera_->DrawDebug();
 
-	// Effekseerにより再生中のエフェクトを描画する。
 	DrawEffekseer3D();
 
-	// 暗転・明転
 	fader_->Draw();
 
 }
@@ -203,6 +197,24 @@ Camera* SceneManager::GetCamera(void) const
 	return camera_;
 }
 
+void SceneManager::PushScene(SceneBase* scene)
+{
+	scene->Init();
+	sceneStack_.push(scene);
+}
+
+void SceneManager::PopScene()
+{
+	if (sceneStack_.empty())
+	{
+		return;
+	}
+
+	sceneStack_.top()->Release();
+	delete sceneStack_.top();
+	sceneStack_.pop();
+}
+
 SceneManager::SceneManager(void)
 {
 
@@ -237,9 +249,11 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	sceneId_ = sceneId;
 
 	// 現在のシーンを解放
-	if (scene_ != nullptr)
+	while (!sceneStack_.empty())
 	{
-		delete scene_;
+		sceneStack_.top()->Release();
+		delete sceneStack_.top();
+		sceneStack_.pop();
 	}
 
 	switch (sceneId_)
@@ -272,6 +286,8 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 
 	// 各シーンの初期化
 	scene_->Init();
+
+	sceneStack_.push(scene_);
 
 	ResetDeltaTime();
 

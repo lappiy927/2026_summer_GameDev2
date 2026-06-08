@@ -1,5 +1,6 @@
 #pragma once
 #include <chrono>
+#include <stack>
 #include <DxLib.h>
 class SceneBase;
 class Fader;
@@ -65,6 +66,10 @@ public:
 	// カメラの取得
 	Camera* GetCamera(void) const;
 
+	void PushScene(SceneBase* scene);
+
+	void PopScene();
+
 private:
 
 	// 静的インスタンス
@@ -88,6 +93,8 @@ private:
 	// デルタタイム
 	std::chrono::system_clock::time_point preTime_;
 	float deltaTime_;
+
+	std::stack<SceneBase*> sceneStack_;
 
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする

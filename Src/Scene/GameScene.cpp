@@ -3,6 +3,7 @@
 #include "../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
+#include "../Scene/MenuScene.h"
 #include "../Object/Actor/Stage/Stage.h"
 #include "../Object/Actor/Stage/Door.h"
 #include "../Object/Actor/Charactor/Player.h"
@@ -122,6 +123,8 @@ void GameScene::Init(void)
 
 void GameScene::Update(void)
 {
+
+
 	limitTime_ -= sceMng_.GetDeltaTime();
 
 	if (limitTime_ <= 0.0f)
@@ -135,9 +138,9 @@ void GameScene::Update(void)
 	// シーン遷移
 	auto const& ins = InputManager::GetInstance();
 	
-	if (CheckHitKey(KEY_INPUT_ESCAPE))
+	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_ESCAPE))
 	{
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::MENU);
+		sceMng_.PushScene(new MenuScene());
 	}
 
 	// プレイヤーの更新
@@ -304,7 +307,6 @@ void GameScene::Draw(void)
 		0, 600, 0xffffff,
 		"ESC=%d",
 		CheckHitKey(KEY_INPUT_ESCAPE));
-	
 }
 
 void GameScene::Release(void)

@@ -54,9 +54,8 @@ void MenuScene::Update(void)
 		switch (selectNo_)
 		{
 		case 0:
-			// Play
-			sceMng_.ChangeScene(
-				SceneManager::SCENE_ID::GAME);
+			// ÉQÅ[ÉÄÇ÷ñﬂÇÈ
+			sceMng_.PopScene();
 			break;
 
 		case 1:
