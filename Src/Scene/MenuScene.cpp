@@ -29,7 +29,10 @@ void MenuScene::Update(void)
 {
 	auto& ins = InputManager::GetInstance();
 
-	if (ins.IsTrgDown(KEY_INPUT_UP))
+	if (ins.IsTrgDown(KEY_INPUT_UP) ||
+		ins.IsPadBtnTrgDown(
+			InputManager::JOYPAD_NO::PAD1,
+			InputManager::JOYPAD_BTN::DPAD_UP))
 	{
 		selectNo_--;
 
@@ -39,7 +42,10 @@ void MenuScene::Update(void)
 		}
 	}
 
-	if (ins.IsTrgDown(KEY_INPUT_DOWN))
+	if (ins.IsTrgDown(KEY_INPUT_DOWN) ||
+		ins.IsPadBtnTrgDown(
+			InputManager::JOYPAD_NO::PAD1,
+			InputManager::JOYPAD_BTN::DPAD_DOWN))
 	{
 		selectNo_++;
 
@@ -49,7 +55,10 @@ void MenuScene::Update(void)
 		}
 	}
 
-	if (ins.IsTrgDown(KEY_INPUT_RETURN))
+	if (ins.IsTrgDown(KEY_INPUT_RETURN)||
+		ins.IsPadBtnTrgDown(
+			InputManager::JOYPAD_NO::PAD1,
+			InputManager::JOYPAD_BTN::DOWN))
 	{
 		switch (selectNo_)
 		{
