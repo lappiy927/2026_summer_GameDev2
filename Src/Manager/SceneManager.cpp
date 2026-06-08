@@ -93,33 +93,29 @@ void SceneManager::Update(void)
 {
 
 	if (sceneStack_.empty())
-	{
 		return;
-	}
 
-	// デルタタイム
 	auto nowTime = std::chrono::system_clock::now();
 	deltaTime_ = static_cast<float>(
 		std::chrono::duration_cast<std::chrono::nanoseconds>(nowTime - preTime_).count() / 1000000000.0);
 	preTime_ = nowTime;
 
-	// フェード機能の更新
 	fader_->Update();
+
 	if (isSceneChanging_)
 	{
-		// フェード状態の切替処理
 		Fade();
 	}
 	else
 	{
-		// カメラ更新
 		camera_->Update();
 
-		// 各シーンの更新処理
-		if (!sceneStack_.empty())
-		{
-			sceneStack_.top()->Update();
-		}
+		sceneStack_.top()->Update(); // ←これ1回だけ
+	}
+
+	if (sceneStack_.top()->IsEndRequest())
+	{
+		isExit_ = true;
 	}
 }
 

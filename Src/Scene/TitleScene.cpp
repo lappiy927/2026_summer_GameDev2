@@ -50,6 +50,13 @@ void TitleScene::Init(void)
 	enemy_.quaRot = Quaternion::Euler(
 		AsoUtility::Deg2RadF(45.0f), 0.0f, AsoUtility::Deg2RadF(45.0f));
 	enemy_.Update();
+
+	buttonPlay_ = LoadGraph("Data/Image/Menu/button_play.png");
+	buttonPlaySelect_ = LoadGraph("Data/Image/Menu/button_play_select.png");
+	buttonExit_ = LoadGraph("Data/Image/Menu/button_exit.png");
+	buttonExitSelect_ = LoadGraph("Data/Image/Menu/button_exit_select.png");
+
+	selectNo_ = 0; 
 }
 
 void TitleScene::Update(void)
@@ -69,10 +76,47 @@ void TitleScene::Update(void)
 	InputManager::JOYPAD_IN_STATE padState =
 		ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
 
-
-	if (ins.IsTrgDown(KEY_INPUT_RETURN) || ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT))
+	if (ins.IsTrgDown(KEY_INPUT_LEFT)||
+		ins.IsPadBtnTrgDown(
+			InputManager::JOYPAD_NO::PAD1,
+			InputManager::JOYPAD_BTN::DPAD_LEFT))
 	{
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::TUTORIAL);
+		selectNo_--;
+
+		if (selectNo_ < 0)
+		{
+			selectNo_ = 1;
+		}
+	}
+
+	if (ins.IsTrgDown(KEY_INPUT_RIGHT) ||
+		ins.IsPadBtnTrgDown(
+			InputManager::JOYPAD_NO::PAD1,
+			InputManager::JOYPAD_BTN::DPAD_RIGHT))
+	{
+		selectNo_++;
+
+		if (selectNo_ > 1)
+		{
+			selectNo_ = 0;
+		}
+	}
+
+	if (ins.IsTrgDown(KEY_INPUT_RETURN) ||
+		ins.IsPadBtnTrgDown(
+			InputManager::JOYPAD_NO::PAD1,
+			InputManager::JOYPAD_BTN::DOWN))
+	{
+		switch (selectNo_)
+		{
+		case 0:
+			sceMng_.ChangeScene(SceneManager::SCENE_ID::TUTORIAL);
+			break;
+
+		case 1:
+			SetEndRequest();
+			break;
+		}
 	}
 }
 
@@ -82,9 +126,32 @@ void TitleScene::Draw(void)
 	DrawGraph(0, 0, imgTitle_, TRUE);
 	MV1DrawModel(charactor_.modelId);
 	MV1DrawModel(enemy_.modelId);
+
+	if (selectNo_ == 0)
+	{
+		DrawGraph(300, 500, buttonPlaySelect_, TRUE);
+	}
+	else
+	{
+		DrawGraph(300, 500, buttonPlay_, TRUE);
+	}
+
+	if (selectNo_ == 1)
+	{
+		DrawGraph(700, 500, buttonExitSelect_, TRUE);
+	}
+	else
+	{
+		DrawGraph(700, 500, buttonExit_, TRUE);
+	}
 }
 
 void TitleScene::Release(void)
 {
 	delete animationController_;
+
+	DeleteGraph(buttonPlay_);
+	DeleteGraph(buttonPlaySelect_);
+	DeleteGraph(buttonExit_);
+	DeleteGraph(buttonExitSelect_);
 }

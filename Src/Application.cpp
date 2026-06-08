@@ -96,7 +96,7 @@ void Application::Run(void)
 	SceneManager& sceneManager = SceneManager::GetInstance();
 
 	// ƒQ[ƒ€ƒ‹[ƒv
-	while (ProcessMessage() == 0)
+	while (ProcessMessage() == 0 && !sceneManager.IsExit())
 	{
 		inputManager.Update();
 		sceneManager.Update();

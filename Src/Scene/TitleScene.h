@@ -59,4 +59,11 @@ private:
 	//アニメーション
 	AnimationController* animationController_;
 
+	int selectNo_ = 0;
+
+	int buttonPlay_;
+	int buttonPlaySelect_;
+
+	int buttonExit_;
+	int buttonExitSelect_;
 };

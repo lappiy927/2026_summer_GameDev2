@@ -25,6 +25,9 @@ public:
 	// 解放
 	virtual void Release(void) = 0;
 
+	void SetEndRequest() { endRequest_ = true; }
+	bool IsEndRequest() const { return endRequest_; }
+
 protected:
 
 	// リソース管理
@@ -32,5 +35,10 @@ protected:
 
 	// シーン管理
 	SceneManager& sceMng_;
+
+	bool endRequest_ = false;
+
+
+
 
 };

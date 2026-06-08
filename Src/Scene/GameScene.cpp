@@ -138,7 +138,9 @@ void GameScene::Update(void)
 	// ƒV[ƒ“‘JˆÚ
 	auto const& ins = InputManager::GetInstance();
 	
-	if (InputManager::GetInstance().IsPadBtnTrgDown(
+
+	if (ins.IsTrgDown(KEY_INPUT_ESCAPE) ||
+		ins.IsPadBtnTrgDown(
 		InputManager::JOYPAD_NO::PAD1,
 		InputManager::JOYPAD_BTN::MENU))
 	{

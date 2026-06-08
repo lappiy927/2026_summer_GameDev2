@@ -70,6 +70,8 @@ public:
 
 	void PopScene();
 
+	bool IsExit() const { return isExit_; }
+
 private:
 
 	// 静的インスタンス
@@ -95,6 +97,8 @@ private:
 	float deltaTime_;
 
 	std::stack<SceneBase*> sceneStack_;
+
+	bool isExit_ = false;
 
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
