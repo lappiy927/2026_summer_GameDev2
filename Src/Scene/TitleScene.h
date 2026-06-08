@@ -1,5 +1,7 @@
 #pragma once
 #include "SceneBase.h"
+#include "../Object/Common/Transform.h"
+
 class AnimationController;
 
 class TitleScene : public SceneBase
@@ -49,6 +51,10 @@ private:
 	//画像ハンドル
 	int imgTitle_;
 	int imgPushSpace_;
+
+	Transform charactor_;
+
+	Transform enemy_;
 
 	//アニメーション
 	AnimationController* animationController_;
