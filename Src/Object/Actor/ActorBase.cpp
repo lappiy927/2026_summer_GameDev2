@@ -1,5 +1,6 @@
 #include "../../Manager/ResourceManager.h"
 #include "../../Manager/SceneManager.h"
+#include"../../Manager/SoundManager.h"
 #include "../../Object/Collider/ColliderBase.h"
 #include "ActorBase.h"
 
@@ -7,6 +8,7 @@ ActorBase::ActorBase(void)
 	:
 	resMng_(ResourceManager::GetInstance()),
 	scnMng_(SceneManager::GetInstance()),
+	sndMng_(SoundManager::GetInstance()),
 	transform_()
 {
 }

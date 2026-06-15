@@ -3,6 +3,7 @@
 #include "Manager/InputManager.h"
 #include "Manager/ResourceManager.h"
 #include "Manager/SceneManager.h"
+#include"Manager/SoundManager.h"
 #include "Common/FpsController.h"
 #include "Application.h"
 
@@ -88,6 +89,9 @@ void Application::Init(void)
 
 	// シーン管理初期化
 	SceneManager::CreateInstance();
+
+	//サウンド管理初期化
+	SoundManager::CreateInstance();
 }
 
 void Application::Run(void)
@@ -122,6 +126,7 @@ void Application::Destroy(void)
 	InputManager::GetInstance().Destroy();
 	ResourceManager::GetInstance().Destroy();
 	SceneManager::GetInstance().Destroy();
+	SoundManager::GetInstance().Destroy();
 
 	// Effekseerを終了する
 	Effkseer_End();

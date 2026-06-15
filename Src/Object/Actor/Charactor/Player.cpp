@@ -2,6 +2,7 @@
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Manager/InputManager.h"
 #include "../../../Manager/SceneManager.h"
+#include"../../../Manager/SoundManager.h"
 #include "../../../Manager/Camera.h"
 #include "../../Common/AnimationController.h"
 #include "../../../Object/Collider/ColliderLine.h"
@@ -105,7 +106,10 @@ void Player::UpdateProcess(void)
 
 	ProcessAttack();
 
-
+	if (animType_ != ANIM_TYPE::RUN && animType_ != ANIM_TYPE::FAST_RUN) {
+		sndMng_.Stop(SoundManager::SRC::Walk);
+		sndMng_.Stop(SoundManager::SRC::Run);
+	}
 
 	transform_.Update();
 }
@@ -220,12 +224,16 @@ void Player::ProcessMove(void)
 				animationController_->Play(
 					static_cast<int>(ANIM_TYPE::FAST_RUN), true);
 				animType_ = ANIM_TYPE::FAST_RUN;
+				sndMng_.Play(SoundManager::SRC::Run, false);
+				sndMng_.Stop(SoundManager::SRC::Walk);
 			}
 			else
 			{
 				animationController_->Play(
 					static_cast<int>(ANIM_TYPE::RUN), true);
 				animType_ = ANIM_TYPE::RUN;
+				sndMng_.Play(SoundManager::SRC::Walk, false);
+				sndMng_.Stop(SoundManager::SRC::Run);
 			}
 		}
 
@@ -329,6 +337,7 @@ void Player::ProcessAttack(void)
 			static_cast<int>(ANIM_TYPE::ATTACK),
 			false);
 		animType_ = ANIM_TYPE::ATTACK;
+		sndMng_.Play(SoundManager::SRC::Attack);
 	}
 
 	if (isAttack_)
