@@ -135,6 +135,7 @@ void SceneManager::Draw(void)
 		sceneStack_.top()->Draw();
 	}
 
+	// ƒJƒƒ‰•`‰æ
 	camera_->DrawDebug();
 
 	DrawEffekseer3D();

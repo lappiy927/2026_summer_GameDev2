@@ -105,7 +105,6 @@ void ColliderCapsule::PushBackAlongNormal(
 		colliderModel->GetFollow()->modelId, -1,
 		GetPosTop(), GetPosDown(), GetRadius());
 
-	// 衝突した複数のポリゴンと衝突回避するまで、位置を移動させる
 	for (int i = 0; i < hits.HitNum; i++)
 	{
 		auto hitPoly = hits.Dim[i];
@@ -122,10 +121,27 @@ void ColliderCapsule::PushBackAlongNormal(
 			continue;
 		}
 
+		// 地面や坂は押し戻し対象外
+		if (hitPoly.Normal.y > 0.7f)
+		{
+			continue;
+		}
+
 		// 指定された回数と距離で三角形の法線方向に押し戻す
 		transform.pos =
-			GetPosPushBackAlongNormal(hitPoly, maxTryCnt, pushDistance);
+			GetPosPushBackAlongNormal(
+				hitPoly,
+				maxTryCnt,
+				pushDistance);
+
+		DrawFormatString(
+			0,
+			400,
+			0xffffff,
+			"NormalY %.2f",
+			hitPoly.Normal.y);
 	}
+	
 
 	// 検出した地面ポリゴン情報の後始末
 	MV1CollResultPolyDimTerminate(hits);

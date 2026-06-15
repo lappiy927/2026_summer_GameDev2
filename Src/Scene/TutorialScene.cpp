@@ -47,8 +47,8 @@ void TutorialScene::Init(void)
     enemy_->AddHitCollider(stageCollider);
 
     Camera* camera = sceMng_.GetCamera();
-    camera->ChangeMode(Camera::MODE::FOLLOW);
     camera->SetFollow(&player_->GetTransform());
+    camera->ChangeMode(Camera::MODE::FOLLOW);
 
     // チュートリアル UI 初期化
     tutorialUI_ = new TutorialUI();

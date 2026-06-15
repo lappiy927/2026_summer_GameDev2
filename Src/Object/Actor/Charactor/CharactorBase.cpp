@@ -144,18 +144,19 @@ void CharactorBase::Collision(void)
 
 void CharactorBase::CollisionGravity(void)
 {
+
 	isSteepSlope_ = false;
 
-	if (VSize(jumpPow_) <= 0.001f)
+	/*if (VSize(jumpPow_) <= 0.001f)
 	{
 		return;
-	}
+	}*/
 
 	//落下中しか判定しない
-	if (!(VDot(AsoUtility::DIR_D, VNorm(jumpPow_)) > 0.9f))
+	/*if (!(VDot(AsoUtility::DIR_D, VNorm(jumpPow_)) > 0.9f))
 	{
 		return;
-	}
+	}*/
 
 	// 線分コライダ
 	int lineType = static_cast<int>(COLLIDER_TYPE::LINE);
@@ -189,9 +190,12 @@ void CharactorBase::CollisionGravity(void)
 		auto hits = MV1CollCheck_LineDim(
 			colliderModel->GetFollow()->modelId, -1, s, e);
 
+		
+
 		for (int i = 0; i < hits.HitNum; i++)
 		{
 			auto hit = hits.Dim[i];
+
 			// 除外フレームは無視する
 			if (colliderModel->IsExcludeFrame(hit.FrameIndex))
 			{
@@ -205,43 +209,20 @@ void CharactorBase::CollisionGravity(void)
 					VAdd(hit.HitPosition, VScale(AsoUtility::DIR_U, 2.0f));
 			}
 
-			float slopeLimit = 0.95f;
+			float slopeLimit = 0.75f;
 
 			if (hit.Normal.y >= slopeLimit)
 			{
-				if (transform_.pos.y < hit.HitPosition.y)
-				{
-					transform_.pos =
-						VAdd(hit.HitPosition,
-							VScale(AsoUtility::DIR_U, 2.0f));
-				}
+				transform_.pos.y = hit.HitPosition.y + 10.0f;
+
+				jumpPow_ = AsoUtility::VECTOR_ZERO;
 
 				// ジャンプ判定
 				isJump_ = false;
 			}
 			else
 			{
-				if (isPlayer_)
-				{
-					isSteepSlope_ = true;
-
-					// 急斜面は滑る
-					VECTOR slideDir =
-					{
-						hit.Normal.x,
-						0.0f,
-						hit.Normal.z
-					};
-
-					slideDir = VNorm(slideDir);
-
-					float slidePower =
-						(1.0f - hit.Normal.y) * 20.0f;
-
-					transform_.pos =
-						VAdd(transform_.pos,
-							VScale(slideDir, slidePower));
-				}
+				isSteepSlope_ = true;
 
 				// 登れなくする
 				movePow_.x = 0.0f;

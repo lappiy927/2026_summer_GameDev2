@@ -52,7 +52,6 @@ void BossScene::Init(void)
 
 	// カメラにプレイヤーを追従
 	Camera* camera = sceMng_.GetCamera();
-	camera->ChangeMode(Camera::MODE::FOLLOW);
 	camera->SetFollow(&player_->GetTransform());
 }
 
