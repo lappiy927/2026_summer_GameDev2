@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include "../Manager/InputManager.h"
 #include "../Manager/SceneManager.h"
+#include"../Manager/SoundManager.h"
 #include "MenuScene.h"
 
 MenuScene::MenuScene(void)
@@ -64,6 +65,7 @@ void MenuScene::Update(void)
 		{
 		case 0:
 			// ƒQ[ƒ€‚Ö–ß‚é
+			sndMng_.Play(SoundManager::SRC::Battle);
 			sceMng_.PopScene();
 			break;
 
