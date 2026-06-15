@@ -26,7 +26,6 @@ void DebugScene::Init(void)
 
 	// ƒJƒƒ‰‚Ì’Ç]Ý’è
 	Camera* camera = sceMng_.GetCamera();
-	camera->ChangeMode(Camera::MODE::FREE);
 }
 
 void DebugScene::Update(void)

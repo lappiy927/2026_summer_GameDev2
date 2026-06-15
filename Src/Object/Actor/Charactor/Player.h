@@ -93,7 +93,7 @@ private:
 
 	//衝突判定用線分終了(ジャンプ時)
 	static constexpr VECTOR COL_LINE_JUMP_END_LOCAL_POS =
-	{ 0.0f,50.0f,0.0f };
+	{ 0.0f,-50.0f,0.0f };
 
 	// ジャンプ力
 	//static constexpr float POW_JUMP = 5000.0f;
