@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include <algorithm>
 #include "../Manager/SceneManager.h"
+#include"../Manager/SoundManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
 #include "../Scene/MenuScene.h"
@@ -118,6 +119,8 @@ void GameScene::Init(void)
 	camera->ChangeMode(Camera::MODE::FOLLOW);
 	camera->SetFollow(&player_->GetTransform());
 
+	sndMng_.Play(SoundManager::SRC::Battle, true, 200);
+
 	limitTime_ = 500.0f;
 }
 
@@ -144,6 +147,7 @@ void GameScene::Update(void)
 		InputManager::JOYPAD_NO::PAD1,
 		InputManager::JOYPAD_BTN::MENU))
 	{
+		sndMng_.StopAll();
 		sceMng_.PushScene(new MenuScene());
 	}
 
@@ -200,6 +204,7 @@ void GameScene::Update(void)
 	// プレイヤー死亡
 	if (player_->IsDead())
 	{
+		sndMng_.StopAll();
 		sceMng_.ChangeScene(
 			SceneManager::SCENE_ID::GAMEOVER);
 
@@ -237,6 +242,7 @@ void GameScene::Update(void)
 		//　ドアに近づいた
 		if (dist < 868.0f)
 		{
+			sndMng_.StopAll();
 			sceMng_.ChangeScene(
 				SceneManager::SCENE_ID::BOSS);
 		}

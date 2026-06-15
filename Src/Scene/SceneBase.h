@@ -1,5 +1,6 @@
 #pragma once
 class ResourceManager;
+class SoundManager;
 class SceneManager;
 
 class SceneBase
@@ -32,6 +33,7 @@ protected:
 
 	// リソース管理
 	ResourceManager& resMng_;
+	SoundManager& sndMng_;
 
 	// シーン管理
 	SceneManager& sceMng_;

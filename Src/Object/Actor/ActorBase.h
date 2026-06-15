@@ -4,6 +4,7 @@
 #include "../Common/Transform.h"
 class ResourceManager;
 class SceneManager;
+class SoundManager;
 class ColliderBase;
 
 class ActorBase
@@ -54,6 +55,7 @@ protected:
 	// シングルトン参照
 	ResourceManager& resMng_;
 	SceneManager& scnMng_;
+	SoundManager& sndMng_;
 
 	// モデル制御の基本情報
 	Transform transform_;
