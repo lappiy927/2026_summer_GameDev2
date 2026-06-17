@@ -144,70 +144,53 @@ void CharactorBase::Collision(void)
 
 void CharactorBase::CollisionGravity(void)
 {
-
 	isSteepSlope_ = false;
 
-	/*if (VSize(jumpPow_) <= 0.001f)
-	{
-		return;
-	}*/
-
-	//落下中しか判定しない
-	/*if (!(VDot(AsoUtility::DIR_D, VNorm(jumpPow_)) > 0.9f))
-	{
-		return;
-	}*/
-
-	// 線分コライダ
 	int lineType = static_cast<int>(COLLIDER_TYPE::LINE);
-
-	// 線分コライダが無ければ処理を抜ける
 	if (ownColliders_.count(lineType) == 0) return;
 
-	// 線分コライダ情報
 	ColliderLine* colliderLine_ =
 		dynamic_cast<ColliderLine*>(ownColliders_.at(lineType));
-
 	if (colliderLine_ == nullptr) return;
 
-	// 線分の始点と終点を取得
 	VECTOR s = colliderLine_->GetPosStart();
 	VECTOR e = colliderLine_->GetPosEnd();
 
-	// 登録されている衝突物を全てチェック
+	bool isHitGround = false;
+	float nearestY = -FLT_MAX;
+	float nearestNormalY = 1.0f;
+
+	// 始点(上)に最も近い衝突点を選ぶ
+	float minDistFromStart = FLT_MAX;
+
 	for (const auto& hitCol : hitColliders_)
 	{
-		// ステージ以外は処理を飛ばす
 		if (hitCol->GetTag() != ColliderBase::TAG::STAGE) continue;
 
-		// 派生クラスへキャスト
 		const ColliderModel* colliderModel =
 			dynamic_cast<const ColliderModel*>(hitCol);
-
 		if (colliderModel == nullptr) continue;
 
-		// ステージモデル(地面)との衝突
 		auto hits = MV1CollCheck_LineDim(
 			colliderModel->GetFollow()->modelId, -1, s, e);
-
-		
 
 		for (int i = 0; i < hits.HitNum; i++)
 		{
 			auto hit = hits.Dim[i];
 
-			// 除外フレームは無視する
 			if (colliderModel->IsExcludeFrame(hit.FrameIndex))
-			{
 				continue;
-			}
-			// 衝突地点から、少し上に移動
-			if (transform_.pos.y < hit.HitPosition.y)
+
+			// 始点(足元上)から衝突点までの距離で最近点を選ぶ
+			float dist = fabs(s.y - hit.HitPosition.y);
+			if (dist < minDistFromStart)
 			{
-				// 衝突物より、下側にいる場合のみ、位置を修正する
-				transform_.pos =
-					VAdd(hit.HitPosition, VScale(AsoUtility::DIR_U, 2.0f));
+				minDistFromStart = dist;
+				nearestY = hit.HitPosition.y;
+				nearestNormalY = hit.Normal.y;
+				isHitGround = true;
 			}
+<<<<<<< HEAD
 
 			float slopeLimit = 0.75f;
 
@@ -254,16 +237,48 @@ void CharactorBase::CollisionGravity(void)
 			}
 
 		
+=======
+>>>>>>> b17c5bbb85864da406f365081dbf7ca4f2a342cd
 		}
-		// 検出した地面ポリゴン情報の後始末
+
 		MV1CollResultPolyDimTerminate(hits);
+	}
+
+	if (isHitGround)
+	{
+		float slopeLimit = 0.75f;
+
+		// 地面より下に来たら着地させる
+		if (transform_.pos.y < nearestY + 2.0f)
+		{
+			transform_.pos.y = nearestY + 2.0f;
+			jumpPow_ = AsoUtility::VECTOR_ZERO;
+			isJump_ = false;
+		}
+
+		if (nearestNormalY >= slopeLimit)
+		{
+			if (!isJump_)
+			{
+				transform_.pos.y = nearestY + 10.0f;
+			}
+		}
+		else
+		{
+			isSteepSlope_ = true;
+			movePow_.x = 0.0f;
+			movePow_.z = 0.0f;
+
+			if (!isJump_)
+			{
+				transform_.pos.y = nearestY + 10.0f;
+			}
+		}
 	}
 
 	if (!isJump_)
 	{
-		// ジャンプリセット
 		jumpPow_ = AsoUtility::VECTOR_ZERO;
-		// ジャンプの入力受付時間をリセット
 		stepJump_ = 0.0f;
 	}
 }

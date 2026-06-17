@@ -2,6 +2,7 @@
 
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../../Manager/ResourceManager.h"
+#include"../../../../Manager/SoundManager.h"
 #include "../../../../Application.h"
 
 #include "../../../Common/AnimationController.h"
@@ -138,6 +139,7 @@ void EnemyMob::Damage(int damage)
         hp_ = 0;
 
         isDead_ = true;
+        sndMng_.Play(SoundManager::SRC::EnemyDai);
 
     }
 }
