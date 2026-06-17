@@ -222,6 +222,30 @@ void CharactorBase::CollisionGravity(void)
 			}
 			else
 			{
+				if (!isPlayer_)
+				{
+					VECTOR slideDir =
+					{
+						hit.Normal.x,
+						0.0f,
+						hit.Normal.z
+					};
+
+					if (VSize(slideDir) > 0.001f)
+					{
+						slideDir = VNorm(slideDir);
+
+						float slidePower =
+							(1.0f - hit.Normal.y) * 5.0f;
+
+						transform_.pos =
+							VAdd(
+								transform_.pos,
+								VScale(slideDir, slidePower)
+							);
+					}
+				}
+
 				isSteepSlope_ = true;
 
 				// “o‚ê‚È‚­‚·‚é
