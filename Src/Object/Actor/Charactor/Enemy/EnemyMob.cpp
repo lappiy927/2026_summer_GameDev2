@@ -94,6 +94,18 @@ void EnemyMob::InitAnimation()
         20.0f,
         Application::PATH_MODEL + "Charactor/Enemy/EnemyAnime/EnemyRun.mv1");
 
+    // UŒ‚
+    animationController_->Add(
+        2,
+        20.0f,
+        Application::PATH_MODEL + "Charactor/Enemy/EnemyAnime/EnemyAttack.mv1");
+
+    // Ž€
+    animationController_->Add(
+        3,
+        20.0f,
+        Application::PATH_MODEL + "Charactor/Enemy/EnemyAnime/EnemyDying.mv1");
+
     // ‰ŠúƒAƒjƒ
     animationController_->Play(0, true);
 }
@@ -119,12 +131,11 @@ void EnemyMob::AI()
         break;
 
     case STATE::ATTACK:
-        break;
-
-    case STATE::DAMAGE:
+        animationController_->Play(2, true);
         break;
 
     case STATE::DEAD:
+        animationController_->Play(3, true);
         break;
     }
 }

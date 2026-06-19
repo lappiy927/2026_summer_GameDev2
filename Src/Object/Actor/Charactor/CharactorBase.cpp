@@ -28,6 +28,7 @@ CharactorBase::~CharactorBase(void)
 
 void CharactorBase::Update(void)
 {
+
 	// 移動前座標を更新
 	prevPos_ = transform_.pos;
 
@@ -129,6 +130,7 @@ void CharactorBase::CalcGravityPow(void)
 
 void CharactorBase::Collision(void)
 {
+
 	// 移動処理
 	transform_.pos = VAdd(transform_.pos, movePow_);
 
@@ -144,6 +146,8 @@ void CharactorBase::Collision(void)
 
 void CharactorBase::CollisionGravity(void)
 {
+
+
 	isSteepSlope_ = false;
 
 	int lineType = static_cast<int>(COLLIDER_TYPE::LINE);
@@ -228,15 +232,26 @@ void CharactorBase::CollisionGravity(void)
 					}
 				}
 
+				char str[256];
+				sprintf_s(str,
+					"SteepSlope! Normal=(%.2f, %.2f, %.2f)\n",
+					hit.Normal.x,
+					hit.Normal.y,
+					hit.Normal.z);
+				OutputDebugStringA(str);
+
 				isSteepSlope_ = true;
 
 				// 登れなくする
 				movePow_.x = 0.0f;
 				movePow_.z = 0.0f;
 			}
+<<<<<<< HEAD
 
 		
 
+=======
+>>>>>>> e0a521df7ff0644fe40073394f28e038b1a05487
 		}
 
 		MV1CollResultPolyDimTerminate(hits);
@@ -283,9 +298,14 @@ void CharactorBase::CollisionGravity(void)
 
 void CharactorBase::CollisionCapsule(void)
 {
-	if (isSteepSlope_)
+	/*if (isSteepSlope_)
 	{
 		return;
+	}*/
+
+	if (isSteepSlope_)
+	{
+		OutputDebugStringA("SteepSlope ON\n");
 	}
 
 
