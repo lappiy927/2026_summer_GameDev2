@@ -85,13 +85,25 @@ void Boss::InitAnimation()
     animationController_->Add(
         0,
         20.0f,
-        Application::PATH_MODEL + "Charactor/Enemy/EnemyAnime/EnemyIdle.mv1");
+        Application::PATH_MODEL + "Charactor/Enemy/Boss/BossIdle.mv1");
 
     // ‘–‚è
     animationController_->Add(
         1,
         20.0f,
-        Application::PATH_MODEL + "Charactor/Enemy/EnemyAnime/EnemyRun.mv1");
+        Application::PATH_MODEL + "Charactor/Enemy/Boss/BossRun.mv1");
+
+    // UŒ‚
+    animationController_->Add(
+        2,
+        20.0f,
+        Application::PATH_MODEL + "Charactor/Enemy/Boss/BossAttack.mv1");
+
+    // Ž€–S
+    animationController_->Add(
+        3,
+        20.0f,
+        Application::PATH_MODEL + "Charactor/Enemy/Boss/BossDai.mv1");
 
     // ‰ŠúƒAƒjƒ
     animationController_->Play(0, true);
@@ -118,12 +130,13 @@ void Boss::AI()
         break;
 
     case STATE::ATTACK:
-        break;
-
-    case STATE::DAMAGE:
+        animationController_->Play(2, true);
         break;
 
     case STATE::DEAD:
+
+        animationController_->Play(3, false);
+
         break;
     }
 }
@@ -139,10 +152,22 @@ void Boss::Damage(int damage)
 
         isDead_ = true;
 
+        state_ = STATE::DEAD;
+
     }
 }
 
 bool Boss::IsDead() const
 {
     return isDead_;
+}
+
+bool Boss::IsDeadAnimationEnd() const
+{
+    if (state_ != STATE::DEAD)
+    {
+        return false;
+    }
+
+    return animationController_->IsEnd();
 }

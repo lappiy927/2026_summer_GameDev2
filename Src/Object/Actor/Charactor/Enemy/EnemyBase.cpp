@@ -10,7 +10,7 @@ EnemyBase::EnemyBase()
 	target_(nullptr),
 	hp_(100),
 	isDead_(false),
-	searchRange_(300.0f),
+	searchRange_(900.0f),
 	attackRange_(50.0f),
 	moveSpeedEnemy_(3.0f)
 {

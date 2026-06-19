@@ -114,19 +114,12 @@ void BossScene::Update(void)
 	}
 	
 
-	if (boss_->IsDead()) 
+	if (boss_->IsDeadAnimationEnd())
 	{
-		isClear_ = true;
+		sceMng_.ChangeScene(
+			SceneManager::SCENE_ID::GAMECLEAR);
 
-		clearTimer_ += sceMng_.GetDeltaTime();
-
-		if (clearTimer_ >= 2.0f)
-		{
-			sceMng_.ChangeScene(
-				SceneManager::SCENE_ID::GAMECLEAR);
-
-			return;
-		}
+		return;
 	}
 	else if (player_->IsDead())
 	{
@@ -144,11 +137,7 @@ void BossScene::Draw(void)
 
 	player_->Draw();
 
-	if (!boss_->IsDead())
-	{
-		boss_->Draw();
-
-	}
+	boss_->Draw();
 
 	//“‚Ì•`‰æ
 	katana_->Draw();
