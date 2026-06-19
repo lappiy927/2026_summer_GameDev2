@@ -30,7 +30,7 @@ void GameClearScene::Update()
 	if (ins.IsTrgDown(KEY_INPUT_RETURN) ||
 		ins.IsPadBtnTrgDown(
 			InputManager::JOYPAD_NO::PAD1,
-			InputManager::JOYPAD_BTN::DOWN))
+			InputManager::JOYPAD_BTN::RIGHT))
 	{
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}

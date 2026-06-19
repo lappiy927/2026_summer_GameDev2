@@ -171,12 +171,18 @@ void TutorialUI::UpdateSkipDialog()
         ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
 
     // ← でカーソルを「はい」へ
-    bool nowLeft = (CheckHitKey(KEY_INPUT_LEFT) != 0);
+    bool nowLeft = (CheckHitKey(KEY_INPUT_LEFT) != 0 ||
+        ins.IsPadBtnTrgDown(
+            InputManager::JOYPAD_NO::PAD1,
+            InputManager::JOYPAD_BTN::DPAD_LEFT) != 0);
     if (nowLeft && !prevLeft_) dialogCursorPos_ = 0;
     prevLeft_ = nowLeft;
 
     // → でカーソルを「いいえ」へ
-    bool nowRight = (CheckHitKey(KEY_INPUT_RIGHT) != 0);
+    bool nowRight = (CheckHitKey(KEY_INPUT_RIGHT) != 0 ||
+        ins.IsPadBtnTrgDown(
+            InputManager::JOYPAD_NO::PAD1,
+            InputManager::JOYPAD_BTN::DPAD_RIGHT) != 0);
     if (nowRight && !prevRight_) dialogCursorPos_ = 1;
     prevRight_ = nowRight;
 

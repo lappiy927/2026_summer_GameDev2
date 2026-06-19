@@ -105,7 +105,7 @@ void TitleScene::Update(void)
 	if (ins.IsTrgDown(KEY_INPUT_RETURN) ||
 		ins.IsPadBtnTrgDown(
 			InputManager::JOYPAD_NO::PAD1,
-			InputManager::JOYPAD_BTN::DOWN))
+			InputManager::JOYPAD_BTN::RIGHT))
 	{
 		switch (selectNo_)
 		{

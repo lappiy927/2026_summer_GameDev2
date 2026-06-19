@@ -60,8 +60,14 @@ void TutorialScene::Update(void)
 {
     auto& ins = InputManager::GetInstance();
 
+    InputManager::JOYPAD_IN_STATE padState =
+        ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
+
     // ---- スキップキー（Escape）でダイアログを開く ----
-    if (ins.IsTrgDown(KEY_INPUT_ESCAPE) && !tutorialUI_->IsSkipDialogOpen())
+    if (ins.IsTrgDown(KEY_INPUT_ESCAPE) && !tutorialUI_->IsSkipDialogOpen() ||
+        ins.IsPadBtnTrgDown(
+            InputManager::JOYPAD_NO::PAD1,
+            InputManager::JOYPAD_BTN::MENU) && !tutorialUI_->IsSkipDialogOpen())
     {
         tutorialUI_->OpenSkipDialog();
     }
