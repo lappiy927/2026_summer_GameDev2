@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include <algorithm>
+#include"../Application.h"
 #include "../Manager/SceneManager.h"
 #include"../Manager/SoundManager.h"
 #include "../Manager/InputManager.h"
@@ -302,6 +303,14 @@ void GameScene::Draw(void)
 	if (hit_)
 	{
 		DrawString(0, 100, "HIT!", 0xff0000);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128); // îºìßñæ(0Å`255)
+		DrawBox(
+			0, 0,
+			Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y,
+			GetColor(255, 0, 0),
+			TRUE
+		);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
 	if (isBossRoomOpen_)

@@ -1,6 +1,8 @@
 #include <DxLib.h>
 #include <algorithm>
+#include"../Application.h"
 #include "../Manager/SceneManager.h"
+#include"../Manager/SoundManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
 #include "../Object/Actor/Stage/BossStage.h"
@@ -116,6 +118,7 @@ void BossScene::Update(void)
 
 	if (boss_->IsDeadAnimationEnd())
 	{
+		sndMng_.StopAll();
 		sceMng_.ChangeScene(
 			SceneManager::SCENE_ID::GAMECLEAR);
 
@@ -123,6 +126,7 @@ void BossScene::Update(void)
 	}
 	else if (player_->IsDead())
 	{
+		sndMng_.StopAll();
 		sceMng_.ChangeScene(
 			SceneManager::SCENE_ID::GAMEOVER);
 
@@ -151,6 +155,17 @@ void BossScene::Draw(void)
 		0xffffff,
 		"Player : %.2f %.2f %.2f",
 		pPos.x, pPos.y, pPos.z);
+
+	if (hit_) {
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128); // îºìßñæ(0Å`255)
+		DrawBox(
+			0, 0,
+			Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y,
+			GetColor(255, 0, 0),
+			TRUE
+		);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
 }
 
 void BossScene::Release(void)
