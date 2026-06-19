@@ -1,4 +1,5 @@
 #include "TutorialUI.h"
+#include "../Manager/InputManager.h"
 
 // ============================================================
 //  ステップ定義テーブル
@@ -67,8 +68,8 @@ TutorialUI::~TutorialUI()
 
 void TutorialUI::Release()
 {
-    if (charImage_ != -1) { DeleteGraph(charImage_);      charImage_ = -1; }
-    if (font_ != -1) { DeleteFontToHandle(font_);    font_ = -1; }
+    if (charImage_ != -1) { DeleteGraph(charImage_); charImage_ = -1; }
+    if (font_ != -1) { DeleteFontToHandle(font_); font_ = -1; }
 }
 
 // ============================================================
@@ -79,12 +80,7 @@ void TutorialUI::Init()
     font_ = CreateFontToHandle("ＭＳ ゴシック", 20, 3,
         DX_FONTTYPE_ANTIALIASING_EDGE);
 
-    if (GetJoypadNum() == 0) {
-        steps_ = kStepTable;
-    }
-    else {
-        steps_ = pStepTable;
-    }
+    steps_ = (GetJoypadNum() == 0) ? kStepTable : pStepTable;
     stepIndex_ = 0;
     currentStep_ = steps_[0].step;
 
@@ -103,14 +99,22 @@ void TutorialUI::Init()
 void TutorialUI::Update()
 {
     if (currentStep_ == TutorialStep::COMPLETE) return;
+
+    // ダイアログ中はタイプライターなどを止める
+    if (isSkipDialogOpen_)
+    {
+        UpdateSkipDialog();
+        return;
+    }
+
     UpdateTypewriter();
 
-    // 警告セリフ表示中で、タイプライターが終わったら元のセリフに戻す
+    // 警告セリフが終わったら元のセリフに戻す
     if (isWarning_ && typingDone_)
     {
         delay++;
-
-        if (delay >= 60) {
+        if (delay >= 60)
+        {
             isWarning_ = false;
             StartTypewriter(steps_[stepIndex_].message);
             delay = 0;
@@ -123,7 +127,8 @@ void TutorialUI::Draw() const
 {
     DrawCharacter();
     DrawChatWindow();
-    if (showComplete_) DrawCompleteOverlay();
+    if (showComplete_)     DrawCompleteOverlay();
+    if (isSkipDialogOpen_) DrawSkipDialog();
 }
 
 // ============================================================
@@ -142,13 +147,114 @@ void TutorialUI::NotifyAttackSuccess()
 
 void TutorialUI::ShowWarning(const std::string& message)
 {
-    // すでに警告中は無視（連続テレポートで何度も割り込まない）
     if (isWarning_) return;
-
     isWarning_ = true;
     warningText_ = message;
     StartTypewriter(message);
     charImage_ = LoadGraph("Data/Image/Tutorial2.png");
+}
+
+// ============================================================
+void TutorialUI::OpenSkipDialog()
+{
+    if (isSkipDialogOpen_) return;
+    isSkipDialogOpen_ = true;
+    isSkipConfirmed_ = false;
+    dialogCursorPos_ = 1;  // デフォルトは「いいえ」
+}
+
+void TutorialUI::UpdateSkipDialog()
+{
+    auto& ins = InputManager::GetInstance();
+
+    InputManager::JOYPAD_IN_STATE padState =
+        ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
+
+    // ← でカーソルを「はい」へ
+    bool nowLeft = (CheckHitKey(KEY_INPUT_LEFT) != 0);
+    if (nowLeft && !prevLeft_) dialogCursorPos_ = 0;
+    prevLeft_ = nowLeft;
+
+    // → でカーソルを「いいえ」へ
+    bool nowRight = (CheckHitKey(KEY_INPUT_RIGHT) != 0);
+    if (nowRight && !prevRight_) dialogCursorPos_ = 1;
+    prevRight_ = nowRight;
+
+    // Enter で決定
+    bool nowEnter = (CheckHitKey(KEY_INPUT_RETURN) != 0 ||
+        ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
+            InputManager::JOYPAD_BTN::RIGHT) != 0);
+    if (nowEnter && !prevEnter_)
+    {
+        if (dialogCursorPos_ == 0)
+        {
+            // 「はい」→ スキップ確定
+            isSkipConfirmed_ = true;
+            isSkipDialogOpen_ = false;
+        }
+        else
+        {
+            // 「いいえ」→ ダイアログを閉じるだけ
+            isSkipDialogOpen_ = false;
+        }
+    }
+    prevEnter_ = nowEnter;
+}
+
+// ============================================================
+void TutorialUI::DrawSkipDialog() const
+{
+    constexpr int DLG_W = 420;
+    constexpr int DLG_H = 160;
+    constexpr int RADIUS = 8;
+    constexpr int BTN_W = 120;
+    constexpr int BTN_H = 40;
+
+    int dx = screenW / 2 - DLG_W / 2;
+    int dy = chatY_ - DLG_H - 20;
+    int btnY = dy + DLG_H - BTN_H - 20;
+
+    // 背景（半透明）
+    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 230);
+    DrawRoundRect(dx, dy, dx + DLG_W, dy + DLG_H,
+        RADIUS, RADIUS, GetColor(8, 4, 20), TRUE);
+    SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+    // 枠線
+    DrawRoundRect(dx, dy, dx + DLG_W, dy + DLG_H,
+        RADIUS, RADIUS, COL_WIN_BORDER(), FALSE);
+
+    // メッセージ
+    DrawStringToHandle(dx + 30, dy + 28,
+        "チュートリアルをスキップしますか？",
+        COL_TEXT(), font_);
+
+    // ---- 「はい」ボタン ----
+    int yesX = dx + DLG_W / 2 - BTN_W - 16;
+    unsigned int yesBg = (dialogCursorPos_ == 0) ? GetColor(140, 60, 200) : GetColor(30, 15, 60);
+    unsigned int yesBdr = (dialogCursorPos_ == 0) ? GetColor(200, 140, 255) : GetColor(80, 40, 140);
+
+    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 220);
+    DrawBox(yesX, btnY, yesX + BTN_W, btnY + BTN_H, yesBg, TRUE);
+    SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+    DrawBox(yesX, btnY, yesX + BTN_W, btnY + BTN_H, yesBdr, FALSE);
+    DrawStringToHandle(yesX + 36, btnY + 10, "はい", COL_TEXT(), font_);
+
+    // ---- 「いいえ」ボタン ----
+    int noX = dx + DLG_W / 2 + 16;
+    unsigned int noBg = (dialogCursorPos_ == 1) ? GetColor(140, 60, 200) : GetColor(30, 15, 60);
+    unsigned int noBdr = (dialogCursorPos_ == 1) ? GetColor(200, 140, 255) : GetColor(80, 40, 140);
+
+    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 220);
+    DrawBox(noX, btnY, noX + BTN_W, btnY + BTN_H, noBg, TRUE);
+    SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+    DrawBox(noX, btnY, noX + BTN_W, btnY + BTN_H, noBdr, FALSE);
+    DrawStringToHandle(noX + 24, btnY + 10, "いいえ", COL_TEXT(), font_);
+
+    // 操作ヒント
+    DrawStringToHandle(dx + 30, dy + DLG_H - 22,
+        "← → で選択    Enter で決定",
+        COL_HINT(), font_);
 }
 
 // ============================================================
@@ -184,7 +290,6 @@ void TutorialUI::UpdateTypewriter()
         size_t pos = shownText_.size();
         if (pos < fullText_.size())
         {
-            // MBCS：先頭バイトが 0x81~0x9F または 0xE0~0xFC なら2バイト文字
             unsigned char c = static_cast<unsigned char>(fullText_[pos]);
             int charBytes = ((c >= 0x81 && c <= 0x9F) || (c >= 0xE0 && c <= 0xFC)) ? 2 : 1;
 
@@ -216,19 +321,14 @@ void TutorialUI::DrawChatWindow() const
     constexpr int LINE_H = 28;
     constexpr int RADIUS = 6;
 
-    // ウィンドウ背景（半透明）
     SetDrawBlendMode(DX_BLENDMODE_ALPHA, 210);
-    DrawRoundRect(chatX_, chatY_,
-        chatX_ + chatW_, chatY_ + chatH_,
+    DrawRoundRect(chatX_, chatY_, chatX_ + chatW_, chatY_ + chatH_,
         RADIUS, RADIUS, COL_WIN_BG(), TRUE);
     SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-    // 枠線
-    DrawRoundRect(chatX_, chatY_,
-        chatX_ + chatW_, chatY_ + chatH_,
+    DrawRoundRect(chatX_, chatY_, chatX_ + chatW_, chatY_ + chatH_,
         RADIUS, RADIUS, COL_WIN_BORDER(), FALSE);
 
-    // 話者名
     if (stepIndex_ < static_cast<int>(steps_.size()))
     {
         DrawStringToHandle(chatX_ + PAD, chatY_ + 10,
@@ -236,17 +336,13 @@ void TutorialUI::DrawChatWindow() const
             COL_NAME(), font_);
     }
 
-    // 話者名下のライン
     DrawLine(chatX_ + PAD, chatY_ + NAME_H + 8,
         chatX_ + chatW_ - PAD, chatY_ + NAME_H + 8,
         COL_DIVIDER());
 
-    // メッセージ本文（タイプライター）
     int textY = chatY_ + NAME_H + 16;
-    DrawStringToHandle(chatX_ + PAD, textY,
-        shownText_.c_str(), COL_TEXT(), font_);
+    DrawStringToHandle(chatX_ + PAD, textY, shownText_.c_str(), COL_TEXT(), font_);
 
-    // カーソル点滅（タイプ中のみ）
     if (!typingDone_)
     {
         bool blink = ((GetNowCount() / 400) % 2 == 0);
@@ -270,7 +366,6 @@ void TutorialUI::DrawChatWindow() const
 
     DrawProgressDots();
 
-    // ヒントテキスト（下部）
     if (stepIndex_ < static_cast<int>(steps_.size()))
     {
         DrawStringToHandle(chatX_ + PAD,
@@ -316,12 +411,13 @@ void TutorialUI::DrawCompleteOverlay() const
 
     DrawStringToHandle(ox + 110, oy + 40,
         "チュートリアル完了！", COL_COMPLETE(), font_);
-    if (GetJoypadNum() == 0) {
-        DrawStringToHandle(ox + 80, oy + 90,
-            "エンターキーで次へ", COL_HINT(), font_);
+
+    if (GetJoypadNum() == 0)
+    {
+        DrawStringToHandle(ox + 80, oy + 90, "エンターキーで次へ", COL_HINT(), font_);
     }
-    else {
-        DrawStringToHandle(ox + 80, oy + 90,
-            "Bボタンで次へ", COL_HINT(), font_);
+    else
+    {
+        DrawStringToHandle(ox + 80, oy + 90, "Bボタンで次へ", COL_HINT(), font_);
     }
 }

@@ -37,11 +37,16 @@ public:
     void NotifyAttackSuccess();
 
     TutorialStep GetCurrentStep() const { return currentStep_; }
-    bool IsFinished() const { return currentStep_ == TutorialStep::COMPLETE; }
+    bool IsFinished()     const { return currentStep_ == TutorialStep::COMPLETE; }
+    bool IsWarning()      const { return isWarning_; }
 
+    // 警告セリフを表示する
     void ShowWarning(const std::string& message);
 
-    bool IsWarning()  const { return isWarning_; }
+    // スキップダイアログを開く
+    void OpenSkipDialog();
+    bool IsSkipDialogOpen() const { return isSkipDialogOpen_; }
+    bool IsSkipConfirmed()  const { return isSkipConfirmed_; }
 
     int screenW = 1280;
     int screenH = 720;
@@ -50,11 +55,13 @@ private:
     void AdvanceStep();
     void StartTypewriter(const std::string& text);
     void UpdateTypewriter();
+    void UpdateSkipDialog();
 
     void DrawCharacter()       const;
     void DrawChatWindow()      const;
     void DrawProgressDots()    const;
     void DrawCompleteOverlay() const;
+    void DrawSkipDialog()      const;
 
     int charImage_ = -1;
     int font_ = -1;
@@ -74,7 +81,18 @@ private:
 
     bool showComplete_ = false;
 
-    bool        isWarning_ = false;  // 警告セリフ表示中フラグ
-    std::string warningText_ = "";     // 警告セリフ本文
-    int delay;
+    // --- 警告状態 ---
+    bool        isWarning_ = false;
+    std::string warningText_ = "";
+    int         delay = 0;
+
+    // --- スキップダイアログ ---
+    bool isSkipDialogOpen_ = false; // ダイアログ表示中
+    bool isSkipConfirmed_ = false; // スキップ確定フラグ
+    int  dialogCursorPos_ = 1;
+
+    // カーソル移動の連続入力防止
+    bool prevLeft_ = false;
+    bool prevRight_ = false;
+    bool prevEnter_ = false;
 };

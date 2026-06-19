@@ -11,47 +11,39 @@ class TutorialUI;
 class TutorialScene : public SceneBase
 {
 public:
+    TutorialScene(void);
+    ~TutorialScene(void) override;
 
-	// コンストラクタ
-	TutorialScene(void);
-
-	// デストラクタ
-	~TutorialScene(void) override;
-
-	// 初期化
-	void Init(void) override;
-
-	// 更新
-	void Update(void) override;
-
-	// 描画
-	void Draw(void) override;
-
-	// 解放
-	void Release(void) override;
+    void Init(void)    override;
+    void Update(void)  override;
+    void Draw(void)    override;
+    void Release(void) override;
 
 private:
+    Player* player_;
+    Katana* katana_;
+    Stage* stage_;
+    EnemyMob* enemy_;
+    TutorialUI* tutorialUI_;
 
-	Player* player_;
-	Katana* katana_;
-	Stage* stage_;
-	EnemyMob* enemy_;
+    static constexpr int WALK_REQUIRED = 120;
+    static constexpr int RUN_REQUIRED = 120;
 
-	TutorialUI* tutorialUI_;
+    // --- 入力検知用 ---
+    void CheckTutorialInput();
+    int  walkFrames_ = 0;
+    int  runFrames_ = 0;
+    bool prevMouseLeft_ = false;
 
-	static constexpr int WALK_REQUIRED = 120;
-	static constexpr int RUN_REQUIRED = 120;
+    //強制終了
+    bool isAnger_ = false;
+    int AngerCount_;
+    int endCount_;
 
-	// --- 入力検知用 ---
-	void CheckTutorialInput();
-	int  walkFrames_ = 0;
-	int  runFrames_ = 0;
-	bool prevMouseLeft_ = false;
+    // --- 行動範囲制限 ---
+    void  CheckAreaLimit();
+    bool  IsOutOfArea() const;
 
-	// --- 行動範囲制限 ---
-	void  CheckAreaLimit();             // 毎フレーム呼ぶ
-	bool  IsOutOfArea() const;          // 範囲外判定
-
-	VECTOR areaCenter_ = { 0.0f, 0.0f, 0.0f };   // 範囲の中心（Init で設定）
-	float  areaRadius_ = 3000.0f;
+    VECTOR areaCenter_ = { 0.0f, 0.0f, 0.0f };
+    float  areaRadius_ = 3000.0f;
 };
