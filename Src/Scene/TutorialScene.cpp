@@ -50,7 +50,6 @@ void TutorialScene::Init(void)
     camera->SetFollow(&player_->GetTransform());
     camera->ChangeMode(Camera::MODE::FOLLOW);
 
-    // チュートリアル UI 初期化
     tutorialUI_ = new TutorialUI();
     tutorialUI_->Init();
 
@@ -59,53 +58,76 @@ void TutorialScene::Init(void)
 
 void TutorialScene::Update(void)
 {
-    // 完了後：Enterでゲームへ
     auto& ins = InputManager::GetInstance();
 
-    // 接続されているゲームパッド１の情報を取得
-    InputManager::JOYPAD_IN_STATE padState =
-        ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
+    // ---- スキップキー（Escape）でダイアログを開く ----
+    if (ins.IsTrgDown(KEY_INPUT_ESCAPE) && !tutorialUI_->IsSkipDialogOpen())
+    {
+        tutorialUI_->OpenSkipDialog();
+    }
 
+    tutorialUI_->Update();
+
+    // スキップ確定 → ゲームへ遷移
+    if (tutorialUI_->IsSkipConfirmed())
+    {
+        sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
+        return;
+    }
+
+    // ダイアログ中はゲーム側の更新を止める
+    if (tutorialUI_->IsSkipDialogOpen()) return;
+
+    // ---- チュートリアル完了後 ----
     if (tutorialUI_->IsFinished())
     {
-        bool endTutorial = (ins.IsTrgDown(KEY_INPUT_RETURN) || ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT));
+        InputManager::JOYPAD_IN_STATE padState =
+            ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
 
-        if (endTutorial) {
+        bool endTutorial = ins.IsTrgDown(KEY_INPUT_RETURN) ||
+            ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
+                InputManager::JOYPAD_BTN::RIGHT);
+        if (endTutorial)
+        {
             sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
         }
+        return;
     }
-    else {
 
+    CheckTutorialInput();
+    CheckAreaLimit();
+
+    if (!isAnger_) {
+
+
+        // ---- 通常更新 ----
         player_->Update();
         katana_->Update();
         stage_->Update();
 
-        tutorialUI_->Update();
-        CheckTutorialInput();
-        CheckAreaLimit();
-
-
-        if (TutorialStep::ATTACK <= tutorialUI_->GetCurrentStep()) {
-
+        // 攻撃ステップ以降は敵を更新
+        if (TutorialStep::ATTACK <= tutorialUI_->GetCurrentStep())
+        {
             enemy_->Update();
 
             ColliderCapsule* enemyCol =
                 dynamic_cast<ColliderCapsule*>(
                     enemy_->GetCollider(
-                        static_cast<int>(
-                            EnemyBase::COLLIDER_TYPE::CAPSULE)));
+                        static_cast<int>(EnemyBase::COLLIDER_TYPE::CAPSULE)));
 
             if (enemyCol != nullptr)
             {
-                bool hit =
-                    katana_->GetCollider()->IsHit(enemyCol);
-
-                if (hit)
+                if (katana_->GetCollider()->IsHit(enemyCol))
                 {
                     enemy_->Damage(50);
-
                 }
-            };
+            }
+        }
+    }
+    else {
+
+        if (++endCount_ == 80) {
+            SetEndRequest();
         }
     }
 }
@@ -116,11 +138,11 @@ void TutorialScene::Draw(void)
     katana_->Draw();
     stage_->Draw();
 
-    if (TutorialStep::ATTACK <= tutorialUI_->GetCurrentStep() && enemy_->IsDead() == false) {
+    if (TutorialStep::ATTACK <= tutorialUI_->GetCurrentStep() && !enemy_->IsDead())
+    {
         enemy_->Draw();
     }
 
-    // UI は3D描画の後（最前面）
     tutorialUI_->Draw();
 }
 
@@ -148,24 +170,26 @@ void TutorialScene::Release(void)
 bool TutorialScene::IsOutOfArea() const
 {
     VECTOR pos = player_->GetPos();
-
-    // XZ平面での距離（高さは無視）
     float dx = pos.x - areaCenter_.x;
     float dz = pos.z - areaCenter_.z;
-    float distSq = dx * dx + dz * dz;
-
-    return distSq > (areaRadius_ * areaRadius_);
+    return (dx * dx + dz * dz) > (areaRadius_ * areaRadius_);
 }
 
 void TutorialScene::CheckAreaLimit()
 {
-    if (!IsOutOfArea()) return;
+    if (AngerCount_ < 3) {
+        if (!IsOutOfArea()) return;
 
-    // --- 瞬間テレポート（中心へ戻す）---
-    player_->SetPos(areaCenter_);
+        player_->SetPos(areaCenter_);
+        tutorialUI_->ShowWarning("どけ行っど！戻ってけ！");
+        AngerCount_++;
+    }
+    else {
+        if (!IsOutOfArea()) return;
 
-    // --- 警告セリフを表示（TutorialUI 側で重複表示を防いでいる）---
-    tutorialUI_->ShowWarning("どけ行っど！戻ってけ！");
+        tutorialUI_->ShowWarning("もうよか！わいは剣士じゃなか！");
+        isAnger_ = true;
+    }
 }
 
 // ============================================================
@@ -175,7 +199,6 @@ void TutorialScene::CheckTutorialInput()
 {
     auto& ins = InputManager::GetInstance();
 
-    // 接続されているゲームパッド１の情報を取得
     InputManager::JOYPAD_IN_STATE padState =
         ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
 
@@ -183,19 +206,19 @@ void TutorialScene::CheckTutorialInput()
     {
     case TutorialStep::WALK:
     {
-
         VECTOR moveDir = ins.GetDirectionXZAKey(padState.AKeyLX, padState.AKeyLY);
-        bool LTrigger = ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::L_TRIGGER);
-
+        bool LTrigger = ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1,
+            InputManager::JOYPAD_BTN::L_TRIGGER);
         bool wasd = ins.IsNew(KEY_INPUT_W) || ins.IsNew(KEY_INPUT_A)
             || ins.IsNew(KEY_INPUT_S) || ins.IsNew(KEY_INPUT_D);
         bool shift = ins.IsNew(KEY_INPUT_LSHIFT) || ins.IsNew(KEY_INPUT_RSHIFT);
 
-        if (wasd && !shift || moveDir.x != 0.0f && !LTrigger || moveDir.z != 0.0f && !LTrigger)
+        if ((wasd && !shift) ||
+            (moveDir.x != 0.0f && !LTrigger) ||
+            (moveDir.z != 0.0f && !LTrigger))
         {
             walkFrames_++;
         }
-
 
         if (walkFrames_ >= WALK_REQUIRED)
         {
@@ -208,13 +231,16 @@ void TutorialScene::CheckTutorialInput()
     case TutorialStep::RUN:
     {
         VECTOR moveDir = ins.GetDirectionXZAKey(padState.AKeyLX, padState.AKeyLY);
-        bool LTrigger = ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::L_TRIGGER);
-
+        bool LTrigger = ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1,
+            InputManager::JOYPAD_BTN::L_TRIGGER);
         bool wasd = ins.IsNew(KEY_INPUT_W) || ins.IsNew(KEY_INPUT_A)
             || ins.IsNew(KEY_INPUT_S) || ins.IsNew(KEY_INPUT_D);
         bool shift = ins.IsNew(KEY_INPUT_LSHIFT) || ins.IsNew(KEY_INPUT_RSHIFT);
 
-        if (wasd && shift || moveDir.x != 0.0f && LTrigger || moveDir.z != 0.0f && LTrigger) {
+        if ((wasd && shift) ||
+            (moveDir.x != 0.0f && LTrigger) ||
+            (moveDir.z != 0.0f && LTrigger))
+        {
             runFrames_++;
         }
 
@@ -228,11 +254,10 @@ void TutorialScene::CheckTutorialInput()
 
     case TutorialStep::ATTACK:
     {
-        if (enemy_->IsDead() == true)
+        if (enemy_->IsDead())
         {
             tutorialUI_->NotifyAttackSuccess();
         }
-
         break;
     }
 
