@@ -55,6 +55,8 @@ void BossScene::Init(void)
 	// カメラにプレイヤーを追従
 	Camera* camera = sceMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
+
+	sndMng_.Play(SoundManager::SRC::Battle);
 }
 
 void BossScene::Update(void)
