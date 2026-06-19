@@ -14,7 +14,11 @@ GameOverScene::~GameOverScene()
 
 void GameOverScene::Init()
 {
-
+	fontHandle =
+		CreateFontToHandle(
+			"Meiryo",
+			128,
+			6);
 }
 
 void GameOverScene::Update()
@@ -33,12 +37,6 @@ void GameOverScene::Update()
 
 void GameOverScene::Draw()
 {
-	fontHandle =
-		CreateFontToHandle(
-			"Meiryo",
-			128,
-			6);
-
 	DrawStringToHandle(
 		300,
 		300,
@@ -49,4 +47,5 @@ void GameOverScene::Draw()
 
 void GameOverScene::Release()
 {
+	DeleteFontToHandle(fontHandle);
 }

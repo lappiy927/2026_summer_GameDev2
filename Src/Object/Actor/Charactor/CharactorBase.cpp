@@ -190,7 +190,6 @@ void CharactorBase::CollisionGravity(void)
 				nearestNormalY = hit.Normal.y;
 				isHitGround = true;
 			}
-<<<<<<< HEAD
 
 			float slopeLimit = 0.75f;
 
@@ -237,8 +236,7 @@ void CharactorBase::CollisionGravity(void)
 			}
 
 		
-=======
->>>>>>> b17c5bbb85864da406f365081dbf7ca4f2a342cd
+
 		}
 
 		MV1CollResultPolyDimTerminate(hits);

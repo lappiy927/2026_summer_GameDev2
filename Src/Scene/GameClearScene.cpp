@@ -14,6 +14,11 @@ GameClearScene::~GameClearScene()
 
 void GameClearScene::Init()
 {
+	fontHandle =
+		CreateFontToHandle(
+			"Meiryo",
+			128,
+			6);
 }
 
 void GameClearScene::Update()
@@ -33,14 +38,6 @@ void GameClearScene::Update()
 
 void GameClearScene::Draw()
 {
-
-	fontHandle =
-		CreateFontToHandle(
-			"Meiryo",
-			128,
-			6);
-
-
 	DrawStringToHandle(
 		300,
 		300,
@@ -51,4 +48,5 @@ void GameClearScene::Draw()
 
 void GameClearScene::Release()
 {
+	DeleteFontToHandle(fontHandle);
 }
