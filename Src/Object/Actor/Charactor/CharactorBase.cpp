@@ -246,12 +246,7 @@ void CharactorBase::CollisionGravity(void)
 				movePow_.x = 0.0f;
 				movePow_.z = 0.0f;
 			}
-<<<<<<< HEAD
 
-		
-
-=======
->>>>>>> e0a521df7ff0644fe40073394f28e038b1a05487
 		}
 
 		MV1CollResultPolyDimTerminate(hits);
