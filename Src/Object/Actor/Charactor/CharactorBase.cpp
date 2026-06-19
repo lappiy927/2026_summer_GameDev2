@@ -246,53 +246,48 @@ void CharactorBase::CollisionGravity(void)
 				movePow_.x = 0.0f;
 				movePow_.z = 0.0f;
 			}
-<<<<<<< HEAD
-
-		
-
-=======
->>>>>>> e0a521df7ff0644fe40073394f28e038b1a05487
 		}
 
 		MV1CollResultPolyDimTerminate(hits);
-	}
 
-	if (isHitGround)
-	{
-		float slopeLimit = 0.75f;
 
-		// 地面より下に来たら着地させる
-		if (transform_.pos.y < nearestY + 2.0f)
+		if (isHitGround)
 		{
-			transform_.pos.y = nearestY + 2.0f;
+			float slopeLimit = 0.75f;
+
+			// 地面より下に来たら着地させる
+			if (transform_.pos.y < nearestY + 2.0f)
+			{
+				transform_.pos.y = nearestY + 2.0f;
+				jumpPow_ = AsoUtility::VECTOR_ZERO;
+				isJump_ = false;
+			}
+
+			if (nearestNormalY >= slopeLimit)
+			{
+				if (!isJump_)
+				{
+					transform_.pos.y = nearestY + 10.0f;
+				}
+			}
+			else
+			{
+				isSteepSlope_ = true;
+				movePow_.x = 0.0f;
+				movePow_.z = 0.0f;
+
+				if (!isJump_)
+				{
+					transform_.pos.y = nearestY + 10.0f;
+				}
+			}
+		}
+
+		if (!isJump_)
+		{
 			jumpPow_ = AsoUtility::VECTOR_ZERO;
-			isJump_ = false;
+			stepJump_ = 0.0f;
 		}
-
-		if (nearestNormalY >= slopeLimit)
-		{
-			if (!isJump_)
-			{
-				transform_.pos.y = nearestY + 10.0f;
-			}
-		}
-		else
-		{
-			isSteepSlope_ = true;
-			movePow_.x = 0.0f;
-			movePow_.z = 0.0f;
-
-			if (!isJump_)
-			{
-				transform_.pos.y = nearestY + 10.0f;
-			}
-		}
-	}
-
-	if (!isJump_)
-	{
-		jumpPow_ = AsoUtility::VECTOR_ZERO;
-		stepJump_ = 0.0f;
 	}
 }
 

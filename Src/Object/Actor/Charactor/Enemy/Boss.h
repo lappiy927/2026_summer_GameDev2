@@ -20,6 +20,8 @@ public:
 
 	bool IsDead() const override;
 
+	bool IsDeadAnimationEnd() const;
+
 private:
 
 	int hp_ = 50;
