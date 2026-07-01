@@ -35,6 +35,9 @@ public:
 
     bool IsHit(Player* player);
 
+    // 死亡アニメーション終了確認
+    bool IsDeadAnimationEnd() const;
+
     // ダメージ
     virtual void Damage(int power);
 
@@ -63,6 +66,8 @@ protected:
     // 敵移動速度
     float moveSpeedEnemy_;
 
+    VECTOR effectPos_ = AsoUtility::VECTOR_ZERO;
+
 protected:
 
     // 状態更新
@@ -81,7 +86,7 @@ protected:
     // プレイヤー発見
     bool SearchPlayer() const;
 
-  
+    int effectHandle = -1;
 
     VECTOR knockbackPow_ = AsoUtility::VECTOR_ZERO;
     int knockbackTimer_ = 0;

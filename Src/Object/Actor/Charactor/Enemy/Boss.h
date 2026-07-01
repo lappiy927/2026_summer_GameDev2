@@ -2,7 +2,7 @@
 #include "EnemyBase.h"
 
 class Boss :
-    public EnemyBase
+	public EnemyBase
 {
 public:
 	Boss();
@@ -17,14 +17,5 @@ public:
 	void AI() override;
 
 	void Damage(int damage) override;
-
-	bool IsDead() const override;
-
-	bool IsDeadAnimationEnd() const;
-
-private:
-
-	int hp_ = 50;
-	bool isDead_ = false;
 };
 

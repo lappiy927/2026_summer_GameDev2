@@ -1,6 +1,7 @@
 #include "EnemyBase.h"
 #include "../Player.h"
 #include "../../../../Utility/AsoUtility.h"
+#include "../../../Common/AnimationController.h"
 #include "../../../../Object/Collider/ColliderCapsule.h"
 
 EnemyBase::EnemyBase()
@@ -63,7 +64,22 @@ void EnemyBase::SetTarget(Player* player)
 
 bool EnemyBase::IsDead() const
 {
-	return false;
+	return isDead_;
+}
+
+bool EnemyBase::IsDeadAnimationEnd() const
+{
+	if (state_ != STATE::DEAD)
+	{
+		return false;
+	}
+
+	if (animationController_ == nullptr)
+	{
+		return true;
+	}
+
+	return animationController_->IsEnd();
 }
 
 void EnemyBase::SetPos(const VECTOR& pos)
@@ -73,6 +89,9 @@ void EnemyBase::SetPos(const VECTOR& pos)
 
 bool EnemyBase::IsHit(Player* player)
 {
+	// 死亡演出中は当たり判定を無効化
+	if (state_ == STATE::DEAD) return false;
+
 	auto it = ownColliders_.find((int)COLLIDER_TYPE::CAPSULE);
 	if (it == ownColliders_.end()) return false;
 
@@ -149,6 +168,12 @@ void EnemyBase::UpdateDamage()
 void EnemyBase::UpdateDead()
 {
 	movePow_ = AsoUtility::VECTOR_ZERO;
+
+	// 死亡アニメーションが終わったら消去対象にする
+	if (IsDeadAnimationEnd())
+	{
+		isDead_ = true;
+	}
 }
 
 VECTOR EnemyBase::GetPlayerDirection() const
@@ -191,6 +216,9 @@ bool EnemyBase::SearchPlayer() const
 
 void EnemyBase::Damage(int power)
 {
+	// 死亡演出中は無視
+	if (state_ == STATE::DEAD) return;
+
 	hp_ -= power;
 
 	state_ = STATE::DAMAGE;
@@ -198,8 +226,6 @@ void EnemyBase::Damage(int power)
 	if (hp_ <= 0)
 	{
 		hp_ = 0;
-
-		isDead_ = true;
 
 		state_ = STATE::DEAD;
 	}
