@@ -10,9 +10,10 @@
 #include "../../../../Object/Collider/ColliderCapsule.h"
 
 Boss::Boss()
-	:
-	EnemyBase()
+    :
+    EnemyBase()
 {
+    hp_ = 50;
 }
 
 Boss::~Boss()
@@ -22,30 +23,30 @@ Boss::~Boss()
 
 void Boss::InitLoad()
 {
-	// 共通ロード
-	CharactorBase::InitLoad();
+    // 共通ロード
+    CharactorBase::InitLoad();
 
-	// モデル読み込み
-	int model =
-		MV1DuplicateModel(
-			resMng_.Load(
-				ResourceManager::SRC::BOSS).handleId_);
+    // モデル読み込み
+    int model =
+        MV1DuplicateModel(
+            resMng_.Load(
+                ResourceManager::SRC::BOSS).handleId_);
 
-	transform_.SetModel(model);
+    transform_.SetModel(model);
 }
 
 void Boss::InitTransform()
 {
-	transform_.scl = VGet(2.0f,2.0f,2.0f);
+    transform_.scl = VGet(2.0f, 2.0f, 2.0f);
 
-	transform_.quaRot = Quaternion::Identity();
+    transform_.quaRot = Quaternion::Identity();
 
-	transform_.quaRotLocal = Quaternion::Identity();
+    transform_.quaRotLocal = Quaternion::Identity();
 
-	// 出現位置
-	transform_.pos = VGet(2500.0f, 2900.0f, 2500.0f);
+    // 出現位置
+    transform_.pos = VGet(2500.0f, 2900.0f, 2500.0f);
 
-	transform_.Update();
+    transform_.Update();
 }
 
 void Boss::InitCollider()
@@ -143,31 +144,14 @@ void Boss::AI()
 
 void Boss::Damage(int damage)
 {
-    hp_ -= damage;
+    if (state_ == STATE::DEAD) return;
 
+    hp_ -= damage;
 
     if (hp_ <= 0)
     {
         hp_ = 0;
 
-        isDead_ = true;
-
         state_ = STATE::DEAD;
-
     }
-}
-
-bool Boss::IsDead() const
-{
-    return isDead_;
-}
-
-bool Boss::IsDeadAnimationEnd() const
-{
-    if (state_ != STATE::DEAD)
-    {
-        return false;
-    }
-
-    return animationController_->IsEnd();
 }
