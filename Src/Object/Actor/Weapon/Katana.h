@@ -2,12 +2,7 @@
 #include "WeaponBase.h"
 #include "../../Collider/ColliderCapsule.h"
 
-// オフセット構造体を追加
-struct WeaponOffset
-{
-    VECTOR localPos;
-    VECTOR rotEuler; // オイラー角(ラジアン)
-};
+
 
 class Katana : public WeaponBase
 {
@@ -51,7 +46,7 @@ private:
 
     float attackTimer_ = 0.0f;
 
-   
+
 
     // 状態ごとのオフセット定数
     static constexpr WeaponOffset OFFSET_IDLE = { {3.0f, 0.0f, -7.0f}, {DX_PI_F / 2, DX_PI_F, 0.0f} };

@@ -3,7 +3,6 @@
 #include "../../../Manager/SceneManager.h"
 #include "../../../Object/Actor/Charactor/Player.h"
 #include "../../Collider/ColliderCapsule.h"
-
 #include "Katana.h"
 
 Katana::Katana(Player* player)
@@ -48,6 +47,7 @@ void Katana::Update(void)
 		break;
 	}
 
+
 	UpdateTransform();
 }
 
@@ -55,7 +55,6 @@ void Katana::Draw(void)
 {
 	WeaponBase::Draw();
 	dynamic_cast<ColliderCapsule*>(attackCollider_)->DrawDebug(0xff0000);
-
 }
 
 ColliderCapsule* Katana::GetCollider() const
@@ -92,7 +91,7 @@ void Katana::InitCollider(void)
 
 void Katana::UpdateIdle(void)
 {
-	currentOffset_ = OFFSET_IDLE;
+
 }
 
 void Katana::UpdateMove(void)
