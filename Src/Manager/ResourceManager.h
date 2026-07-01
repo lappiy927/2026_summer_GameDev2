@@ -23,6 +23,7 @@ public:
 		DOOR_RIGHT,
 		PLAYER_SHADOW,
 		KATANA,
+		GUN,
 		ATTACK,
 		ENEMY,
 		BOSS,

@@ -66,6 +66,10 @@ void ResourceManager::Init(void)
 	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Weapon/ìÅ.mv1");
 	resourcesMap_.emplace(SRC::KATANA, res);
 
+	//GUNÉÇÉfÉã
+	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Weapon/Gun.mv1");
+	resourcesMap_.emplace(SRC::GUN, res);
+
 	// ENEMYÉÇÉfÉã
 	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Enemy/MobEnemy.mv1");
 	resourcesMap_.emplace(SRC::ENEMY, res);

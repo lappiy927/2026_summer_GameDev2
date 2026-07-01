@@ -1,10 +1,18 @@
 #pragma once
 #include "../ActorBase.h"
 #include "../../Common/Transform.h"
+#include "../../Collider/ColliderCapsule.h"
 
 class ResourceManager;
 class SceneManager;
 class Player;
+
+// オフセット構造体を追加
+struct WeaponOffset
+{
+	VECTOR localPos;
+	VECTOR rotEuler; // オイラー角(ラジアン)
+};
 
 class WeaponBase
 {
@@ -21,6 +29,11 @@ public:
 	virtual void Draw(void);
 	virtual void Release(void);
 
+	const Transform& GetTransform(void) const { return transform_; }
+
+	// 派生クラスのattackCollider_を外部から取得
+	virtual ColliderCapsule* GetCollider(void) const = 0;
+
 protected:
 
 	// シングルトン参照
@@ -29,6 +42,8 @@ protected:
 
 	// モデル制御の基本情報
 	Transform transform_;
+
+	ColliderBase* attackCollider_ = nullptr;
 
 	// リソースロード
 	virtual void InitLoad(void) = 0;
@@ -49,6 +64,8 @@ protected:
 	virtual void UpdateAttack(void) = 0;
 	//ジャンプ時の更新
 	virtual void UpdateJump(void) = 0;
+
+	int effectHandle = -1;
 
 	Player* player_;
 
