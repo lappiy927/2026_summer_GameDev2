@@ -43,6 +43,9 @@ private:
 	float slideAmount_ = 0.0f;
 	bool isOpen_ = false;
 
+	int backHandle_;
+	VECTOR backPos_;
+
 	VECTOR leftBasePos_;
 	VECTOR rightBasePos_;
 

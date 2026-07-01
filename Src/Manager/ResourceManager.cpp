@@ -46,6 +46,10 @@ void ResourceManager::Init(void)
 	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Stage/MainStage/DoorRight.mv1");
 	resourcesMap_.emplace(SRC::DOOR_RIGHT, res);
 
+	// DOOR_BACKƒ‚ƒfƒ‹
+	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Stage/MainStage/GateBack.mv1");
+	resourcesMap_.emplace(SRC::DOOR_BACK, res);
+
 	// PLAYERƒ‚ƒfƒ‹
 	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Player/Player.mv1");
 	resourcesMap_.emplace(SRC::PLAYER, res);
