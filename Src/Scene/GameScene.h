@@ -43,6 +43,12 @@ private:
 
 	std::vector<std::shared_ptr<EnemyBase>> enemies_;
 
+	int lifeHandle_;
+
+	int daiHandle_;
+
+	int slashEffectHandle_;
+
 	float limitTime_;
 
 	bool hit_ = false;

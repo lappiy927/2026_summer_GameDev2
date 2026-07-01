@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include <algorithm>
+#include <EffekseerForDXLib.h>
 #include"../Application.h"
 #include "../Manager/SceneManager.h"
 #include"../Manager/SoundManager.h"
@@ -123,10 +124,19 @@ void GameScene::Init(void)
 	sndMng_.Play(SoundManager::SRC::Battle, true, 200);
 
 	limitTime_ = 500.0f;
+
+	lifeHandle_ = LoadGraph("Data/Image/Life.png");
+
+	daiHandle_ = LoadGraph("Data/Image/Dai.png");
+
+	slashEffectHandle_ =
+		LoadEffekseerEffect(
+			"Data/Effect/Slash.efkefc",20.0f);
 }
 
 void GameScene::Update(void)
 {
+	UpdateEffekseer3D();
 
 
 	limitTime_ -= sceMng_.GetDeltaTime();
@@ -198,6 +208,15 @@ void GameScene::Update(void)
 			{
 				enemy->Damage(50);
 
+				int effect = PlayEffekseer3DEffect(slashEffectHandle_);
+
+				VECTOR pos = enemy->GetPos();
+
+				SetPosPlayingEffekseer3DEffect(
+					effect,
+					pos.x,
+					pos.y + 50.0f,
+					pos.z);
 			}
 		};
 	}
@@ -263,15 +282,26 @@ void GameScene::Draw(void)
 
 	door_->Draw();
 
+	// HP
+	if (!player_->IsDead())
+	{
+		DrawGraph(0, 30, lifeHandle_, TRUE);
+	}
+	else
+	{
+		DrawGraph(0, 30, daiHandle_, TRUE);
+	}
+
+
 	int y = 40;
 
 	VECTOR pPos = player_->GetPos();
 
-	DrawFormatString(
-		0, 100,
-		0xffffff,
-		"Player : %.2f %.2f %.2f",
-		pPos.x, pPos.y, pPos.z);
+	//DrawFormatString(
+	//	0, 100,
+	//	0xffffff,
+	//	"Player : %.2f %.2f %.2f",
+	//	pPos.x, pPos.y, pPos.z);
 
 	for (auto& enemy : enemies_)
 	{
@@ -279,17 +309,17 @@ void GameScene::Draw(void)
 
 		VECTOR pos = enemy->GetPos();
 
-		DrawFormatString(
+	/*	DrawFormatString(
 			0, y,
 			0xffffff,
 			"Enemy : %.2f %.2f %.2f",
-			pos.x, pos.y, pos.z);
+			pos.x, pos.y, pos.z);*/
 
 		y += 20;
 
-		DrawFormatString(0, 80, 0xffffff,
+		/*DrawFormatString(0, 80, 0xffffff,
 			"HitCheck: %d",
-			enemy->IsHit(player_) ? 1 : 0);
+			enemy->IsHit(player_) ? 1 : 0);*/
 	}
 
 	DrawFormatString(
@@ -326,6 +356,10 @@ void GameScene::Draw(void)
 		0, 600, 0xffffff,
 		"ESC=%d",
 		CheckHitKey(KEY_INPUT_ESCAPE));
+
+	Effekseer_Sync3DSetting();
+
+	DrawEffekseer3D();
 }
 
 void GameScene::Release(void)

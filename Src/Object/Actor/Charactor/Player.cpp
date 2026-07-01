@@ -312,7 +312,6 @@ void Player::ProcessJump(void)
 			static_cast<int>(ANIM_TYPE::JUMP), false);
 		animType_ = ANIM_TYPE::JUMP;
 	}
-
 }
 
 void Player::ProcessAttack(void)
@@ -331,7 +330,7 @@ void Player::ProcessAttack(void)
 	{
 		isAttack_ = true;
 
-		attackTimer_ = 1.0f;
+		attackTimer_ = 0.5f;
 
 		animationController_->Play(
 			static_cast<int>(ANIM_TYPE::ATTACK),
