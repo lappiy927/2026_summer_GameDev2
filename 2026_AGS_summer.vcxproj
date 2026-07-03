@@ -140,7 +140,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClCompile Include="Src\Object\GameClearUI.cpp" />
     <ClCompile Include="Src\Object\GameOverUI.cpp" />
 =======
