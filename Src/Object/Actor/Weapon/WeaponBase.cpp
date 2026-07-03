@@ -2,6 +2,7 @@
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Manager/SceneManager.h"
 #include "WeaponBase.h"
+#include <EffekseerForDXLib.h>
 
 WeaponBase::WeaponBase(Player* player)
 	:
@@ -27,4 +28,14 @@ void WeaponBase::Draw(void)
 void WeaponBase::Release(void)
 {
 	transform_.Release();
+
+	DeleteEffekseerEffect(effectHandle);
+
+	effectHandle = -1;
+
+	if (attackCollider_ != nullptr)
+	{
+		delete attackCollider_;
+		attackCollider_ = nullptr;
+	}
 }

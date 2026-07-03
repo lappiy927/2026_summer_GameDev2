@@ -1,6 +1,8 @@
 #include <DxLib.h>
 #include "../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
+#include"../Manager/WeaponManager.h"
+#include"../Manager/SoundManager.h"
 #include "../Manager/Camera.h"
 #include "../Object/Actor/Stage/Stage.h"
 #include "../Object/Actor/Charactor/Player.h"
@@ -13,7 +15,7 @@
 
 TutorialScene::TutorialScene(void) : SceneBase(),
 player_(nullptr),
-katana_(nullptr),
+weaponMng_(nullptr),
 stage_(nullptr),
 enemy_(nullptr),
 tutorialUI_(nullptr),
@@ -32,8 +34,8 @@ void TutorialScene::Init(void)
     player_ = new Player();
     player_->Init();
 
-    katana_ = new Katana(player_);
-    katana_->Init();
+    weaponMng_ = new WeaponManager(player_);
+    weaponMng_->Init();
 
     stage_ = new Stage();
     stage_->Init();
@@ -60,29 +62,18 @@ void TutorialScene::Update(void)
 {
     auto& ins = InputManager::GetInstance();
 
-    InputManager::JOYPAD_IN_STATE padState =
-        ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
-
-    // ---- スキップキー（Escape）でダイアログを開く ----
-    if (ins.IsTrgDown(KEY_INPUT_ESCAPE) && !tutorialUI_->IsSkipDialogOpen() ||
-        ins.IsPadBtnTrgDown(
-            InputManager::JOYPAD_NO::PAD1,
-            InputManager::JOYPAD_BTN::MENU) && !tutorialUI_->IsSkipDialogOpen())
+    bool holdingEsc = ins.IsNew(KEY_INPUT_ESCAPE) != 0;
+    bool holdingStart = (GetJoypadNum() > 0) &&
+        ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1,
+            InputManager::JOYPAD_BTN::MENU);
+    if (!tutorialUI_->IsFinished() && tutorialUI_->UpdateSkipHold(holdingEsc || holdingStart))
     {
-        tutorialUI_->OpenSkipDialog();
-    }
-
-    tutorialUI_->Update();
-
-    // スキップ確定 → ゲームへ遷移
-    if (tutorialUI_->IsSkipConfirmed())
-    {
+        sndMng_.StopAll();
         sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
         return;
     }
 
-    // ダイアログ中はゲーム側の更新を止める
-    if (tutorialUI_->IsSkipDialogOpen()) return;
+    tutorialUI_->Update();
 
     // ---- チュートリアル完了後 ----
     if (tutorialUI_->IsFinished())
@@ -108,8 +99,22 @@ void TutorialScene::Update(void)
 
         // ---- 通常更新 ----
         player_->Update();
-        katana_->Update();
+        weaponMng_->Update();
         stage_->Update();
+
+        if (ins.IsTrgDown(KEY_INPUT_E)) {
+            int weaponType_;
+            weaponType_ = static_cast<int>(weaponMng_->GetActiveWeaponType());
+            switch (weaponType_)
+            {
+            case static_cast<int>(WeaponManager::WEAPON_TYPE::KATANA):
+                weaponMng_->SetActiveWeapon(WeaponManager::WEAPON_TYPE::GUN);
+                break;
+            case static_cast<int>(WeaponManager::WEAPON_TYPE::GUN):
+                weaponMng_->SetActiveWeapon(WeaponManager::WEAPON_TYPE::KATANA);
+                break;
+            }
+        }
 
         // 攻撃ステップ以降は敵を更新
         if (TutorialStep::ATTACK <= tutorialUI_->GetCurrentStep())
@@ -123,7 +128,7 @@ void TutorialScene::Update(void)
 
             if (enemyCol != nullptr)
             {
-                if (katana_->GetCollider()->IsHit(enemyCol))
+                if (weaponMng_->GetActiveCollider()->IsHit(enemyCol))
                 {
                     enemy_->Damage(50);
                 }
@@ -141,7 +146,7 @@ void TutorialScene::Update(void)
 void TutorialScene::Draw(void)
 {
     player_->Draw();
-    katana_->Draw();
+    weaponMng_->Draw();
     stage_->Draw();
 
     if (TutorialStep::ATTACK <= tutorialUI_->GetCurrentStep() && !enemy_->IsDead())
@@ -157,8 +162,8 @@ void TutorialScene::Release(void)
     player_->Release();
     delete player_;
 
-    katana_->Release();
-    delete katana_;
+    weaponMng_->Release();
+    delete weaponMng_;
 
     stage_->Release();
     delete stage_;

@@ -38,7 +38,7 @@ void Player::InitTransform(void)
 	transform_.scl = AsoUtility::VECTOR_ONE;
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Euler(DEFAULT_ROT_LOCAL);
-	transform_.pos = VGet(2000.0f,50.0f,2000.0f);
+	transform_.pos = VGet(2000.0f, 50.0f, 2000.0f);
 	transform_.Update();
 }
 
@@ -84,6 +84,10 @@ void Player::InitAnimation(void)
 		static_cast<int>(ANIM_TYPE::ATTACK), 80.0f,
 		Application::PATH_MODEL + "Charactor/Player/Attack.mv1");
 
+	animationController_->Add(
+		static_cast<int>(ANIM_TYPE::RELOAD), 60.0f,
+		Application::PATH_MODEL + "Charactor/Player/Reload.mv1");
+
 	//初期アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::IDLE), true);
@@ -105,6 +109,8 @@ void Player::UpdateProcess(void)
 	ProcessJump();
 
 	ProcessAttack();
+
+	ProcessReload();
 
 	if (animType_ != ANIM_TYPE::RUN && animType_ != ANIM_TYPE::FAST_RUN) {
 		sndMng_.Stop(SoundManager::SRC::Walk);
@@ -158,6 +164,7 @@ void Player::ProcessMove(void)
 	{
 		return;
 	}
+	if (isReload_) return;
 
 	auto& ins = InputManager::GetInstance();
 
@@ -178,13 +185,12 @@ void Player::ProcessMove(void)
 		if (ins.IsNew(KEY_INPUT_A)) { dir = AsoUtility::DIR_L; }
 		if (ins.IsNew(KEY_INPUT_S)) { dir = AsoUtility::DIR_B; }
 		if (ins.IsNew(KEY_INPUT_D)) { dir = AsoUtility::DIR_R; }
-		
+
 		//左Shiftでダッシュ
 		if (CheckHitKey(KEY_INPUT_LSHIFT))
 		{
 			isDash = true;
 		}
-
 	}
 	else
 	{
@@ -218,6 +224,7 @@ void Player::ProcessMove(void)
 		//ジャンプ中はアニメーションを変えない
 		if (!isJump_)
 		{
+
 			//アニメーション
 			if (isDash)
 			{
@@ -262,9 +269,6 @@ void Player::ProcessMove(void)
 			animType_ = ANIM_TYPE::IDLE;
 		}
 	}
-
-	
-
 }
 
 void Player::ProcessJump(void)
@@ -349,6 +353,37 @@ void Player::ProcessAttack(void)
 		{
 			isAttack_ = false;
 		}
+	}
+}
+
+void Player::ProcessReload(void)
+{
+	auto& ins = InputManager::GetInstance();
+
+
+	if (ins.IsNew(KEY_INPUT_Q) && !isAttack_ && !isReload_)
+	{
+		animationController_->Play(
+			static_cast<int>(ANIM_TYPE::RELOAD), false);
+		animType_ = ANIM_TYPE::RELOAD;
+		isReload_ = true;
+		reloadTimer_ = RELOAD_ANIM_TIME;
+	}
+
+	if (!isReload_) return;
+	movePow_ = { 0.0f,0.0f,0.0f };
+
+	reloadTimer_ -= scnMng_.GetDeltaTime();
+
+	if (reloadTimer_ <= 0.0f)
+	{
+		isReload_ = false;
+		reloadTimer_ = 0.0f;
+
+		// IDLEに戻す
+		animationController_->Play(
+			static_cast<int>(ANIM_TYPE::IDLE), true);
+		animType_ = ANIM_TYPE::IDLE;
 	}
 }
 

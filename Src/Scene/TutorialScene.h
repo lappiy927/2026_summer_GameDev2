@@ -3,7 +3,7 @@
 
 class AnimationController;
 class Player;
-class Katana;
+class WeaponManager;
 class Stage;
 class EnemyMob;
 class TutorialUI;
@@ -21,7 +21,7 @@ public:
 
 private:
     Player* player_;
-    Katana* katana_;
+    WeaponManager* weaponMng_;
     Stage* stage_;
     EnemyMob* enemy_;
     TutorialUI* tutorialUI_;

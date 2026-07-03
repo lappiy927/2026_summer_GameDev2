@@ -16,6 +16,7 @@ public:
 		FAST_RUN,
 		JUMP,
 		ATTACK,
+		RELOAD,
 	};
 
 	//コンストラクタ
@@ -32,7 +33,7 @@ public:
 
 	bool IsDead() const;
 
-	
+
 
 	ANIM_TYPE animType_;
 	ANIM_TYPE GetAnimType() const;
@@ -121,12 +122,15 @@ private:
 
 	ColliderCapsule* attackCollider_ = nullptr;
 
-
+	bool isReload_ = false;
+	float reloadTimer_ = 0.0f;
+	static constexpr float RELOAD_ANIM_TIME = 1.0f;
 
 	// 操作
 	void ProcessMove(void);
 	void ProcessJump(void);
 	void ProcessAttack(void);
+	void ProcessReload();
 
 	// 衝突判定
 	void CollisionReserve(void) override;

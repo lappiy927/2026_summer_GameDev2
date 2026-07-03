@@ -43,8 +43,13 @@
     <ClCompile Include="Src\Scene\MenuScene.cpp" />
     <ClCompile Include="Src\Object\TutorialUI.cpp" />
     <ClCompile Include="Src\Manager\SoundManager.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="Src\Object\GameOverUI.cpp" />
     <ClCompile Include="Src\Object\GameClearUI.cpp" />
+=======
+    <ClCompile Include="Src\Object\Actor\Weapon\Gun.cpp" />
+    <ClCompile Include="Src\Manager\WeaponManager.cpp" />
+>>>>>>> e480b5fbe90f19c9a4774bfd398a6bf44ba16850
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Actor\Weapon\Katana.h" />
@@ -89,8 +94,13 @@
     <ClInclude Include="Src\Scene\MenuScene.h" />
     <ClInclude Include="Src\Object\TutorialUI.h" />
     <ClInclude Include="Src\Manager\SoundManager.h" />
+<<<<<<< HEAD
     <ClInclude Include="Src\Object\GameOverUI.h" />
     <ClInclude Include="Src\Object\GameClearUI.h" />
+=======
+    <ClInclude Include="Src\Object\Actor\Weapon\Gun.h" />
+    <ClInclude Include="Src\Manager\WeaponManager.h" />
+>>>>>>> e480b5fbe90f19c9a4774bfd398a6bf44ba16850
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

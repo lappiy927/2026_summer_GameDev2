@@ -14,6 +14,10 @@ void Door::Init(void)
 	InitLoad();
 	InitTransform();
 	InitPost();
+
+	
+
+	
 }
 
 void Door::Update(void)
@@ -39,6 +43,9 @@ void Door::Update(void)
 
 void Door::Draw(void)
 {
+	MV1SetPosition(backHandle_, backPos_);
+	MV1DrawModel(backHandle_);
+
 	MV1SetPosition(leftHandle_, leftPos_);
 	MV1DrawModel(leftHandle_);
 
@@ -77,12 +84,18 @@ void Door::InitLoad(void)
 	rightHandle_ =
 		resMng_.Load(
 			ResourceManager::SRC::DOOR_RIGHT).handleId_;
+
+	backHandle_ =
+		resMng_.Load(ResourceManager::SRC::DOOR_BACK).handleId_;
 }
 
 void Door::InitTransform(void)
 {
 	leftBasePos_ = VGet(230.0f, 400.0f, 0.0f);
 	rightBasePos_ = VGet(230.0f,400.0f, 0.0f);
+	backPos_ = VGet(1000.0f, 400.0f, 0.0f);
+
+
 
 	leftPos_ = leftBasePos_;
 	rightPos_ = rightBasePos_;
@@ -90,7 +103,7 @@ void Door::InitTransform(void)
 	
 	MV1SetScale(leftHandle_, VGet(0.3f, 0.3f, 0.3f));
 	MV1SetScale(rightHandle_, VGet(0.3f, 0.3f, 0.3f));
-
+	MV1SetScale(backHandle_, VGet(0.3f, 0.3f, 0.3f));
 }
 
 void Door::InitCollider(void)

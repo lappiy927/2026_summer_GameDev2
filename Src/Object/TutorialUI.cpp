@@ -22,7 +22,7 @@ static const std::vector<TutorialStepData> kStepTable =
     {
         TutorialStep::ATTACK,
         "殺魔剣士",
-        "後は攻撃！\n敵を一体配置したで倒してみぃ。",
+        "後は攻撃！\n敵を一体配置したで左クリックで倒してみぃ。",
         "[ 左クリック ] 攻撃"
     },
 };
@@ -38,13 +38,13 @@ static const std::vector<TutorialStepData> pStepTable =
     {
         TutorialStep::RUN,
         "殺魔剣士",
-        "次は走りじゃ！\nLT を押しながら 左スティック で素早よ移動できっ。",
+        "次は走りじゃ！\n左トリガーを押しながら 左スティック で素早よ移動できっ。",
         "[ LT + 左スティック ] 走る"
     },
     {
         TutorialStep::ATTACK,
         "殺魔剣士",
-        "後は攻撃！\n敵を一体配置したで倒してみぃ。",
+        "後は攻撃！\n敵を一体配置したで右トリガーで倒してみぃ。",
         "[RT ] 攻撃"
     },
 };
@@ -62,23 +62,20 @@ static unsigned int COL_DOT_NONE() { return GetColor(60, 30, 100); }
 static unsigned int COL_COMPLETE() { return GetColor(220, 180, 255); }
 
 // ============================================================
-TutorialUI::~TutorialUI()
-{
-}
+TutorialUI::~TutorialUI() {}
 
 void TutorialUI::Release()
 {
     if (charImage_ != -1) { DeleteGraph(charImage_); charImage_ = -1; }
     if (font_ != -1) { DeleteFontToHandle(font_); font_ = -1; }
+    if (fontSmall_ != -1) { DeleteFontToHandle(fontSmall_); fontSmall_ = -1; }
 }
 
-// ============================================================
 void TutorialUI::Init()
 {
     charImage_ = LoadGraph("Data/Image/Tutorial.png");
-
-    font_ = CreateFontToHandle("ＭＳ ゴシック", 20, 3,
-        DX_FONTTYPE_ANTIALIASING_EDGE);
+    font_ = CreateFontToHandle("ＭＳ ゴシック", 20, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+    fontSmall_ = CreateFontToHandle("ＭＳ ゴシック", 13, 2, DX_FONTTYPE_ANTIALIASING_EDGE);
 
     steps_ = (GetJoypadNum() == 0) ? kStepTable : pStepTable;
     stepIndex_ = 0;
@@ -95,21 +92,12 @@ void TutorialUI::Init()
     StartTypewriter(steps_[0].message);
 }
 
-// ============================================================
 void TutorialUI::Update()
 {
     if (currentStep_ == TutorialStep::COMPLETE) return;
 
-    // ダイアログ中はタイプライターなどを止める
-    if (isSkipDialogOpen_)
-    {
-        UpdateSkipDialog();
-        return;
-    }
-
     UpdateTypewriter();
 
-    // 警告セリフが終わったら元のセリフに戻す
     if (isWarning_ && typingDone_)
     {
         delay++;
@@ -123,15 +111,32 @@ void TutorialUI::Update()
     }
 }
 
+bool TutorialUI::UpdateSkipHold(bool holding)
+{
+    if (holding)
+    {
+        skipHoldFrames_++;
+        if (skipHoldFrames_ >= SKIP_REQUIRED)
+        {
+            skipHoldFrames_ = 0;
+            return true;
+        }
+    }
+    else
+    {
+        skipHoldFrames_ = 0;
+    }
+    return false;
+}
+
 void TutorialUI::Draw() const
 {
     DrawCharacter();
     DrawChatWindow();
-    if (showComplete_)     DrawCompleteOverlay();
-    if (isSkipDialogOpen_) DrawSkipDialog();
+    if (showComplete_) DrawCompleteOverlay();
+    if (!IsFinished()) DrawSkipGauge();
 }
 
-// ============================================================
 void TutorialUI::NotifyWalkSuccess()
 {
     if (currentStep_ == TutorialStep::WALK)   AdvanceStep();
@@ -154,116 +159,6 @@ void TutorialUI::ShowWarning(const std::string& message)
     charImage_ = LoadGraph("Data/Image/Tutorial2.png");
 }
 
-// ============================================================
-void TutorialUI::OpenSkipDialog()
-{
-    if (isSkipDialogOpen_) return;
-    isSkipDialogOpen_ = true;
-    isSkipConfirmed_ = false;
-    dialogCursorPos_ = 1;  // デフォルトは「いいえ」
-}
-
-void TutorialUI::UpdateSkipDialog()
-{
-    auto& ins = InputManager::GetInstance();
-
-    InputManager::JOYPAD_IN_STATE padState =
-        ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
-
-    // ← でカーソルを「はい」へ
-    bool nowLeft = (CheckHitKey(KEY_INPUT_LEFT) != 0 ||
-        ins.IsPadBtnTrgDown(
-            InputManager::JOYPAD_NO::PAD1,
-            InputManager::JOYPAD_BTN::DPAD_LEFT) != 0);
-    if (nowLeft && !prevLeft_) dialogCursorPos_ = 0;
-    prevLeft_ = nowLeft;
-
-    // → でカーソルを「いいえ」へ
-    bool nowRight = (CheckHitKey(KEY_INPUT_RIGHT) != 0 ||
-        ins.IsPadBtnTrgDown(
-            InputManager::JOYPAD_NO::PAD1,
-            InputManager::JOYPAD_BTN::DPAD_RIGHT) != 0);
-    if (nowRight && !prevRight_) dialogCursorPos_ = 1;
-    prevRight_ = nowRight;
-
-    // Enter で決定
-    bool nowEnter = (CheckHitKey(KEY_INPUT_RETURN) != 0 ||
-        ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
-            InputManager::JOYPAD_BTN::RIGHT) != 0);
-    if (nowEnter && !prevEnter_)
-    {
-        if (dialogCursorPos_ == 0)
-        {
-            // 「はい」→ スキップ確定
-            isSkipConfirmed_ = true;
-            isSkipDialogOpen_ = false;
-        }
-        else
-        {
-            // 「いいえ」→ ダイアログを閉じるだけ
-            isSkipDialogOpen_ = false;
-        }
-    }
-    prevEnter_ = nowEnter;
-}
-
-// ============================================================
-void TutorialUI::DrawSkipDialog() const
-{
-    constexpr int DLG_W = 420;
-    constexpr int DLG_H = 160;
-    constexpr int RADIUS = 8;
-    constexpr int BTN_W = 120;
-    constexpr int BTN_H = 40;
-
-    int dx = screenW / 2 - DLG_W / 2;
-    int dy = chatY_ - DLG_H - 20;
-    int btnY = dy + DLG_H - BTN_H - 20;
-
-    // 背景（半透明）
-    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 230);
-    DrawRoundRect(dx, dy, dx + DLG_W, dy + DLG_H,
-        RADIUS, RADIUS, GetColor(8, 4, 20), TRUE);
-    SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-    // 枠線
-    DrawRoundRect(dx, dy, dx + DLG_W, dy + DLG_H,
-        RADIUS, RADIUS, COL_WIN_BORDER(), FALSE);
-
-    // メッセージ
-    DrawStringToHandle(dx + 30, dy + 28,
-        "チュートリアルをスキップしますか？",
-        COL_TEXT(), font_);
-
-    // ---- 「はい」ボタン ----
-    int yesX = dx + DLG_W / 2 - BTN_W - 16;
-    unsigned int yesBg = (dialogCursorPos_ == 0) ? GetColor(140, 60, 200) : GetColor(30, 15, 60);
-    unsigned int yesBdr = (dialogCursorPos_ == 0) ? GetColor(200, 140, 255) : GetColor(80, 40, 140);
-
-    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 220);
-    DrawBox(yesX, btnY, yesX + BTN_W, btnY + BTN_H, yesBg, TRUE);
-    SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-    DrawBox(yesX, btnY, yesX + BTN_W, btnY + BTN_H, yesBdr, FALSE);
-    DrawStringToHandle(yesX + 36, btnY + 10, "はい", COL_TEXT(), font_);
-
-    // ---- 「いいえ」ボタン ----
-    int noX = dx + DLG_W / 2 + 16;
-    unsigned int noBg = (dialogCursorPos_ == 1) ? GetColor(140, 60, 200) : GetColor(30, 15, 60);
-    unsigned int noBdr = (dialogCursorPos_ == 1) ? GetColor(200, 140, 255) : GetColor(80, 40, 140);
-
-    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 220);
-    DrawBox(noX, btnY, noX + BTN_W, btnY + BTN_H, noBg, TRUE);
-    SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-    DrawBox(noX, btnY, noX + BTN_W, btnY + BTN_H, noBdr, FALSE);
-    DrawStringToHandle(noX + 24, btnY + 10, "いいえ", COL_TEXT(), font_);
-
-    // 操作ヒント
-    DrawStringToHandle(dx + 30, dy + DLG_H - 22,
-        "← → で選択    Enter で決定",
-        COL_HINT(), font_);
-}
-
-// ============================================================
 void TutorialUI::AdvanceStep()
 {
     stepIndex_++;
@@ -311,14 +206,12 @@ void TutorialUI::UpdateTypewriter()
     }
 }
 
-// ============================================================
 void TutorialUI::DrawCharacter() const
 {
     if (charImage_ == -1) return;
     DrawGraph(charX_, charY_, charImage_, TRUE);
 }
 
-// ============================================================
 void TutorialUI::DrawChatWindow() const
 {
     constexpr int PAD = 20;
@@ -381,7 +274,6 @@ void TutorialUI::DrawChatWindow() const
     }
 }
 
-// ============================================================
 void TutorialUI::DrawProgressDots() const
 {
     constexpr int DOT_W = 28;
@@ -403,7 +295,6 @@ void TutorialUI::DrawProgressDots() const
     }
 }
 
-// ============================================================
 void TutorialUI::DrawCompleteOverlay() const
 {
     int ox = screenW / 2 - 200;
@@ -419,11 +310,57 @@ void TutorialUI::DrawCompleteOverlay() const
         "チュートリアル完了！", COL_COMPLETE(), font_);
 
     if (GetJoypadNum() == 0)
-    {
         DrawStringToHandle(ox + 80, oy + 90, "エンターキーで次へ", COL_HINT(), font_);
-    }
     else
-    {
         DrawStringToHandle(ox + 80, oy + 90, "Bボタンで次へ", COL_HINT(), font_);
+}
+
+void TutorialUI::DrawSkipGauge() const
+{
+    constexpr int ICON_W = 85;
+    constexpr int ICON_H = 30;
+    constexpr int RADIUS = 6;
+    constexpr int MARGIN = 20;
+
+    int ix = screenW - ICON_W - MARGIN;
+    int iy = screenH - ICON_H - MARGIN;
+
+    float rate = static_cast<float>(skipHoldFrames_) /
+        static_cast<float>(SKIP_REQUIRED);
+
+    // 外枠
+    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
+    DrawRoundRect(ix, iy, ix + ICON_W, iy + ICON_H,
+        RADIUS, RADIUS, GetColor(20, 10, 40), TRUE);
+    SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+    DrawRoundRect(ix, iy, ix + ICON_W, iy + ICON_H,
+        RADIUS, RADIUS, GetColor(100, 60, 180), FALSE);
+
+    // 塗りつぶし（左から右へ）
+    if (skipHoldFrames_ > 0)
+    {
+        int fillW = static_cast<int>(ICON_W * rate);
+        SetDrawArea(ix, iy, ix + fillW, iy + ICON_H);
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
+        DrawRoundRect(ix, iy, ix + ICON_W, iy + ICON_H,
+            RADIUS, RADIUS, GetColor(160, 80, 255), TRUE);
+        SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+        SetDrawAreaFull();
     }
+
+    // 「ESC」または「START」テキスト（コントローラー接続で切替）
+    std::string btnLabel = (GetJoypadNum() > 0) ? "START" : "ESC";
+    int tw = GetDrawStringWidthToHandle(btnLabel.c_str(),
+        static_cast<int>(btnLabel.size()), font_);
+    DrawStringToHandle(ix + (ICON_W - tw) / 2, iy + (ICON_H - 20) / 2,
+        btnLabel.c_str(),
+        (skipHoldFrames_ > 0) ? GetColor(255, 255, 255)
+        : GetColor(160, 130, 200),
+        font_);
+
+    // ラベル（小フォントでゲージ真上・中央揃え）
+    const char* label = "長押しでスキップ";
+    int lw = GetDrawStringWidthToHandle(label, static_cast<int>(strlen(label)), fontSmall_);
+    DrawStringToHandle(ix + (ICON_W - lw) / 2, iy - 18,
+        label, GetColor(140, 110, 180), fontSmall_);
 }

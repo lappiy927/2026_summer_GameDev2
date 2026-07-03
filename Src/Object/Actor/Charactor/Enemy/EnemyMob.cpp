@@ -1,5 +1,5 @@
 #include "EnemyMob.h"
-
+#include <EffekseerForDXLib.h>
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../../Manager/ResourceManager.h"
 #include"../../../../Manager/SoundManager.h"
@@ -11,42 +11,44 @@
 #include "../../../../Object/Collider/ColliderCapsule.h"
 
 EnemyMob::EnemyMob()
-	:
-	EnemyBase()
+    :
+    EnemyBase()
 {
 }
 
 EnemyMob::~EnemyMob()
 {
-	
+
 }
 
 void EnemyMob::InitLoad()
 {
-	// 共通ロード
-	CharactorBase::InitLoad();
+    // 共通ロード
+    CharactorBase::InitLoad();
 
-	// モデル読み込み
+    // モデル読み込み
     int model =
         MV1DuplicateModel(
             resMng_.Load(
                 ResourceManager::SRC::ENEMY).handleId_);
 
     transform_.SetModel(model);
+
+    effectHandle = LoadEffekseerEffect(_T("Data/effect/blood.efk"), 50.0f);
 }
 
 void EnemyMob::InitTransform()
 {
-	transform_.scl = AsoUtility::VECTOR_ONE;
+    transform_.scl = AsoUtility::VECTOR_ONE;
 
-	transform_.quaRot = Quaternion::Identity();
+    transform_.quaRot = Quaternion::Identity();
 
-	transform_.quaRotLocal = Quaternion::Identity();
+    transform_.quaRotLocal = Quaternion::Identity();
 
-	// 出現位置
-	transform_.pos = VGet(2300.0f, 300.0f, 2300.0f);
+    // 出現位置
+    transform_.pos = VGet(2300.0f, 300.0f, 2300.0f);
 
-	transform_.Update();
+    transform_.Update();
 }
 
 void EnemyMob::InitCollider()
@@ -135,27 +137,43 @@ void EnemyMob::AI()
         break;
 
     case STATE::DEAD:
-        animationController_->Play(3, true);
+        animationController_->Play(3, false);
         break;
     }
 }
 
 void EnemyMob::Damage(int damage)
 {
-    hp_ -= damage;
+    if (state_ == STATE::DEAD) return;
 
+    hp_ -= damage;
 
     if (hp_ <= 0)
     {
         hp_ = 0;
 
-        isDead_ = true;
+        int shoulderFrame = MV1SearchFrame(transform_.modelId, "shoulder.L");
+        if (shoulderFrame != -1)
+        {
+            MATRIX shoulderMatrix = MV1GetFrameLocalWorldMatrix(transform_.modelId, shoulderFrame);
+
+            VECTOR rayOrigin = VGet(
+                shoulderMatrix.m[3][0],
+                shoulderMatrix.m[3][1],
+                shoulderMatrix.m[3][2]);
+
+            float yaw = transform_.quaRot.ToEuler().y;
+            VECTOR forward = VGet(sinf(yaw), 0.0f, cosf(yaw));
+
+            effectPos_ = VAdd(rayOrigin, forward);
+
+            int playHandle = PlayEffekseer3DEffect(effectHandle);
+            SetPosPlayingEffekseer3DEffect(playHandle, effectPos_.x, effectPos_.y, effectPos_.z);
+            SetRotationPlayingEffekseer3DEffect(playHandle, 0.0f, yaw, 0.0f);
+        }
+
         sndMng_.Play(SoundManager::SRC::EnemyDai);
 
+        state_ = STATE::DEAD;
     }
-}
-
-bool EnemyMob::IsDead() const
-{
-    return isDead_;
 }
