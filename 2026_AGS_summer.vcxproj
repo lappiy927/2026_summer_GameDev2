@@ -193,7 +193,6 @@
     <ClCompile Include="Src\Manager\WeaponManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClInclude Include="Src\Object\GameClearUI.h" />
     <ClInclude Include="Src\Object\GameOverUI.h" />
 =======
