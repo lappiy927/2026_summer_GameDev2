@@ -142,9 +142,7 @@
   <ItemGroup>
     <ClCompile Include="Src\Object\GameClearUI.cpp" />
     <ClCompile Include="Src\Object\GameOverUI.cpp" />
-=======
     <ClCompile Include="Src\Object\Actor\Weapon\Gun.cpp" />
->>>>>>> e480b5fbe90f19c9a4774bfd398a6bf44ba16850
     <ClCompile Include="Src\Manager\SoundManager.cpp" />
     <ClCompile Include="Src\Scene\MenuScene.cpp" />
     <ClCompile Include="Src\Object\Actor\Charactor\Enemy\Boss.cpp" />
@@ -195,9 +193,7 @@
   <ItemGroup>
     <ClInclude Include="Src\Object\GameClearUI.h" />
     <ClInclude Include="Src\Object\GameOverUI.h" />
-=======
     <ClInclude Include="Src\Object\Actor\Weapon\Gun.h" />
->>>>>>> e480b5fbe90f19c9a4774bfd398a6bf44ba16850
     <ClInclude Include="Src\Manager\SoundManager.h" />
     <ClInclude Include="Src\Scene\MenuScene.h" />
     <ClInclude Include="Src\Object\Actor\Charactor\Enemy\Boss.h" />
