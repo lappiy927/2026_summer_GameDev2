@@ -188,6 +188,14 @@ void GameScene::Update(void)
 	// プレイヤーの更新
 	player_->Update();
 
+	// 落下判定
+	if (player_->GetPos().y < -200.0f)
+	{
+		sceMng_.ChangeScene(SceneManager::SCENE_ID::GAMEOVER);
+		return;
+	}
+
+
 	// ステージの更新
 	stage_->Update();
 
