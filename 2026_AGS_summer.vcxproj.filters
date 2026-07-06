@@ -1,6 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <ClCompile Include="Src\Object\GameClearUI.cpp" />
+    <ClCompile Include="Src\Object\GameOverUI.cpp" />
+    <ClCompile Include="Src\Object\Actor\Weapon\Gun.cpp" />
+    <ClCompile Include="Src\Manager\SoundManager.cpp" />
+    <ClCompile Include="Src\Scene\MenuScene.cpp" />
+    <ClCompile Include="Src\Object\Actor\Charactor\Enemy\Boss.cpp" />
+    <ClCompile Include="Src\Object\Actor\Stage\BossStage.cpp" />
+    <ClCompile Include="Src\Scene\BossScene.cpp" />
+    <ClCompile Include="Src\Scene\GameClearScene.cpp" />
+    <ClCompile Include="Src\Object\Actor\Stage\Door.cpp" />
     <ClCompile Include="Src\Object\Actor\Weapon\Katana.cpp" />
     <ClCompile Include="Src\Scene\GameOverScene.cpp" />
     <ClCompile Include="Src\Object\Actor\Charactor\Enemy\EnemyMob.cpp" />
@@ -35,23 +45,22 @@
     <ClCompile Include="Src\Object\Actor\Stage\Stage.cpp" />
     <ClCompile Include="Src\Object\Common\Transform.cpp" />
     <ClCompile Include="Src\Object\Actor\Weapon\WeaponBase.cpp" />
-    <ClCompile Include="Src\Object\Actor\Stage\Door.cpp" />
-    <ClCompile Include="Src\Scene\GameClearScene.cpp" />
-    <ClCompile Include="Src\Scene\BossScene.cpp" />
-    <ClCompile Include="Src\Object\Actor\Stage\BossStage.cpp" />
-    <ClCompile Include="Src\Object\Actor\Charactor\Enemy\Boss.cpp" />
-    <ClCompile Include="Src\Scene\MenuScene.cpp" />
     <ClCompile Include="Src\Object\TutorialUI.cpp" />
-    <ClCompile Include="Src\Manager\SoundManager.cpp" />
-<<<<<<< HEAD
-    <ClCompile Include="Src\Object\GameOverUI.cpp" />
-    <ClCompile Include="Src\Object\GameClearUI.cpp" />
-=======
-    <ClCompile Include="Src\Object\Actor\Weapon\Gun.cpp" />
     <ClCompile Include="Src\Manager\WeaponManager.cpp" />
->>>>>>> e480b5fbe90f19c9a4774bfd398a6bf44ba16850
+    <ClCompile Include="Src\Renderer\VertexMaterial.cpp" />
+    <ClCompile Include="Src\Renderer\VertexRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\GameClearUI.h" />
+    <ClInclude Include="Src\Object\GameOverUI.h" />
+    <ClInclude Include="Src\Object\Actor\Weapon\Gun.h" />
+    <ClInclude Include="Src\Manager\SoundManager.h" />
+    <ClInclude Include="Src\Scene\MenuScene.h" />
+    <ClInclude Include="Src\Object\Actor\Charactor\Enemy\Boss.h" />
+    <ClInclude Include="Src\Object\Actor\Stage\BossStage.h" />
+    <ClInclude Include="Src\Scene\BossScene.h" />
+    <ClInclude Include="Src\Scene\GameClearScene.h" />
+    <ClInclude Include="Src\Object\Actor\Stage\Door.h" />
     <ClInclude Include="Src\Object\Actor\Weapon\Katana.h" />
     <ClInclude Include="Src\Scene\GameOverScene.h" />
     <ClInclude Include="Src\Object\Actor\Charactor\Enemy\EnemyMob.h" />
@@ -86,27 +95,27 @@
     <ClInclude Include="Src\Object\Actor\Stage\Stage.h" />
     <ClInclude Include="Src\Object\Common\Transform.h" />
     <ClInclude Include="Src\Object\Actor\Weapon\WeaponBase.h" />
-    <ClInclude Include="Src\Object\Actor\Stage\Door.h" />
-    <ClInclude Include="Src\Scene\GameClearScene.h" />
-    <ClInclude Include="Src\Scene\BossScene.h" />
-    <ClInclude Include="Src\Object\Actor\Stage\BossStage.h" />
-    <ClInclude Include="Src\Object\Actor\Charactor\Enemy\Boss.h" />
-    <ClInclude Include="Src\Scene\MenuScene.h" />
     <ClInclude Include="Src\Object\TutorialUI.h" />
-    <ClInclude Include="Src\Manager\SoundManager.h" />
-<<<<<<< HEAD
-    <ClInclude Include="Src\Object\GameOverUI.h" />
-    <ClInclude Include="Src\Object\GameClearUI.h" />
-=======
-    <ClInclude Include="Src\Object\Actor\Weapon\Gun.h" />
     <ClInclude Include="Src\Manager\WeaponManager.h" />
->>>>>>> e480b5fbe90f19c9a4774bfd398a6bf44ba16850
+    <ClInclude Include="Src\Renderer\VertexMaterial.h" />
+    <ClInclude Include="Src\Renderer\VertexRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
+    <None Include="Src\Shader\Common\VertexToPixelHeader.hlsli" />
+    <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />
+    <None Include="Src\Shader\Common\Pixel\PixelShader3DHeader.hlsli" />
+    <None Include="Src\Shader\Common\Vertex\CommonShader3DHeader.hlsli" />
+    <None Include="Src\Shader\Common\Vertex\VertexInput.hlsli" />
+    <None Include="Src\Shader\Common\Vertex\VertexInputType.hlsli" />
+    <None Include="Src\Shader\Common\Vertex\VertexShader3DHeader.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Log.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Src\Shader\PixelShader\PixelShader.hlsl" />
+    <FxCompile Include="Src\Shader\VertexEffect\VertexShader.hlsl" />
   </ItemGroup>
 </Project>

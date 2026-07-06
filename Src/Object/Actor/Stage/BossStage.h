@@ -22,6 +22,8 @@ public:
 	// 更新
 	void Update(void) override;
 
+	void Draw(void) override;
+
 protected:
 
 	// リソースロード

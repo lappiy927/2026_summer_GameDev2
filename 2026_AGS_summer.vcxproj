@@ -189,6 +189,8 @@
     <ClCompile Include="Src\Object\Actor\Weapon\WeaponBase.cpp" />
     <ClCompile Include="Src\Object\TutorialUI.cpp" />
     <ClCompile Include="Src\Manager\WeaponManager.cpp" />
+    <ClCompile Include="Src\Renderer\VertexMaterial.cpp" />
+    <ClCompile Include="Src\Renderer\VertexRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\GameClearUI.h" />
@@ -237,13 +239,40 @@
     <ClInclude Include="Src\Object\Actor\Weapon\WeaponBase.h" />
     <ClInclude Include="Src\Object\TutorialUI.h" />
     <ClInclude Include="Src\Manager\WeaponManager.h" />
+    <ClInclude Include="Src\Renderer\VertexMaterial.h" />
+    <ClInclude Include="Src\Renderer\VertexRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="README.md" />
+    <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />
+    <None Include="Src\Shader\Common\Pixel\PixelShader3DHeader.hlsli" />
+    <None Include="Src\Shader\Common\VertexToPixelHeader.hlsli" />
+    <None Include="Src\Shader\Common\Vertex\CommonShader3DHeader.hlsli" />
+    <None Include="Src\Shader\Common\Vertex\VertexInput.hlsli" />
+    <None Include="Src\Shader\Common\Vertex\VertexInputType.hlsli" />
+    <None Include="Src\Shader\Common\Vertex\VertexShader3DHeader.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Log.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Src\Shader\PixelShader\PixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\VertexEffect\VertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

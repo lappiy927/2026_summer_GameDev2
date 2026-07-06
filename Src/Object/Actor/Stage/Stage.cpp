@@ -1,6 +1,8 @@
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Object/Collider/ColliderModel.h"
+#include "../../../Renderer/VertexMaterial.h"
+#include "../../../Renderer/VertexRenderer.h"
 #include "Stage.h"
 
 Stage::Stage(void)
@@ -17,11 +19,21 @@ void Stage::Update(void)
 {
 }
 
+void Stage::Draw(void)
+{
+	renderer_->Draw(transform_.modelId);
+}
+
 void Stage::InitLoad(void)
 {
 	//ƒ‚ƒfƒ‹‚Ì“Ç‚Ýž‚Ý
 	transform_.SetModel(
 		resMng_.Load(ResourceManager::SRC::MAIN_STAGE).handleId_);
+
+	material_ = new VertexMaterial("VertexShader.cso", "PixelShader.cso", 1);
+	auto dir = GetLightDirection();
+	material_->AddConstBuf({ dir.x,dir.y, dir.z, 0.0f });
+	renderer_ = new VertexRenderer(*material_);
 }
 
 void Stage::InitTransform(void)

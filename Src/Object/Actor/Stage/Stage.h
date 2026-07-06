@@ -24,6 +24,9 @@ public:
 	//更新
 	void Update(void);
 
+	//描画
+	void Draw(void)override;
+
 protected:
 
 	// リソースロード
