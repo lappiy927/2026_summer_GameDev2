@@ -61,5 +61,5 @@ private:
 	bool isGameStart_ = false;
 	float countDown_ = 4.0f;
 
-	int countFontHandle_;
+	int countImage_[4];
 };

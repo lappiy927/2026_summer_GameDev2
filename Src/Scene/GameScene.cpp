@@ -137,11 +137,12 @@ void GameScene::Init(void)
 		LoadEffekseerEffect(
 			"Data/Effect/Slash.efkefc",20.0f);
 
-	countFontHandle_ = CreateFontToHandle(
-		"BIZ UDP明朝",
-		160,
-		8
-	);
+	countImage_[0] = LoadGraph("Data/Image/San.png");
+	countImage_[1] = LoadGraph("Data/Image/Ni.png");
+	countImage_[2] = LoadGraph("Data/Image/Ichi.png");
+	countImage_[3] = LoadGraph("Data/Image/Hajime.png");
+
+
 }
 
 void GameScene::Update(void)
@@ -302,6 +303,7 @@ void GameScene::Update(void)
 
 void GameScene::Draw(void)
 {
+	
 
 	// 描画
 	stage_->Draw();
@@ -312,38 +314,6 @@ void GameScene::Draw(void)
 	katana_->Draw();
 
 	door_->Draw();
-
-
-
-	if (!isGameStart_)
-	{
-		const char* text = "";
-
-
-		if (countDown_ > 3.0f)
-		{
-			text = "参";
-		}
-		else if (countDown_ > 2.0f)
-		{
-			text = "弐";
-		}
-		else if (countDown_ > 1.0f)
-		{
-			text = "壱";
-		}
-		else if (countDown_ > 0.0f)
-		{
-			text = "いざ、始め！！";
-		}
-
-		DrawStringToHandle(
-			0,
-			Application::SCREEN_SIZE_Y / 2 - 80,
-			text,
-			GetColor(255, 255, 255),
-			countFontHandle_);
-	}
 
 
 	int y = 40;
@@ -431,6 +401,38 @@ void GameScene::Draw(void)
 	else
 	{
 		DrawGraph(200, 25, daiHandle_, TRUE);
+	}
+
+
+	if (!isGameStart_)
+	{
+		int handle = -1;
+
+		if (countDown_ > 3.0f)
+		{
+			handle = countImage_[0];
+		}
+		else if (countDown_ > 2.0f)
+		{
+			handle = countImage_[1];
+		}
+		else if (countDown_ > 1.0f)
+		{
+			handle = countImage_[2];
+		}
+		else if (countDown_ > 0.0f)
+		{
+			handle = countImage_[3];
+		}
+
+		if (handle != -1)
+		{
+			DrawGraph(
+				Application::SCREEN_SIZE_X / 2 - 256,
+				Application::SCREEN_SIZE_Y / 2 - 256,
+				handle,
+				TRUE);
+		}
 	}
 
 	Effekseer_Sync3DSetting();
