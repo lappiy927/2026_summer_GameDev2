@@ -6,6 +6,8 @@ class ResourceManager;
 class SceneManager;
 class SoundManager;
 class ColliderBase;
+class VertexMaterial;
+class VertexRenderer;
 
 class ActorBase
 {
@@ -81,4 +83,11 @@ protected:
 	// 初期化後の個別処理
 	virtual void InitPost(void) = 0;
 
+	int hVS_;//頂点シェーダー
+	int hPS_;//ピクセルシェーダー
+
+	int constBufVS_;
+
+	VertexMaterial* material_;
+	VertexRenderer* renderer_;
 };

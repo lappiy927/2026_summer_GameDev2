@@ -1,6 +1,8 @@
 #include "BossStage.h"
 #include "../../../Manager/ResourceManager.h"
 #include "../../Collider/ColliderModel.h"
+#include "../../../Renderer/VertexMaterial.h"
+#include "../../../Renderer/VertexRenderer.h"
 
 BossStage::BossStage(void)
 {
@@ -14,11 +16,21 @@ void BossStage::Update(void)
 {
 }
 
+void BossStage::Draw(void)
+{
+	renderer_->Draw(transform_.modelId);
+}
+
 void BossStage::InitLoad(void)
 {
 	//ƒ‚ƒfƒ‹‚Ì“Ç‚Ýž‚Ý
 	transform_.SetModel(
 		resMng_.Load(ResourceManager::SRC::BOSS_STAGE).handleId_);
+
+	material_ = new VertexMaterial("VertexShader.cso", "PixelShader.cso", 1);
+	auto dir = GetLightDirection();
+	material_->AddConstBuf({ dir.x,dir.y, dir.z, 0.0f });
+	renderer_ = new VertexRenderer(*material_);
 }
 
 void BossStage::InitTransform(void)
