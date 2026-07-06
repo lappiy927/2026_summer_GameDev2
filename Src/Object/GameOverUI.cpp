@@ -2,10 +2,13 @@
 
 // ============================================================
 //  ゲームオーバー時の一言コメント
-//  セリフはここを編集してください
+//  セリフはここを編集してください（キーボード用／パッド用）
 // ============================================================
-static const char* kGameOverMessage =
+static const char* kGameOverMessage_KB =
 "おまんは剣士の恥じゃ\n(Enterでタイトルに戻る)";
+
+static const char* kGameOverMessage_Pad =
+"おまんは剣士の恥じゃ\n(Bボタンでタイトルに戻る)";
 
 static const char* kGameOverSpeaker = "殺魔剣士";
 
@@ -47,7 +50,12 @@ void GameOverUI::Init()
     charX_ = chatX_;
     charY_ = chatY_ - 100;
 
-    StartTypewriter(kGameOverMessage);
+    // キーボードかパッドかでセリフ（Enter / Bボタン表記）を切り替える
+    const char* message = (GetJoypadNum() == 0)
+        ? kGameOverMessage_KB
+        : kGameOverMessage_Pad;
+
+    StartTypewriter(message);
 }
 
 // ============================================================

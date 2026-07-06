@@ -4,9 +4,11 @@
 //  ゲームオーバー時の一言コメント
 //  セリフはここを編集してください
 // ============================================================
-static const char* kGameClearMessage =
+static const char* kGameClearMessage_KB =
 "おまんは剣士の恥じゃ\n(Enterでタイトルに戻る)";
 
+static const char* kGameClearMessage_Pad =
+"おまんは剣士の恥じゃ\n(Bボタンでタイトルに戻る)";
 static const char* kGameClearSpeaker = "殺魔剣士";
 
 // --- カラー定数（TutorialUI と同じ配色）---
@@ -47,7 +49,12 @@ void GameClearUI::Init()
     charX_ = chatX_;
     charY_ = chatY_ - 100;
 
-    StartTypewriter(kGameClearMessage);
+    // キーボードかパッドかでセリフ（Enter / Bボタン表記）を切り替える
+    const char* message = (GetJoypadNum() == 0)
+        ? kGameClearMessage_KB
+        : kGameClearMessage_Pad;
+
+    StartTypewriter(message);
 }
 
 // ============================================================
