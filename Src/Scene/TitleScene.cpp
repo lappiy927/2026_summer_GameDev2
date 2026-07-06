@@ -148,7 +148,16 @@ void TitleScene::Draw(void)
 
 void TitleScene::Release(void)
 {
-	delete animationController_;
+	if (animationController_ != nullptr)
+	{
+		delete animationController_;
+		animationController_ = nullptr;
+	}
+
+	charactor_.Release();
+	enemy_.Release();
+
+	DeleteGraph(imgTitle_);
 
 	DeleteGraph(buttonPlay_);
 	DeleteGraph(buttonPlaySelect_);

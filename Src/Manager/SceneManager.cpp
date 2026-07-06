@@ -146,22 +146,27 @@ void SceneManager::Draw(void)
 
 void SceneManager::Destroy(void)
 {
-
-	// シーンの解放
-	if (scene_ != nullptr)
+	while (!sceneStack_.empty())
 	{
-		delete scene_;
+		sceneStack_.top()->Release();
+		delete sceneStack_.top();
+		sceneStack_.pop();
 	}
 
-	// フェード機能の解放
+	scene_ = nullptr;
+
 	delete fader_;
+	fader_ = nullptr;
 
-	camera_->Release();
-	delete camera_;
+	if (camera_ != nullptr)
+	{
+		camera_->Release();
+		delete camera_;
+		camera_ = nullptr;
+	}
 
-
-	// インスタンスのメモリ解放
 	delete instance_;
+	instance_ = nullptr;
 
 }
 
@@ -238,13 +243,6 @@ void SceneManager::ResetDeltaTime(void)
 
 void SceneManager::DoChangeScene(SCENE_ID sceneId)
 {
-
-	// リソースの解放
-	ResourceManager::GetInstance().Release();
-
-	// シーンを変更する
-	sceneId_ = sceneId;
-
 	// 現在のシーンを解放
 	while (!sceneStack_.empty())
 	{
@@ -252,6 +250,14 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 		delete sceneStack_.top();
 		sceneStack_.pop();
 	}
+
+	// リソースの解放
+	ResourceManager::GetInstance().Release();
+
+	// シーンを変更する
+	sceneId_ = sceneId;
+
+	
 
 	switch (sceneId_)
 	{

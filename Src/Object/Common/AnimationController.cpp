@@ -13,6 +13,7 @@ AnimationController::AnimationController(int modelId)
 
 AnimationController::~AnimationController(void)
 {
+	Release();
 }
 
 void AnimationController::Add(int type, float speed, const std::string path)
@@ -108,16 +109,22 @@ void AnimationController::Update(void)
 
 void AnimationController::Release(void)
 {
+	// モデルにアタッチしたアニメーションを外す
+	if (playType_ != -1)
+	{
+		MV1DetachAnim(modelId_, playAnim_.attachNo);
+		playType_ = -1;
+	}
 
-	// 外部FBXのモデル(アニメーション)解放
-	for (const std::pair<int, Animation>& pair : animations_)
+	// 外部FBXモデルの解放
+	for (auto& pair : animations_)
 	{
 		if (pair.second.model != -1)
 		{
 			MV1DeleteModel(pair.second.model);
 		}
 	}
-	// 可変長配列をクリアする
+
 	animations_.clear();
 }
 
