@@ -52,7 +52,7 @@ void Door::Draw(void)
 	MV1SetPosition(rightHandle_, rightPos_);
 	MV1DrawModel(rightHandle_);
 
-	DrawFormatString(
+	/*DrawFormatString(
 		0, 400,
 		0xffffff,
 		"door : %.2f %.2f %.2f",
@@ -62,7 +62,7 @@ void Door::Draw(void)
 		0, 450,
 		0xffffff,
 		"door : %.2f %.2f %.2f",
-		leftPos_.x, leftPos_.y, leftPos_.z);
+		leftPos_.x, leftPos_.y, leftPos_.z);*/
 }
 
 void Door::Release(void)

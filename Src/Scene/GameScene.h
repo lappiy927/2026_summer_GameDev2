@@ -47,6 +47,9 @@ private:
 
 	int daiHandle_;
 
+	int timeUI_;
+
+
 	int slashEffectHandle_;
 
 	float limitTime_;
@@ -54,4 +57,9 @@ private:
 	bool hit_ = false;
 
 	bool isBossRoomOpen_ = false;
+
+	bool isGameStart_ = false;
+	float countDown_ = 4.0f;
+
+	int countFontHandle_;
 };

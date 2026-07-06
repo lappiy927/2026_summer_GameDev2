@@ -123,21 +123,44 @@ void GameScene::Init(void)
 
 	sndMng_.Play(SoundManager::SRC::Battle, true, 200);
 
-	limitTime_ = 500.0f;
+	limitTime_ = 180.0f;
+
+
 
 	lifeHandle_ = LoadGraph("Data/Image/Life.png");
 
 	daiHandle_ = LoadGraph("Data/Image/Dai.png");
 
+	timeUI_ = LoadGraph("Data/Image/Time_UI.png");
+
 	slashEffectHandle_ =
 		LoadEffekseerEffect(
 			"Data/Effect/Slash.efkefc",20.0f);
+
+	countFontHandle_ = CreateFontToHandle(
+		"BIZ UDP明朝",
+		160,
+		8
+	);
 }
 
 void GameScene::Update(void)
 {
-	UpdateEffekseer3D();
+	if (!isGameStart_)
+	{
+		countDown_ -= sceMng_.GetDeltaTime();
 
+		if (countDown_ <= 0.0f)
+		{
+			isGameStart_ = true;
+		}
+
+		return;
+	}
+
+
+
+	UpdateEffekseer3D();
 
 	limitTime_ -= sceMng_.GetDeltaTime();
 
@@ -282,14 +305,36 @@ void GameScene::Draw(void)
 
 	door_->Draw();
 
-	// HP
-	if (!player_->IsDead())
+
+
+	if (!isGameStart_)
 	{
-		DrawGraph(0, 30, lifeHandle_, TRUE);
-	}
-	else
-	{
-		DrawGraph(0, 30, daiHandle_, TRUE);
+		const char* text = "";
+
+
+		if (countDown_ > 3.0f)
+		{
+			text = "参";
+		}
+		else if (countDown_ > 2.0f)
+		{
+			text = "弐";
+		}
+		else if (countDown_ > 1.0f)
+		{
+			text = "壱";
+		}
+		else if (countDown_ > 0.0f)
+		{
+			text = "いざ、始め！！";
+		}
+
+		DrawStringToHandle(
+			0,
+			Application::SCREEN_SIZE_Y / 2 - 80,
+			text,
+			GetColor(255, 255, 255),
+			countFontHandle_);
 	}
 
 
@@ -322,11 +367,11 @@ void GameScene::Draw(void)
 			enemy->IsHit(player_) ? 1 : 0);*/
 	}
 
-	DrawFormatString(
-		0, 20,
-		0x000000,
-		"TIME : %.1f",
-		limitTime_);
+	//DrawFormatString(
+	//	0, 20,
+	//	0x000000,
+	//	"TIME : %.1f",
+	//	limitTime_);
 
 	DrawString(0, 0, "GameScene", 0xffffff);
 
@@ -352,10 +397,33 @@ void GameScene::Draw(void)
 			0xff0000);
 	}
 
+	// TIMEUI
+	DrawGraph(-20, -20, timeUI_, TRUE);
+
+	int minute = static_cast<int>(limitTime_) / 60;
+	int second = static_cast<int>(limitTime_) % 60;
+
+	// TIME
 	DrawFormatString(
-		0, 600, 0xffffff,
-		"ESC=%d",
-		CheckHitKey(KEY_INPUT_ESCAPE));
+		50, 
+		60,
+		GetColor(0, 0, 0),
+		"%02d:%02d",
+		minute,
+		second);
+
+	DrawFormatString(45, 40, GetColor(0, 0, 0), "残り時間");
+
+
+	// HP
+	if (!player_->IsDead())
+	{
+		DrawGraph(200, 25, lifeHandle_, TRUE);
+	}
+	else
+	{
+		DrawGraph(200, 25, daiHandle_, TRUE);
+	}
 
 	Effekseer_Sync3DSetting();
 
