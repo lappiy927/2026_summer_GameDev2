@@ -85,26 +85,17 @@ void BossScene::Update(void)
 	//刀の更新
 	katana_->Update();
 
-	// 敵がプレイヤーに当たった
-	if (!boss_->IsDead())
+	if (!boss_->IsDead() && boss_->IsAttack())
 	{
 		ColliderCapsule* attack = boss_->GetAttackCollider();
+		ColliderCapsule* playerCol =
+			dynamic_cast<ColliderCapsule*>(
+				player_->GetCollider(
+					static_cast<int>(Player::COLLIDER_TYPE::CAPSULE)));
 
-		if (attack != nullptr)
+		if (attack && playerCol && attack->IsHit(playerCol))
 		{
-			ColliderCapsule* playerCol =
-				dynamic_cast<ColliderCapsule*>(
-					player_->GetCollider(
-						static_cast<int>(
-							Player::COLLIDER_TYPE::CAPSULE)));
-
-			if (playerCol != nullptr)
-			{
-				if (attack->IsHit(playerCol))
-				{
-					player_->Damage(999);
-				}
-			}
+			player_->Damage(20);
 		}
 	}
 

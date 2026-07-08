@@ -18,6 +18,9 @@ Boss::Boss()
     EnemyBase()
 {
     hp_ = 50;
+
+    attackRange_ = 250.0f;
+    searchRange_ = 800.0f;
 }
 
 Boss::~Boss()
@@ -140,41 +143,43 @@ void Boss::AI()
         return;
     }
 
+    float dist = GetPlayerDistance();
 
-    float dist =
-        VSize(VSub(target_->GetPos(), transform_.pos));
+    // €–S’†‚Í‰½‚à‚µ‚È‚¢
+    if (state_ == STATE::DEAD)
+    {
+        animationController_->Play(3, false);
+        return;
+    }
 
-    if (dist < 250.0f)
+    if (dist <= attackRange_)
     {
         state_ = STATE::ATTACK;
     }
-    else
+    else if (dist <= searchRange_)
     {
         state_ = STATE::CHASE;
+    }
+    else
+    {
+        state_ = STATE::IDLE;
     }
 
     switch (state_)
     {
     case STATE::IDLE:
-
         animationController_->Play(0, true);
-
         break;
 
     case STATE::CHASE:
-
         animationController_->Play(1, true);
-
         break;
 
     case STATE::ATTACK:
         animationController_->Play(2, true);
         break;
 
-    case STATE::DEAD:
-
-        animationController_->Play(3, false);
-
+    default:
         break;
     }
 
