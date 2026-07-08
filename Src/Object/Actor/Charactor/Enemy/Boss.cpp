@@ -1,7 +1,11 @@
 #include "Boss.h"
 
+#include <EffekseerForDXLib.h>
+#include "../Player.h"
+
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../../Manager/ResourceManager.h"
+#include "../../../../Manager/SoundManager.h"
 #include "../../../../Application.h"
 
 #include "../../../Common/AnimationController.h"
@@ -33,6 +37,9 @@ void Boss::InitLoad()
                 ResourceManager::SRC::BOSS).handleId_);
 
     transform_.SetModel(model);
+
+    effectHandle = LoadEffekseerEffect(_T("Data/effect/blood.efk"), 50.0f);
+
 }
 
 void Boss::InitTransform()
@@ -75,6 +82,18 @@ void Boss::InitCollider()
     ownColliders_.emplace(
         static_cast<int>(COLLIDER_TYPE::CAPSULE),
         colCapsule);
+
+    attackCollider_ =
+        new ColliderCapsule(
+            ColliderBase::TAG::BOSS,
+            &transform_,
+            VGet(0, 120, 80),
+            VGet(0, 120, 250),
+            60.0f);
+
+    ownColliders_.emplace(
+        static_cast<int>(COLLIDER_TYPE::ATTACK),
+        attackCollider_);
 }
 
 void Boss::InitAnimation()
@@ -116,6 +135,24 @@ void Boss::InitPost()
 
 void Boss::AI()
 {
+    if (target_ == nullptr)
+    {
+        return;
+    }
+
+
+    float dist =
+        VSize(VSub(target_->GetPos(), transform_.pos));
+
+    if (dist < 250.0f)
+    {
+        state_ = STATE::ATTACK;
+    }
+    else
+    {
+        state_ = STATE::CHASE;
+    }
+
     switch (state_)
     {
     case STATE::IDLE:
@@ -140,6 +177,8 @@ void Boss::AI()
 
         break;
     }
+
+    attackEnable_ = (state_ == STATE::ATTACK);
 }
 
 void Boss::Damage(int damage)
@@ -152,6 +191,33 @@ void Boss::Damage(int damage)
     {
         hp_ = 0;
 
+        int shoulderFrame = MV1SearchFrame(transform_.modelId, "shoulder.L");
+        if (shoulderFrame != -1)
+        {
+            MATRIX shoulderMatrix = MV1GetFrameLocalWorldMatrix(transform_.modelId, shoulderFrame);
+
+            VECTOR rayOrigin = VGet(
+                shoulderMatrix.m[3][0],
+                shoulderMatrix.m[3][1],
+                shoulderMatrix.m[3][2]);
+
+            float yaw = transform_.quaRot.ToEuler().y;
+            VECTOR forward = VGet(sinf(yaw), 0.0f, cosf(yaw));
+
+            effectPos_ = VAdd(rayOrigin, forward);
+
+            int playHandle = PlayEffekseer3DEffect(effectHandle);
+            SetPosPlayingEffekseer3DEffect(playHandle, effectPos_.x, effectPos_.y, effectPos_.z);
+            SetRotationPlayingEffekseer3DEffect(playHandle, 0.0f, yaw, 0.0f);
+        }
+
+        sndMng_.Play(SoundManager::SRC::EnemyDai);
+
         state_ = STATE::DEAD;
     }
+}
+
+bool Boss::IsAttack() const
+{
+    return attackEnable_;
 }

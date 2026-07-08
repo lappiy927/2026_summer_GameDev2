@@ -1,5 +1,7 @@
 #pragma once
 #include "EnemyBase.h"
+class Player;
+class ColliderCapsule;
 
 class Boss :
 	public EnemyBase
@@ -17,5 +19,20 @@ public:
 	void AI() override;
 
 	void Damage(int damage) override;
+
+	ColliderCapsule* GetAttackCollider()const
+	{
+		return attackCollider_;
+	}
+
+	bool IsAttack() const;
+
+private:
+
+	ColliderCapsule* attackCollider_;
+
+	bool isAttackHit_;
+
+	bool attackEnable_;
 };
 

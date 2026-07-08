@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include <algorithm>
+#include <EffekseerForDXLib.h>
 #include"../Application.h"
 #include "../Manager/SceneManager.h"
 #include"../Manager/SoundManager.h"
@@ -57,6 +58,10 @@ void BossScene::Init(void)
 	camera->SetFollow(&player_->GetTransform());
 
 	sndMng_.Play(SoundManager::SRC::Battle);
+
+	slashEffectHandle_ =
+		LoadEffekseerEffect(
+			"Data/Effect/Slash.efkefc", 20.0f);
 }
 
 void BossScene::Update(void)
@@ -83,11 +88,23 @@ void BossScene::Update(void)
 	// “G‚ªƒvƒŒƒCƒ„[‚É“–‚½‚Á‚½
 	if (!boss_->IsDead())
 	{
-		if (boss_->IsHit(player_))
-		{
-			hit_ = true;
+		ColliderCapsule* attack = boss_->GetAttackCollider();
 
-			player_->Damage(999);
+		if (attack != nullptr)
+		{
+			ColliderCapsule* playerCol =
+				dynamic_cast<ColliderCapsule*>(
+					player_->GetCollider(
+						static_cast<int>(
+							Player::COLLIDER_TYPE::CAPSULE)));
+
+			if (playerCol != nullptr)
+			{
+				if (attack->IsHit(playerCol))
+				{
+					player_->Damage(999);
+				}
+			}
 		}
 	}
 
@@ -113,6 +130,16 @@ void BossScene::Update(void)
 			if (hit)
 			{
 				boss_->Damage(50);
+
+				int effect = PlayEffekseer3DEffect(slashEffectHandle_);
+
+				VECTOR pos = boss_->GetPos();
+
+				SetPosPlayingEffekseer3DEffect(
+					effect,
+					pos.x,
+					pos.y + 50.0f,
+					pos.z);
 			}
 		}
 	}
@@ -168,6 +195,10 @@ void BossScene::Draw(void)
 		);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
+
+	Effekseer_Sync3DSetting();
+
+	DrawEffekseer3D();
 }
 
 void BossScene::Release(void)

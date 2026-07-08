@@ -45,5 +45,7 @@ private:
 
 	float clearTimer_ = 0.0f;
 	bool isClear_ = false;
+
+	int slashEffectHandle_;
 };
 
