@@ -35,7 +35,7 @@ void SoundManager::Init(void)
 	pathMap_.emplace(SRC::Walk, PATH_SND + "Walk.mp3");
 	pathMap_.emplace(SRC::Run, PATH_SND + "Run.mp3");
 	pathMap_.emplace(SRC::EnemyDai, PATH_SND + "devil_scared1.mp3");
-	pathMap_.emplace(SRC::Shot,PATH_SND+"shot.mp3")
+	pathMap_.emplace(SRC::Shot, PATH_SND + "shot.mp3");
 
 
 }
