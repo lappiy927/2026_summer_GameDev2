@@ -64,6 +64,7 @@ void GameClearScene::Update()
 	auto const& ins = InputManager::GetInstance();
 
 	if (ins.IsTrgDown(KEY_INPUT_RETURN) ||
+		ins.IsTrgDown(KEY_INPUT_SPACE) ||
 		ins.IsPadBtnTrgDown(
 			InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::RIGHT))
@@ -121,7 +122,7 @@ void GameClearScene::Draw()
 		DrawStringToHandle(
 			300,
 			currentTextY_,
-			"éÄçá èIóπ",
+			"éÄçá èüóò",
 			0xff0000,
 			fontHandle);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);

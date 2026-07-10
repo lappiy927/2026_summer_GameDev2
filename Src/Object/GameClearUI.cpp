@@ -5,10 +5,10 @@
 //  セリフはここを編集してください
 // ============================================================
 static const char* kGameClearMessage_KB =
-"おまんは剣士の恥じゃ\n(Enterでタイトルに戻る)";
+"ようやった　今日からおまんも、一人前の剣士じゃ\n(Enter、Spaceでタイトルに戻る)";
 
 static const char* kGameClearMessage_Pad =
-"おまんは剣士の恥じゃ\n(Bボタンでタイトルに戻る)";
+"ようやった　今日からおまんも、一人前の剣士じゃ\n(Bボタンでタイトルに戻る)";
 static const char* kGameClearSpeaker = "殺魔剣士";
 
 // --- カラー定数（TutorialUI と同じ配色）---
@@ -34,7 +34,7 @@ void GameClearUI::Release()
 void GameClearUI::Init()
 {
     // 立ち絵画像（差し替えたい場合はパスを変更してください）
-    charImage_ = LoadGraph("Data/Image/Tutorial2.png");
+    charImage_ = LoadGraph("Data/Image/Tutorial.png");
 
     font_ = CreateFontToHandle("ＭＳ ゴシック", 20, 3,
         DX_FONTTYPE_ANTIALIASING_EDGE);

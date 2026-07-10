@@ -5,7 +5,7 @@
 //  セリフはここを編集してください（キーボード用／パッド用）
 // ============================================================
 static const char* kGameOverMessage_KB =
-"おまんは剣士の恥じゃ\n(Enterでタイトルに戻る)";
+"おまんは剣士の恥じゃ\n(Enter、Spaceでタイトルに戻る)";
 
 static const char* kGameOverMessage_Pad =
 "おまんは剣士の恥じゃ\n(Bボタンでタイトルに戻る)";
