@@ -14,6 +14,7 @@ public:
 		Run,
 		Battle,
 		EnemyDai,
+		Shot,
 	};
 
 	static void CreateInstance(void);

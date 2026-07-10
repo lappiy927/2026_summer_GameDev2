@@ -353,7 +353,7 @@ void Player::ProcessAttack(void)
         animType_ = ANIM_TYPE::ATTACK;
         if (weaponMng_->GetActiveWeaponType() == WeaponManager::WEAPON_TYPE::GUN)
         {
-            sndMng_.Play(SoundManager::SRC::Attack);
+            sndMng_.Play(SoundManager::SRC::Shot);
         }
         else {
             sndMng_.Play(SoundManager::SRC::Attack);
