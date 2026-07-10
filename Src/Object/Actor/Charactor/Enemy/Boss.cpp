@@ -54,7 +54,7 @@ void Boss::InitTransform()
     transform_.quaRotLocal = Quaternion::Identity();
 
     // oŒ»ˆÊ’u
-    transform_.pos = VGet(2500.0f, 2000.0f, 2500.0f);
+    transform_.pos = VGet(2500.0f, 2000.0f, 6000.0f);
 
     transform_.Update();
 }
@@ -141,10 +141,18 @@ void Boss::InitAnimation()
 
 void Boss::InitPost()
 {
+    leftHandFrame_ =
+        MV1SearchFrame(
+            transform_.modelId,
+            "hand.L"
+        );
 }
 
 void Boss::AI()
 {
+    UpdateAttackCollider();
+
+
     if (isTackle_)
     {
         return;
@@ -262,4 +270,33 @@ void Boss::Damage(int damage)
 bool Boss::IsAttack() const
 {
     return attackEnable_;
+}
+
+void Boss::UpdateAttackCollider()
+{
+    if (leftHandFrame_ == -1 || attackCollider_ == nullptr)
+    {
+        return;
+    }
+
+    MATRIX mat =
+        MV1GetFrameLocalWorldMatrix(
+            transform_.modelId,
+            leftHandFrame_);
+
+    VECTOR handPos =
+    {
+        mat.m[3][0],
+        mat.m[3][1],
+        mat.m[3][2]
+    };
+
+    VECTOR localPos = VSub(handPos, transform_.pos);
+
+    // Žè‚Ì‚Ð‚ç•ûŒü‚Ö­‚µ‚¸‚ç‚·
+    localPos = VAdd(localPos, VGet(0.0f, 0.0f, 25.0f));
+
+
+    attackCollider_->SetLocalPosTop(localPos);
+    attackCollider_->SetLocalPosDown(localPos);
 }
