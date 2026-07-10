@@ -310,7 +310,7 @@ void TutorialUI::DrawCompleteOverlay() const
         "チュートリアル完了！", COL_COMPLETE(), font_);
 
     if (GetJoypadNum() == 0)
-        DrawStringToHandle(ox + 80, oy + 90, "エンターキーで次へ", COL_HINT(), font_);
+        DrawStringToHandle(ox + 80, oy + 90, "スペースキーで次へ", COL_HINT(), font_);
     else
         DrawStringToHandle(ox + 80, oy + 90, "Bボタンで次へ", COL_HINT(), font_);
 }

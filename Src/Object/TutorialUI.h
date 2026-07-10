@@ -84,6 +84,6 @@ private:
     int         delay = 0;
 
     //ÉXÉLÉbÉví∑âüÇµ
-    static constexpr int SKIP_REQUIRED = 1;  // 60fps Å~ 1ïb
+    static constexpr int SKIP_REQUIRED = 60;  // 60fps Å~ 1ïb
     int skipHoldFrames_ = 0;
 };

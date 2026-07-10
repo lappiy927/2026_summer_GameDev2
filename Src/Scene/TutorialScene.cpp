@@ -85,7 +85,7 @@ void TutorialScene::Update(void)
         InputManager::JOYPAD_IN_STATE padState =
             ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
 
-        bool endTutorial = ins.IsTrgDown(KEY_INPUT_RETURN) ||
+        bool endTutorial = ins.IsTrgDown(KEY_INPUT_SPACE) ||
             ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
                 InputManager::JOYPAD_BTN::RIGHT);
         if (endTutorial)
@@ -107,20 +107,6 @@ void TutorialScene::Update(void)
             player_->GetTransform(),
             player_->GetWeaponState());
         stage_->Update();
-
-        if (ins.IsTrgDown(KEY_INPUT_E)) {
-            int weaponType_;
-            weaponType_ = static_cast<int>(weaponMng_->GetActiveWeaponType());
-            switch (weaponType_)
-            {
-            case static_cast<int>(WeaponManager::WEAPON_TYPE::KATANA):
-                weaponMng_->SetActiveWeapon(WeaponManager::WEAPON_TYPE::GUN);
-                break;
-            case static_cast<int>(WeaponManager::WEAPON_TYPE::GUN):
-                weaponMng_->SetActiveWeapon(WeaponManager::WEAPON_TYPE::KATANA);
-                break;
-            }
-        }
 
         // 攻撃ステップ以降は敵を更新
         if (TutorialStep::ATTACK <= tutorialUI_->GetCurrentStep())
