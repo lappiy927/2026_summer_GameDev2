@@ -201,6 +201,19 @@ void EnemyBase::UpdateDash()
 	moveDir_ = dashDir_;
 	movePow_ = VScale(dashDir_, dashSpeed_);
 
+	// “Ëi’†‚Ì“–‚½‚è”»’è
+	if (target_ && IsHit(target_))
+	{
+		target_->Damage(999);
+
+		isTackle_ = false;
+		movePow_ = AsoUtility::VECTOR_ZERO;
+
+		animationController_->Play(1, true);
+		state_ = STATE::CHASE;
+		return;
+	}
+
 	tackleTimer_--;
 
 	if (tackleTimer_ <= 0)

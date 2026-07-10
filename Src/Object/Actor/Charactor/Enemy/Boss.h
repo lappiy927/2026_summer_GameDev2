@@ -29,6 +29,8 @@ public:
 
 	bool IsAttack() const;
 
+	void UpdateAttackCollider();
+
 private:
 
 	ColliderCapsule* attackCollider_;
@@ -38,5 +40,7 @@ private:
 	bool attackEnable_;
 
 	bool isAttacking_ = false;
+
+	int leftHandFrame_ = -1;
 };
 
