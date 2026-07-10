@@ -103,6 +103,7 @@ void TitleScene::Update(void)
 	}
 
 	if (ins.IsTrgDown(KEY_INPUT_RETURN) ||
+		ins.IsTrgDown(KEY_INPUT_SPACE)||
 		ins.IsPadBtnTrgDown(
 			InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::RIGHT))

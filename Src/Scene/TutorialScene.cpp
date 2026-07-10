@@ -86,6 +86,7 @@ void TutorialScene::Update(void)
             ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
 
         bool endTutorial = ins.IsTrgDown(KEY_INPUT_SPACE) ||
+            ins.IsTrgDown(KEY_INPUT_RETURN)||
             ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
                 InputManager::JOYPAD_BTN::RIGHT);
         if (endTutorial)
