@@ -6,7 +6,7 @@
 
 class Stage;
 class Player;
-class Katana;
+class WeaponManager;
 class Door;
 class EnemyBase;
 
@@ -37,7 +37,7 @@ private:
 
 	Stage* stage_;
 	Player* player_;
-	Katana* katana_;
+	WeaponManager* weaponMng_;
 	Door* door_;
 
 

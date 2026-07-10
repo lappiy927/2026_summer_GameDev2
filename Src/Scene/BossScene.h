@@ -7,7 +7,7 @@
 class BossStage;
 class Player;
 class Boss;
-class Katana;
+class WeaponManager;
 
 class BossScene :
     public SceneBase
@@ -36,7 +36,7 @@ private:
 
 	BossStage* bossStage_;
 	Player* player_;
-	Katana* katana_;
+	WeaponManager* weaponMng_;
 	Boss* boss_;
 
 	float limitTime_;

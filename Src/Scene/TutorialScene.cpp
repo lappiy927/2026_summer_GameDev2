@@ -7,7 +7,7 @@
 #include "../Object/Actor/Stage/Stage.h"
 #include "../Object/Actor/Charactor/Player.h"
 #include"../Object/Actor/Charactor/Enemy/EnemyMob.h"
-#include "../Object/Actor/Weapon/Katana.h"
+#include "../Object/Actor/Weapon/Gun.h"
 #include"../Object/TutorialUI.h"
 #include "TutorialScene.h"
 
@@ -31,11 +31,15 @@ TutorialScene::~TutorialScene(void)
 
 void TutorialScene::Init(void)
 {
+    // 残弾数をリセット
+    Gun::ResetRemainingBullets();
+
     player_ = new Player();
     player_->Init();
 
-    weaponMng_ = new WeaponManager(player_);
+    weaponMng_ = new WeaponManager();
     weaponMng_->Init();
+    player_->SetWeaponManager(weaponMng_);
 
     stage_ = new Stage();
     stage_->Init();
@@ -99,7 +103,9 @@ void TutorialScene::Update(void)
 
         // ---- 通常更新 ----
         player_->Update();
-        weaponMng_->Update();
+        weaponMng_->Update(
+            player_->GetTransform(),
+            player_->GetWeaponState());
         stage_->Update();
 
         if (ins.IsTrgDown(KEY_INPUT_E)) {

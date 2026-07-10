@@ -1,13 +1,15 @@
 #include <DxLib.h>
+#include "../Object/Common/Transform.h"
 #include "../Object/Actor/Charactor/Player.h"
 #include "../Object/Actor/Weapon/Katana.h"
 #include "../Object/Actor/Weapon/Gun.h"
 #include "../Object/Collider/ColliderCapsule.h"
 #include "WeaponManager.h"
 
-WeaponManager::WeaponManager(Player* player)
+
+
+WeaponManager::WeaponManager(void)
     :
-    player_(player),
     katana_(nullptr),
     gun_(nullptr),
     activeType_(WEAPON_TYPE::KATANA)
@@ -20,34 +22,30 @@ WeaponManager::~WeaponManager(void)
 
 void WeaponManager::Init(void)
 {
-    katana_ = new Katana(player_);
+    katana_ = new Katana();
     katana_->Init();
 
-    gun_ = new Gun(player_);
+    gun_ = new Gun();
     gun_->Init();
-
-    activeType_ = WEAPON_TYPE::KATANA;
 }
 
-void WeaponManager::Update(void)
+void WeaponManager::Update(const Transform& playerTransform, WEAPON_STATE weaponState)
 {
     switch (activeType_)
     {
     case WEAPON_TYPE::KATANA:
-        katana_->Update();
-        UpdateHolster(gun_, HOLSTER_BONE, HOLSTER_GUN_POS, HOLSTER_GUN_ROT);
+        katana_->Update(playerTransform, weaponState);
+        UpdateHolster(gun_, HOLSTER_BONE, HOLSTER_GUN_POS, HOLSTER_GUN_ROT, playerTransform);
         break;
-
     case WEAPON_TYPE::GUN:
-        gun_->Update();
-        UpdateHolster(katana_, HOLSTER_BONE, HOLSTER_KATANA_POS, HOLSTER_KATANA_ROT);
+        gun_->Update(playerTransform, weaponState);
+        UpdateHolster(katana_, HOLSTER_BONE, HOLSTER_KATANA_POS, HOLSTER_KATANA_ROT, playerTransform);
         break;
     }
 }
 
 void WeaponManager::Draw(void)
 {
-    // 両武器を常に描画（非アクティブも背中に表示）
     katana_->Draw();
     gun_->Draw();
 }
@@ -60,7 +58,6 @@ void WeaponManager::Release(void)
         delete katana_;
         katana_ = nullptr;
     }
-
     if (gun_ != nullptr)
     {
         gun_->Release();
@@ -81,17 +78,75 @@ WeaponManager::WEAPON_TYPE WeaponManager::GetActiveWeaponType(void) const
 
 ColliderCapsule* WeaponManager::GetActiveCollider(void) const
 {
-    switch (activeType_)
-    {
-    case WEAPON_TYPE::KATANA: return katana_->GetCollider();
-    case WEAPON_TYPE::GUN:    return gun_->GetCollider();
-    }
-    return nullptr;
+    return GetActiveWeapon()->GetCollider();
 }
 
-void WeaponManager::UpdateHolster(WeaponBase* weapon, const char* boneName, VECTOR localPos, VECTOR rotEuler)
+WeaponManager::SwitchResult WeaponManager::ApplyWeaponSwitch(void)
 {
-    int playerModelId = player_->GetTransform().modelId;
+    activeType_ = (activeType_ == WEAPON_TYPE::KATANA)
+        ? WEAPON_TYPE::GUN
+        : WEAPON_TYPE::KATANA;
+
+    return SwitchResult::BEGIN_SWITCH_IN;
+}
+
+WeaponBase* WeaponManager::GetActiveWeapon(void) const
+{
+    return (activeType_ == WEAPON_TYPE::KATANA)
+        ? static_cast<WeaponBase*>(katana_)
+        : static_cast<WeaponBase*>(gun_);
+}
+
+const char* WeaponManager::GetIdleAnimPath(void)      const
+{
+    return GetActiveWeapon()->GetIdleAnimPath();
+}
+
+const char* WeaponManager::GetRunAnimPath(void)       const
+{
+    return GetActiveWeapon()->GetRunAnimPath();
+}
+
+const char* WeaponManager::GetFastRunAnimPath(void)   const
+{
+    return GetActiveWeapon()->GetFastRunAnimPath();
+}
+
+const char* WeaponManager::GetJumpAnimPath(void)      const
+{
+    return GetActiveWeapon()->GetJumpAnimPath();
+}
+
+const char* WeaponManager::GetAttackAnimPath(void)    const
+{
+    return GetActiveWeapon()->GetAttackAnimPath();
+}
+
+const char* WeaponManager::GetReloadAnimPath(void)    const
+{
+    return GetActiveWeapon()->GetReloadAnimPath();
+}
+
+const char* WeaponManager::GetSwitchOutAnimPath(void) const
+{
+    return GetActiveWeapon()->GetSwitchOutAnimPath();
+}
+
+const char* WeaponManager::GetSwitchInAnimPath(void)  const
+{
+    return GetActiveWeapon()->GetSwitchInAnimPath();
+}
+
+float WeaponManager::GetAttackDuration(void)    const
+{
+    return GetActiveWeapon()->GetAttackDuration();
+}
+
+void WeaponManager::UpdateHolster(WeaponBase* weapon, const char* boneName,
+    VECTOR localPos, VECTOR rotEuler,
+    const Transform& playerTransform)
+{
+    int playerModelId = playerTransform.modelId;
     int boneFrame = MV1SearchFrame(playerModelId, boneName);
     if (boneFrame == -1) return;
 
@@ -102,7 +157,6 @@ void WeaponManager::UpdateHolster(WeaponBase* weapon, const char* boneName, VECT
         boneMatrix.m[3][1],
         boneMatrix.m[3][2]);
 
-    // スケール除去した純粋な回転行列を作成
     MATRIX boneRotOnly = MGetIdent();
     VECTOR col0 = VNorm(VGet(boneMatrix.m[0][0], boneMatrix.m[0][1], boneMatrix.m[0][2]));
     VECTOR col1 = VNorm(VGet(boneMatrix.m[1][0], boneMatrix.m[1][1], boneMatrix.m[1][2]));

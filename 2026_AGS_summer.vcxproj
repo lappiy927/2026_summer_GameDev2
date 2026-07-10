@@ -193,6 +193,7 @@
     <ClCompile Include="Src\Renderer\VertexRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Actor\Weapon\WeaponState.h" />
     <ClInclude Include="Src\Object\GameClearUI.h" />
     <ClInclude Include="Src\Object\GameOverUI.h" />
     <ClInclude Include="Src\Object\Actor\Weapon\Gun.h" />

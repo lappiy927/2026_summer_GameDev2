@@ -99,6 +99,7 @@
     <ClInclude Include="Src\Manager\WeaponManager.h" />
     <ClInclude Include="Src\Renderer\VertexMaterial.h" />
     <ClInclude Include="Src\Renderer\VertexRenderer.h" />
+    <ClInclude Include="Src\Object\Actor\Weapon\WeaponState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

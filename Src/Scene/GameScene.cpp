@@ -6,11 +6,12 @@
 #include"../Manager/SoundManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
+#include"../Manager/WeaponManager.h"	
 #include "../Scene/MenuScene.h"
 #include "../Object/Actor/Stage/Stage.h"
 #include "../Object/Actor/Stage/Door.h"
 #include "../Object/Actor/Charactor/Player.h"
-#include "../Object/Actor/Weapon/Katana.h"
+#include "../Object/Actor/Weapon/Gun.h"
 #include "../Object/Actor/Charactor/Enemy/EnemyMob.h"
 #include "GameScene.h"
 
@@ -27,6 +28,9 @@ GameScene::~GameScene(void)
 
 void GameScene::Init(void)
 {
+	// 残弾数をリセット
+	Gun::ResetRemainingBullets();
+
 	// プレイヤー生成
 	player_ = new Player();
 	player_->Init();
@@ -35,9 +39,10 @@ void GameScene::Init(void)
 	stage_ = new Stage();
 	stage_->Init();
 
-	//刀の初期化
-	katana_ = new Katana(player_);
-	katana_->Init();
+	//武器の初期化
+	weaponMng_ = new WeaponManager();
+	weaponMng_->Init();
+	player_->SetWeaponManager(weaponMng_);
 
 	door_ = new Door();
 	door_->Init();
@@ -201,7 +206,9 @@ void GameScene::Update(void)
 	stage_->Update();
 
 	//刀の更新
-	katana_->Update();
+	weaponMng_->Update(
+		player_->GetTransform(),
+		player_->GetWeaponState());
 	hit_ = false;
 
 	door_->Update();
@@ -228,7 +235,7 @@ void GameScene::Update(void)
 		if (enemyCol != nullptr)
 		{
 			bool hit =
-				katana_->GetCollider()->IsHit(enemyCol);
+				weaponMng_->GetActiveCollider()->IsHit(enemyCol);
 
 			DrawFormatString(
 				0, 140,
@@ -240,15 +247,18 @@ void GameScene::Update(void)
 			{
 				enemy->Damage(100);
 
-				int effect = PlayEffekseer3DEffect(slashEffectHandle_);
+				if (weaponMng_->GetActiveWeaponType() == WeaponManager::WEAPON_TYPE::KATANA)
+				{
+					int effect = PlayEffekseer3DEffect(slashEffectHandle_);
 
-				VECTOR pos = enemy->GetPos();
+					VECTOR pos = enemy->GetPos();
 
-				SetPosPlayingEffekseer3DEffect(
-					effect,
-					pos.x,
-					pos.y + 50.0f,
-					pos.z);
+					SetPosPlayingEffekseer3DEffect(
+						effect,
+						pos.x,
+						pos.y + 50.0f,
+						pos.z);
+				}
 			}
 		};
 	}
@@ -310,8 +320,8 @@ void GameScene::Draw(void)
 
 	player_->Draw();
 
-	//刀の描画
-	katana_->Draw();
+	//武器の描画
+	weaponMng_->Draw();
 
 	door_->Draw();
 
@@ -451,8 +461,8 @@ void GameScene::Release(void)
 	delete stage_;
 
 	//刀の開放
-	katana_->Release();
-	delete katana_;
+	weaponMng_->Release();
+	delete weaponMng_;
 
 	// ドアの解放
 	door_->Release();

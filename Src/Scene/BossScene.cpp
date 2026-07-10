@@ -6,10 +6,10 @@
 #include"../Manager/SoundManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
+#include"../Manager/WeaponManager.h"
 #include "../Object/Actor/Stage/BossStage.h"
 #include "../Object/Actor/Charactor/Player.h"
 #include "../Object/Actor/Charactor/Enemy/Boss.h"
-#include "../Object/Actor/Weapon/Katana.h"
 #include "BossScene.h"
 
 BossScene::BossScene(void)
@@ -38,9 +38,10 @@ void BossScene::Init(void)
 	bossStage_ = new BossStage();
 	bossStage_->Init();
 
-	// 刀の初期化
-	katana_ = new Katana(player_);
-	katana_->Init();
+	// 武器の初期化
+	weaponMng_ = new WeaponManager();
+	weaponMng_->Init();
+	player_->SetWeaponManager(weaponMng_);
 
 	// ステージモデルのコライダーをプレイヤーに登録
 	// ステージコライダー取得
@@ -82,8 +83,10 @@ void BossScene::Update(void)
 	// ステージの更新
 	bossStage_->Update();
 
-	//刀の更新
-	katana_->Update();
+	//武器の更新
+	weaponMng_->Update(
+		player_->GetTransform(),
+		player_->GetWeaponState());
 
 	if (!boss_->IsDead() && boss_->IsAttack())
 	{
@@ -110,7 +113,7 @@ void BossScene::Update(void)
 		if (enemyCol != nullptr)
 		{
 			bool hit =
-				katana_->GetCollider()->IsHit(enemyCol);
+				weaponMng_->GetActiveCollider()->IsHit(enemyCol);
 
 			DrawFormatString(
 				0, 140,
@@ -163,8 +166,8 @@ void BossScene::Draw(void)
 
 	boss_->Draw();
 
-	//刀の描画
-	katana_->Draw();
+	//武器の描画
+	weaponMng_->Draw();
 
 	DrawString(0, 0, "BossScene", 0xffffff);
 
@@ -206,7 +209,7 @@ void BossScene::Release(void)
 	bossStage_->Release();
 	delete bossStage_;
 
-	//刀の開放
-	katana_->Release();
-	delete katana_;
+	//武器の開放
+	weaponMng_->Release();
+	delete weaponMng_;
 }
