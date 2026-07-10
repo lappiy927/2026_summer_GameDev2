@@ -32,8 +32,6 @@ public:
 
     //残弾数のリセット
     static void ResetRemainingBullets(int count = MAX_BULLET_COUNT) { remainingBullets_ = count; }
-
-
 private:
 
     void InitLoad(void)      override;
