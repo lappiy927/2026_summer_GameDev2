@@ -103,4 +103,8 @@ protected:
 
     bool isLanding_ = false;
 
+    bool isTackle_ = false;
+
+    int tackleTimer_ = 0;
+
 };
