@@ -185,7 +185,12 @@ void EnemyBase::UpdateDashReady()
 	if (dashTimer_ >= 30)
 	{
 		dashTimer_ = 0;
+
 		dashSpeed_ = 40.0f;
+		tackleTimer_ = 40;
+
+		isTackle_ = true;
+
 		animationController_->Play(2, true);
 		state_ = STATE::DASH;
 	}
@@ -196,8 +201,12 @@ void EnemyBase::UpdateDash()
 	moveDir_ = dashDir_;
 	movePow_ = VScale(dashDir_, dashSpeed_);
 
-	if (GetPlayerDistance() <= 800.0f)
+	tackleTimer_--;
+
+	if (tackleTimer_ <= 0)
 	{
+		isTackle_ = false;
+
 		movePow_ = AsoUtility::VECTOR_ZERO;
 		animationController_->Play(1, true);
 		state_ = STATE::CHASE;

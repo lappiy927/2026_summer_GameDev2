@@ -145,6 +145,12 @@ void Boss::InitPost()
 
 void Boss::AI()
 {
+    if (isTackle_)
+    {
+        return;
+    }
+
+
     // s“®’†‚È‚çAI‚Åó‘Ô‚ğ•Ï‚¦‚È‚¢
     if (state_ == STATE::DASH_READY ||
         state_ == STATE::DASH)
