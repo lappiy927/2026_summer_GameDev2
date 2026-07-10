@@ -11,6 +11,8 @@ public:
     {
         IDLE,
         CHASE,
+        DASH_READY,
+        DASH,
         ATTACK,
         DAMAGE,
         DEAD
@@ -73,6 +75,8 @@ protected:
     // èÛë‘çXêV
     void UpdateIdle();
     void UpdateChase();
+    void UpdateDashReady();
+    void UpdateDash();
     void UpdateAttack();
     void UpdateDamage();
     void UpdateDead();
@@ -90,5 +94,13 @@ protected:
 
     VECTOR knockbackPow_ = AsoUtility::VECTOR_ZERO;
     int knockbackTimer_ = 0;
+
+    VECTOR dashDir_;
+
+    float dashSpeed_ = 0.0f;
+
+    int dashTimer_ = 0;
+
+    bool isLanding_ = false;
 
 };

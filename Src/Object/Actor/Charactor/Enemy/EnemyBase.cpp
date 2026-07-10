@@ -23,6 +23,22 @@ EnemyBase::~EnemyBase()
 
 void EnemyBase::UpdateProcess()
 {
+	if (!isLanding_)
+	{
+		// ínñ Ç…Ç¬Ç≠Ç‹Ç≈AIí‚é~
+		if (!isJump_)
+		{
+			isLanding_ = true;
+		}
+		else
+		{
+			transform_.Update();
+			return;
+		}
+	}
+
+
+
 	//AI
 	AI();
 
@@ -35,6 +51,14 @@ void EnemyBase::UpdateProcess()
 
 	case STATE::CHASE:
 		UpdateChase();
+		break;
+
+	case STATE::DASH_READY:
+		UpdateDashReady();
+		break;
+
+	case STATE::DASH:
+		UpdateDash();
 		break;
 
 	case STATE::ATTACK:
@@ -149,16 +173,41 @@ void EnemyBase::UpdateChase()
 	}
 }
 
-void EnemyBase::UpdateAttack()
+void EnemyBase::UpdateDashReady()
 {
-	// í‚é~
 	movePow_ = AsoUtility::VECTOR_ZERO;
 
-	// ó£ÇÍÇΩÇÁí«ê’
-	if (GetPlayerDistance() > attackRange_)
+	dashDir_ = GetPlayerDirection();
+	moveDir_ = dashDir_;
+
+	dashTimer_++;
+
+	if (dashTimer_ >= 30)
 	{
+		dashTimer_ = 0;
+		dashSpeed_ = 40.0f;
+		animationController_->Play(2, true);
+		state_ = STATE::DASH;
+	}
+}
+
+void EnemyBase::UpdateDash()
+{
+	moveDir_ = dashDir_;
+	movePow_ = VScale(dashDir_, dashSpeed_);
+
+	if (GetPlayerDistance() <= 800.0f)
+	{
+		movePow_ = AsoUtility::VECTOR_ZERO;
+		animationController_->Play(1, true);
 		state_ = STATE::CHASE;
 	}
+}
+
+void EnemyBase::UpdateAttack()
+{
+	// çUåÇíÜÇÕé~Ç‹ÇÈ
+	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
 void EnemyBase::UpdateDamage()

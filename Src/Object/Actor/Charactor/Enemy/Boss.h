@@ -7,6 +7,8 @@ class Boss :
 	public EnemyBase
 {
 public:
+
+
 	Boss();
 	virtual ~Boss();
 
@@ -34,5 +36,7 @@ private:
 	bool isAttackHit_;
 
 	bool attackEnable_;
+
+	bool isAttacking_ = false;
 };
 

@@ -17,10 +17,10 @@ Boss::Boss()
     :
     EnemyBase()
 {
-    hp_ = 50;
+    hp_ = 500;
 
-    attackRange_ = 250.0f;
-    searchRange_ = 800.0f;
+    attackRange_ = 400.0f;
+    searchRange_ = 3000.0f;
 }
 
 Boss::~Boss()
@@ -54,7 +54,7 @@ void Boss::InitTransform()
     transform_.quaRotLocal = Quaternion::Identity();
 
     // oŒ»ˆÊ’u
-    transform_.pos = VGet(2500.0f, 2900.0f, 2500.0f);
+    transform_.pos = VGet(2500.0f, 2000.0f, 2500.0f);
 
     transform_.Update();
 }
@@ -110,21 +110,28 @@ void Boss::InitAnimation()
         20.0f,
         Application::PATH_MODEL + "Charactor/Enemy/Boss/BossIdle.mv1");
 
-    // ‘–‚è
+    // •à‚«
     animationController_->Add(
         1,
         20.0f,
+        Application::PATH_MODEL + "Charactor/Enemy/Boss/BossWalk.mv1");
+
+    // ƒ_ƒbƒVƒ…
+    animationController_->Add(
+        2,
+        20.0f,
         Application::PATH_MODEL + "Charactor/Enemy/Boss/BossRun.mv1");
+
 
     // UŒ‚
     animationController_->Add(
-        2,
+        3,
         20.0f,
         Application::PATH_MODEL + "Charactor/Enemy/Boss/BossAttack.mv1");
 
     // Ž€–S
     animationController_->Add(
-        3,
+        4,
         20.0f,
         Application::PATH_MODEL + "Charactor/Enemy/Boss/BossDai.mv1");
 
@@ -138,49 +145,73 @@ void Boss::InitPost()
 
 void Boss::AI()
 {
+    // s“®’†‚È‚çAI‚Åó‘Ô‚ð•Ï‚¦‚È‚¢
+    if (state_ == STATE::DASH_READY ||
+        state_ == STATE::DASH)
+    {
+        return;
+    }
+
+
+
     if (target_ == nullptr)
     {
         return;
     }
 
+    // UŒ‚’†‚È‚ç‘¼‚Ìs“®‚ð‚µ‚È‚¢
+    if (isAttacking_)
+    {
+        if (animationController_->IsEnd())
+        {
+            isAttacking_ = false;
+            state_ = STATE::CHASE;
+
+            animationController_->Play(1, true);
+        }
+
+        return;
+    }
+
     float dist = GetPlayerDistance();
 
-    // Ž€–S’†‚Í‰½‚à‚µ‚È‚¢
     if (state_ == STATE::DEAD)
     {
-        animationController_->Play(3, false);
+        animationController_->Play(4, false);
         return;
     }
 
     if (dist <= attackRange_)
     {
         state_ = STATE::ATTACK;
+
+        isAttacking_ = true;
+        animationController_->Play(3, false);
+    }
+    else if (dist <= 800.0f)
+    {
+        if (state_ != STATE::CHASE)
+        {
+            state_ = STATE::CHASE;
+            animationController_->Play(1, true);
+        }
     }
     else if (dist <= searchRange_)
     {
-        state_ = STATE::CHASE;
+        if (state_ != STATE::DASH_READY)
+        {
+            state_ = STATE::DASH_READY;
+
+            animationController_->Play(2, true);
+        }
     }
     else
     {
-        state_ = STATE::IDLE;
-    }
-
-    switch (state_)
-    {
-    case STATE::IDLE:
-        animationController_->Play(0, true);
-        break;
-
-    case STATE::CHASE:
-        animationController_->Play(1, true);
-        break;
-
-    case STATE::ATTACK:
-        animationController_->Play(2, true);
-        break;
-
-    default:
-        break;
+        if (state_ != STATE::IDLE)
+        {
+            state_ = STATE::IDLE;
+            animationController_->Play(0, true);
+        }
     }
 
     attackEnable_ = (state_ == STATE::ATTACK);
