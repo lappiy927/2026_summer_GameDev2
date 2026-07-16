@@ -44,5 +44,6 @@ private:
     static constexpr WeaponOffset OFFSET_ATTACK = { { 3.0f, 0.0f, -5.0f}, {DX_PI_F / 4.0f, DX_PI_F, DX_PI_F / 4.0f} };
     static constexpr WeaponOffset OFFSET_JUMP = { { 3.0f, 0.0f, -7.0f}, {DX_PI_F / 2.0f, DX_PI_F, 0.0f          } };
 
+    WEAPON_STATE weapon = WEAPON_STATE::IDLE;
     WeaponOffset currentOffset_ = OFFSET_IDLE;
 };

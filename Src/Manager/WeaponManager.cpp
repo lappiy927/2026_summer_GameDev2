@@ -142,6 +142,12 @@ float WeaponManager::GetAttackDuration(void)    const
     return GetActiveWeapon()->GetAttackDuration();
 }
 
+void WeaponManager::SetCollider(bool enable)
+{
+    katana_->SetCollider(enable);
+    gun_->SetCollider(enable);
+}
+
 void WeaponManager::UpdateHolster(WeaponBase* weapon, const char* boneName,
     VECTOR localPos, VECTOR rotEuler,
     const Transform& playerTransform)

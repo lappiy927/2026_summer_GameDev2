@@ -48,6 +48,8 @@ public:
     const char* GetSwitchInAnimPath(void)  const;
     float       GetAttackDuration(void)    const;
 
+    void SetCollider(bool enable);
+
 private:
 
     void UpdateHolster(WeaponBase* weapon, const char* boneName,

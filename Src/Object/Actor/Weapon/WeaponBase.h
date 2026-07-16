@@ -42,6 +42,8 @@ public:
 
     virtual float GetAttackDuration(void) const = 0;
 
+    void SetCollider(bool enable) { attackCollider_->SetEnable(enable); }
+
 protected:
 
     ResourceManager& resMng_;

@@ -123,7 +123,23 @@ void BossScene::Update(void)
 
 			if (hit)
 			{
-				boss_->Damage(50);
+				weaponMng_->SetCollider(false);
+				if (weaponMng_->GetActiveWeaponType() == WeaponManager::WEAPON_TYPE::KATANA) {
+					boss_->Damage(100);
+				}
+				else {
+					boss_->Damage(40);
+					int effect = PlayEffekseer3DEffect(slashEffectHandle_);
+
+					VECTOR pos = boss_->GetPos();
+
+					SetPosPlayingEffekseer3DEffect(
+						effect,
+						pos.x,
+						pos.y + 50.0f,
+						pos.z);
+				}
+				
 
 				int effect = PlayEffekseer3DEffect(slashEffectHandle_);
 
@@ -173,11 +189,11 @@ void BossScene::Draw(void)
 
 	VECTOR pPos = player_->GetPos();
 
-	DrawFormatString(
+	/*DrawFormatString(
 		0, 100,
 		0xffffff,
 		"Player : %.2f %.2f %.2f",
-		pPos.x, pPos.y, pPos.z);
+		pPos.x, pPos.y, pPos.z);*/
 
 	if (hit_) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128); // îºìßñæ(0Å`255)

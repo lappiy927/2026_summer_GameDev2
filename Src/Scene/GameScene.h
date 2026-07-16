@@ -58,6 +58,8 @@ private:
 
 	bool isBossRoomOpen_ = false;
 
+	int bossRoomOpenTimer_ = 0;
+
 	bool isGameStart_ = false;
 	float countDown_ = 4.0f;
 

@@ -46,7 +46,7 @@ void EnemyMob::InitTransform()
     transform_.quaRotLocal = Quaternion::Identity();
 
     // èoåªà íu
-    transform_.pos = VGet(2300.0f, 300.0f, 2300.0f);
+    transform_.pos = VGet(6000.0f, -1000.0f, 2300.0f);
 
     transform_.Update();
 }

@@ -55,7 +55,7 @@ void GameScene::Init(void)
 	// プレイヤーに登録
 	player_->AddHitCollider(stageCollider);
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		auto enemy = std::make_shared<EnemyMob>();
 
@@ -152,6 +152,11 @@ void GameScene::Init(void)
 
 void GameScene::Update(void)
 {
+	if (bossRoomOpenTimer_ > 0)
+	{
+		bossRoomOpenTimer_--;
+	}
+
 	if (!isGameStart_)
 	{
 		countDown_ -= sceMng_.GetDeltaTime();
@@ -288,10 +293,14 @@ void GameScene::Update(void)
 		isBossRoomOpen_ = true;
 
 		door_->Open();
+
+		bossRoomOpenTimer_ = 180;
+
 	}
 
 	if (isBossRoomOpen_)
 	{
+
 		VECTOR playerPos = player_->GetPos();
 
 		// ドア中央位置
@@ -378,11 +387,40 @@ void GameScene::Draw(void)
 
 	if (isBossRoomOpen_)
 	{
-		DrawString(
-			500,
-			0,
-			"BOSS ROOM OPEN",
-			0xff0000);
+
+		// フォントサイズ64
+		int font = CreateFontToHandle(
+			NULL,
+			64,
+			3,
+			DX_FONTTYPE_ANTIALIASING_EDGE);
+
+		const char* text = "BOSS ROOM OPEN";
+
+		// 文字サイズ取得
+		int textWidth = GetDrawStringWidthToHandle(
+			text,
+			strlen(text),
+			font);
+
+		int textHeight = GetFontSizeToHandle(font);
+
+		// 画面中央
+		int x = (1280 - textWidth) / 2;
+		int y = (720 - textHeight) / 2;
+
+		if (bossRoomOpenTimer_ > 0)
+		{
+			DrawStringToHandle(
+				x,
+				y,
+				text,
+				GetColor(255, 0, 0),
+				font);
+		}
+		
+
+		DeleteFontToHandle(font);
 	}
 
 	// TIMEUI

@@ -46,6 +46,7 @@ void TutorialScene::Init(void)
 
     enemy_ = new EnemyMob();
     enemy_->Init();
+    enemy_->SetPos({ 600.0f, 0.0f, 2300.0f });
 
     const ColliderBase* stageCollider =
         stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));

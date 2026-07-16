@@ -76,7 +76,7 @@ void Gun::Update(const Transform& playerTransform, WEAPON_STATE weaponState)
 void Gun::Draw(void)
 {
 	WeaponBase::Draw();
-	dynamic_cast<ColliderCapsule*>(attackCollider_)->DrawDebug(0xff0000);
+	//dynamic_cast<ColliderCapsule*>(attackCollider_)->DrawDebug(0xff0000);
 
 	// ’e‚Ì•`‰æ
 	if (bulletState_ == BULLET_STATE::FLYING)

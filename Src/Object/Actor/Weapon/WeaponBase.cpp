@@ -24,7 +24,7 @@ void WeaponBase::Draw(void)
         MV1DrawModel(transform_.modelId);
     }
 
-    dynamic_cast<ColliderCapsule*>(attackCollider_)->DrawDebug(0xff0000);
+    //dynamic_cast<ColliderCapsule*>(attackCollider_)->DrawDebug(0xff0000);
 }
 
 void WeaponBase::Release(void)

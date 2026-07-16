@@ -25,6 +25,11 @@ void Katana::Init(void)
 void Katana::Update(const Transform& playerTransform, WEAPON_STATE weaponState)
 {
     attackCollider_->SetEnable(false);
+  
+    
+    if (weaponState != weapon && weaponState == WEAPON_STATE::ATTACK) {
+        attackCollider_->SetEnable(true);
+    }
 
     switch (weaponState)
     {
@@ -46,6 +51,9 @@ void Katana::Update(const Transform& playerTransform, WEAPON_STATE weaponState)
     }
 
     UpdateTransform(playerTransform);
+
+     weapon = weaponState;
+
 }
 
 ColliderCapsule* Katana::GetCollider(void) const
@@ -75,7 +83,7 @@ void Katana::InitCollider(void)
         &transform_,
         VGet(0, 0, 100),
         VGet(0, 0, 300),
-        100.0f);
+        200.0f);
 }
 
 void Katana::UpdateIdle(void)
@@ -101,7 +109,7 @@ void Katana::UpdateJump(void)
 void Katana::UpdateAttack(void)
 {
     currentOffset_ = OFFSET_ATTACK;
-    attackCollider_->SetEnable(true);
+    
 }
 
 void Katana::UpdateTransform(const Transform& playerTransform)
