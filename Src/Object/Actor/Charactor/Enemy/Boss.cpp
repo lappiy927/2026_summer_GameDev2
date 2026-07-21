@@ -191,7 +191,6 @@ void Boss::AI()
 
     if (state_ == STATE::DEAD)
     {
-        animationController_->Play(4, false);
         return;
     }
 
@@ -264,6 +263,8 @@ void Boss::Damage(int damage)
         sndMng_.Play(SoundManager::SRC::EnemyDai);
 
         state_ = STATE::DEAD;
+
+        animationController_->Play(4, false);
     }
 }
 

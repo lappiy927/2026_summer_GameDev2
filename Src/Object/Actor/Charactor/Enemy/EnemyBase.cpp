@@ -37,10 +37,11 @@ void EnemyBase::UpdateProcess()
 		}
 	}
 
-
-
-	//AI
-	AI();
+	if (state_ != STATE::DASH)
+	{
+		//AI
+		AI();
+	}
 
 	// ó‘ÔXV
 	switch (state_)
@@ -182,7 +183,7 @@ void EnemyBase::UpdateDashReady()
 
 	dashTimer_++;
 
-	if (dashTimer_ >= 30)
+	if (dashTimer_ >= 90)
 	{
 		dashTimer_ = 0;
 
@@ -205,13 +206,6 @@ void EnemyBase::UpdateDash()
 	if (target_ && IsHit(target_))
 	{
 		target_->Damage(999);
-
-		isTackle_ = false;
-		movePow_ = AsoUtility::VECTOR_ZERO;
-
-		animationController_->Play(1, true);
-		state_ = STATE::CHASE;
-		return;
 	}
 
 	tackleTimer_--;
