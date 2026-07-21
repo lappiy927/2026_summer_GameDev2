@@ -1,27 +1,15 @@
 #include <DxLib.h>
 #include "../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
-#include"../Manager/WeaponManager.h"
-#include"../Manager/SoundManager.h"
+#include "../Manager/WeaponManager.h"
 #include "../Manager/Camera.h"
 #include "../Object/Actor/Stage/Stage.h"
 #include "../Object/Actor/Charactor/Player.h"
-#include"../Object/Actor/Charactor/Enemy/EnemyMob.h"
-#include "../Object/Actor/Weapon/Gun.h"
-#include"../Object/TutorialUI.h"
+#include "../Object/Actor/Charactor/Enemy/EnemyMob.h"
+#include "../Object/TutorialUI.h"
 #include "TutorialScene.h"
 
-
-
-TutorialScene::TutorialScene(void) : SceneBase(),
-player_(nullptr),
-weaponMng_(nullptr),
-stage_(nullptr),
-enemy_(nullptr),
-tutorialUI_(nullptr),
-walkFrames_(0),
-runFrames_(0),
-prevMouseLeft_(false)
+TutorialScene::TutorialScene(void) : SceneBase()
 {
 }
 
@@ -31,22 +19,20 @@ TutorialScene::~TutorialScene(void)
 
 void TutorialScene::Init(void)
 {
-    // 残弾数をリセット
-    Gun::ResetRemainingBullets();
-
     player_ = new Player();
     player_->Init();
 
-    weaponMng_ = new WeaponManager();
-    weaponMng_->Init();
-    player_->SetWeaponManager(weaponMng_);
+    weaponManager_ = new WeaponManager();
+    weaponManager_->Init();
+
+    player_->SetWeaponManager(weaponManager_);
 
     stage_ = new Stage();
     stage_->Init();
 
     enemy_ = new EnemyMob();
     enemy_->Init();
-    enemy_->SetPos({ 600.0f, 0.0f, 2300.0f });
+    enemy_->SetPos({ 2300.0f, 0.0f, 2300.0f });
 
     const ColliderBase* stageCollider =
         stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
@@ -67,72 +53,66 @@ void TutorialScene::Update(void)
 {
     auto& ins = InputManager::GetInstance();
 
+    // ---- スキップ長押し（Escape / スタートボタン を1秒）----
     bool holdingEsc = ins.IsNew(KEY_INPUT_ESCAPE) != 0;
     bool holdingStart = (GetJoypadNum() > 0) &&
         ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1,
             InputManager::JOYPAD_BTN::MENU);
-    if (!tutorialUI_->IsFinished() && tutorialUI_->UpdateSkipHold(holdingEsc || holdingStart))
+    if (!tutorialUI_->IsFinished() &&
+        tutorialUI_->UpdateSkipHold(holdingEsc || holdingStart))
     {
-        sndMng_.StopAll();
         sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
         return;
     }
 
     tutorialUI_->Update();
 
-    // ---- チュートリアル完了後 ----
+    // ---- COMPLETE（遷移待ち）----
     if (tutorialUI_->IsFinished())
     {
-        InputManager::JOYPAD_IN_STATE padState =
-            ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
-
         bool endTutorial = ins.IsTrgDown(KEY_INPUT_SPACE) ||
-            ins.IsTrgDown(KEY_INPUT_RETURN)||
             ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
                 InputManager::JOYPAD_BTN::RIGHT);
-        if (endTutorial)
-        {
-            sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
-        }
+        if (endTutorial) sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
         return;
     }
 
+    // ---- プレイヤー・ステージ・武器は ENDING 中も常に更新 ----
+    player_->Update();
+    stage_->Update();
+    weaponManager_->Update(player_->GetTransform(), player_->GetWeaponState());
+
+    // ---- ENDING（完了セリフ中・自由移動）----
+    if (tutorialUI_->IsEnding())
+    {
+        bool endTutorial = ins.IsTrgDown(KEY_INPUT_SPACE) ||
+            ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1,
+                InputManager::JOYPAD_BTN::RIGHT);
+        if (endTutorial) sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
+        return;
+    }
+
+    // ---- チュートリアルステップ中の更新 ----
     CheckTutorialInput();
     CheckAreaLimit();
+    UpdateAfterWarning();
 
-    if (!isAnger_) {
+    // 攻撃ステップ以降は敵を更新
+    if (TutorialStep::ATTACK <= tutorialUI_->GetCurrentStep())
+    {
+        enemy_->Update();
 
+        ColliderCapsule* enemyCol =
+            dynamic_cast<ColliderCapsule*>(
+                enemy_->GetCollider(
+                    static_cast<int>(EnemyBase::COLLIDER_TYPE::CAPSULE)));
 
-        // ---- 通常更新 ----
-        player_->Update();
-        weaponMng_->Update(
-            player_->GetTransform(),
-            player_->GetWeaponState());
-        stage_->Update();
-
-        // 攻撃ステップ以降は敵を更新
-        if (TutorialStep::ATTACK <= tutorialUI_->GetCurrentStep())
+        if (enemyCol != nullptr)
         {
-            enemy_->Update();
-
-            ColliderCapsule* enemyCol =
-                dynamic_cast<ColliderCapsule*>(
-                    enemy_->GetCollider(
-                        static_cast<int>(EnemyBase::COLLIDER_TYPE::CAPSULE)));
-
-            if (enemyCol != nullptr)
+            if (weaponManager_->GetActiveCollider()->IsHit(enemyCol))
             {
-                if (weaponMng_->GetActiveCollider()->IsHit(enemyCol))
-                {
-                    enemy_->Damage(50);
-                }
+                enemy_->Damage(50);
             }
-        }
-    }
-    else {
-
-        if (++endCount_ == 80) {
-            SetEndRequest();
         }
     }
 }
@@ -140,7 +120,7 @@ void TutorialScene::Update(void)
 void TutorialScene::Draw(void)
 {
     player_->Draw();
-    weaponMng_->Draw();
+    weaponManager_->Draw();
     stage_->Draw();
 
     if (TutorialStep::ATTACK <= tutorialUI_->GetCurrentStep() && !enemy_->IsDead())
@@ -156,22 +136,19 @@ void TutorialScene::Release(void)
     player_->Release();
     delete player_;
 
-    weaponMng_->Release();
-    delete weaponMng_;
+    weaponManager_->Release();
+    delete weaponManager_;
 
     stage_->Release();
     delete stage_;
 
-    tutorialUI_->Release();
-    delete tutorialUI_;
-
     enemy_->Release();
     delete enemy_;
+
+    tutorialUI_->Release();
+    delete tutorialUI_;
 }
 
-// ============================================================
-//  行動範囲チェック
-// ============================================================
 bool TutorialScene::IsOutOfArea() const
 {
     VECTOR pos = player_->GetPos();
@@ -182,24 +159,28 @@ bool TutorialScene::IsOutOfArea() const
 
 void TutorialScene::CheckAreaLimit()
 {
-    if (AngerCount_ < 3) {
-        if (!IsOutOfArea()) return;
+    if (!IsOutOfArea()) return;
 
-        player_->SetPos(areaCenter_);
-        tutorialUI_->ShowWarning("どけ行っど！戻ってけ！");
-        AngerCount_++;
+    player_->SetPos(areaCenter_);
+
+    warningCount_++;
+
+    if (warningCount_ < WARNING_CHANGE_COUNT)
+    {
+        tutorialUI_->ShowWarning(WARNING_MSG_NORMAL);
     }
-    else {
-        if (!IsOutOfArea()) return;
-
-        tutorialUI_->ShowWarning("もうよか！わいは剣士じゃなか！");
-        isAnger_ = true;
+    else
+    {
+        // 強化警告：セリフ終了後にディレイ処理を起動
+        tutorialUI_->ShowWarning(WARNING_MSG_STRICT,
+            [this]()
+            {
+                waitingAfterWarning_ = true;
+                afterWarningTimer_ = AFTER_WARNING_DELAY;
+            });
     }
 }
 
-// ============================================================
-//  チュートリアル入力チェック
-// ============================================================
 void TutorialScene::CheckTutorialInput()
 {
     auto& ins = InputManager::GetInstance();
@@ -266,7 +247,33 @@ void TutorialScene::CheckTutorialInput()
         break;
     }
 
+    case TutorialStep::WEAPON_CHANGE:
+    {
+        if (weaponManager_->GetActiveWeaponType() != WeaponManager::WEAPON_TYPE::KATANA)
+        {
+            tutorialUI_->NotifyWeaponChangeSuccess();
+        }
+        break;
+    }
+
     default:
         break;
     }
+}
+
+void TutorialScene::UpdateAfterWarning()
+{
+    if (!waitingAfterWarning_) return;
+
+    afterWarningTimer_--;
+    if (afterWarningTimer_ <= 0)
+    {
+        waitingAfterWarning_ = false;
+        OnAfterWarning();
+    }
+}
+
+void TutorialScene::OnAfterWarning()
+{
+    SetEndRequest();
 }

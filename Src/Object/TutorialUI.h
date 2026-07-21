@@ -2,17 +2,20 @@
 #include <DxLib.h>
 #include <string>
 #include <vector>
+#include <functional>
 
-// チュートリアルのステップ
 enum class TutorialStep
 {
     WALK,
     RUN,
     ATTACK,
+    WEAPON_CHANGE,
+    GUN_INFO_1,
+    GUN_INFO_2,
+    ENDING,
     COMPLETE,
 };
 
-// 1ステップ分のデータ
 struct TutorialStepData
 {
     TutorialStep step;
@@ -35,18 +38,26 @@ public:
     void NotifyWalkSuccess();
     void NotifyRunSuccess();
     void NotifyAttackSuccess();
+    void NotifyWeaponChangeSuccess();
+    void NotifyGunInfoNext();
 
     TutorialStep GetCurrentStep() const { return currentStep_; }
-    bool IsFinished()    const { return currentStep_ == TutorialStep::COMPLETE; }
-    bool IsWarning()     const { return isWarning_; }
+    bool IsFinished()  const { return currentStep_ == TutorialStep::COMPLETE; }
+    bool IsEnding()    const { return currentStep_ == TutorialStep::ENDING; }
+    bool IsGunInfo()   const {
+        return currentStep_ == TutorialStep::GUN_INFO_1 ||
+            currentStep_ == TutorialStep::GUN_INFO_2;
+    }
+    bool IsWarning()   const { return isWarning_; }
 
-    void ShowWarning(const std::string& message);
-
-    // チュートリアルのスキップ
+    void ShowWarning(const std::string& message,
+        std::function<void()> onFinished = nullptr);
     bool UpdateSkipHold(bool holding);
 
     int screenW = 1280;
     int screenH = 720;
+
+    std::function<void()> warningOnFinished_ = nullptr;
 
 private:
     void AdvanceStep();
@@ -78,12 +89,12 @@ private:
 
     bool showComplete_ = false;
 
-    //警告状態
     bool        isWarning_ = false;
     std::string warningText_ = "";
     int         delay = 0;
 
-    //スキップ長押し
-    static constexpr int SKIP_REQUIRED = 60;  // 60fps × 1秒
+    static constexpr int SKIP_REQUIRED = 60;
     int skipHoldFrames_ = 0;
+
+    int autoAdvanceTimer_ = -1;
 };

@@ -1,10 +1,5 @@
 #include "TutorialUI.h"
-#include "../Manager/InputManager.h"
 
-// ============================================================
-//  ステップ定義テーブル
-//  セリフ・ヒントはここを編集してください
-// ============================================================
 static const std::vector<TutorialStepData> kStepTable =
 {
     {
@@ -22,8 +17,32 @@ static const std::vector<TutorialStepData> kStepTable =
     {
         TutorialStep::ATTACK,
         "殺魔剣士",
-        "後は攻撃！\n敵を一体配置したで左クリックで倒してみぃ。",
+        "後は攻撃！\n敵を一体配置したで倒してみぃ。",
         "[ 左クリック ] 攻撃"
+    },
+    {
+        TutorialStep::WEAPON_CHANGE,
+        "殺魔剣士",
+        "最後じゃ！\nEキーで武器を切り替えてみぃ。",
+        "[ E ] 武器切り替え"
+    },
+    {
+        TutorialStep::GUN_INFO_1,
+        "殺魔剣士",
+        "銃はQキーで弾を込められっど。",
+        ""
+    },
+    {
+        TutorialStep::GUN_INFO_2,
+        "殺魔剣士",
+        "ただし、5発までしか撃てん。使いどころには気をつけ。",
+        ""
+    },
+    {
+        TutorialStep::ENDING,
+        "殺魔剣士",
+        "よくやったのぅ！\nこれでチュートリアルは終わりじゃ。\n自由に動いてみぃ。",
+        "[ エンター ] 次へ"
     },
 };
 
@@ -38,18 +57,41 @@ static const std::vector<TutorialStepData> pStepTable =
     {
         TutorialStep::RUN,
         "殺魔剣士",
-        "次は走りじゃ！\n左トリガーを押しながら 左スティック で素早よ移動できっ。",
+        "次は走りじゃ！\nLT を押しながら 左スティック で素早よ移動できっ。",
         "[ LT + 左スティック ] 走る"
     },
     {
         TutorialStep::ATTACK,
         "殺魔剣士",
-        "後は攻撃！\n敵を一体配置したで右トリガーで倒してみぃ。",
-        "[RT ] 攻撃"
+        "後は攻撃！\n敵を一体配置したで倒してみぃ。",
+        "[ RT ] 攻撃"
+    },
+    {
+        TutorialStep::WEAPON_CHANGE,
+        "殺魔剣士",
+        "最後じゃ！\n十字キー左右で武器を切り替えてみぃ。",
+        "[ 十字キー左右 ] 武器切り替え"
+    },
+    {
+        TutorialStep::GUN_INFO_1,
+        "殺魔剣士",
+        "銃は十字キー左で弾を込められっど。",
+        ""
+    },
+    {
+        TutorialStep::GUN_INFO_2,
+        "殺魔剣士",
+        "ただし、5発までしか撃てん。使いどころには気をつけ。",
+        ""
+    },
+    {
+        TutorialStep::ENDING,
+        "殺魔剣士",
+        "よくやったのぅ！\nこれでチュートリアルは終わりじゃ。\n自由に動いてみぃ。",
+        "[ B ] 次へ"
     },
 };
 
-// --- カラー定数（GetColor は関数なので inline 関数で定義）---
 static unsigned int COL_WIN_BG() { return GetColor(8, 4, 20); }
 static unsigned int COL_WIN_BORDER() { return GetColor(140, 80, 220); }
 static unsigned int COL_NAME() { return GetColor(192, 132, 252); }
@@ -61,21 +103,23 @@ static unsigned int COL_DOT_NOW() { return GetColor(192, 132, 252); }
 static unsigned int COL_DOT_NONE() { return GetColor(60, 30, 100); }
 static unsigned int COL_COMPLETE() { return GetColor(220, 180, 255); }
 
-// ============================================================
 TutorialUI::~TutorialUI() {}
 
 void TutorialUI::Release()
 {
-    if (charImage_ != -1) { DeleteGraph(charImage_); charImage_ = -1; }
-    if (font_ != -1) { DeleteFontToHandle(font_); font_ = -1; }
+    if (charImage_ != -1) { DeleteGraph(charImage_);        charImage_ = -1; }
+    if (font_ != -1) { DeleteFontToHandle(font_);      font_ = -1; }
     if (fontSmall_ != -1) { DeleteFontToHandle(fontSmall_); fontSmall_ = -1; }
+    RemoveFontResourceEx("Data/Font/玉ねぎ楷書激無料版v7改.ttf", FR_PRIVATE, 0);
 }
 
 void TutorialUI::Init()
 {
+    AddFontResourceEx("Data/Font/玉ねぎ楷書激無料版v7改.ttf", FR_PRIVATE, 0);
+
     charImage_ = LoadGraph("Data/Image/Tutorial.png");
-    font_ = CreateFontToHandle("ＭＳ ゴシック", 20, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
-    fontSmall_ = CreateFontToHandle("ＭＳ ゴシック", 13, 2, DX_FONTTYPE_ANTIALIASING_EDGE);
+    font_ = CreateFontToHandle("玉ねぎ楷書激無料版v7改", 20, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
+    fontSmall_ = CreateFontToHandle("玉ねぎ楷書激無料版v7改", 13, 2, DX_FONTTYPE_ANTIALIASING_EDGE);
 
     steps_ = (GetJoypadNum() == 0) ? kStepTable : pStepTable;
     stepIndex_ = 0;
@@ -98,12 +142,41 @@ void TutorialUI::Update()
 
     UpdateTypewriter();
 
-    if (isWarning_ && typingDone_)
+    // GUN_INFO：全文表示から1秒後に自動で次へ
+    if (currentStep_ == TutorialStep::GUN_INFO_1 ||
+        currentStep_ == TutorialStep::GUN_INFO_2)
+    {
+        if (typingDone_)
+        {
+            if (autoAdvanceTimer_ < 0)
+                autoAdvanceTimer_ = 60;
+
+            autoAdvanceTimer_--;
+            if (autoAdvanceTimer_ <= 0)
+            {
+                autoAdvanceTimer_ = -1;
+                AdvanceStep();
+            }
+        }
+        return;
+    }
+
+    if (isWarning_ && typingDone_ && currentStep_ != TutorialStep::ENDING)
     {
         delay++;
         if (delay >= 60)
         {
             isWarning_ = false;
+
+            // コールバックがあれば呼んでクリア
+            if (warningOnFinished_)
+            {
+                auto cb = warningOnFinished_;
+                warningOnFinished_ = nullptr;
+                cb();
+                return;
+            }
+
             StartTypewriter(steps_[stepIndex_].message);
             delay = 0;
             charImage_ = LoadGraph("Data/Image/Tutorial.png");
@@ -133,28 +206,45 @@ void TutorialUI::Draw() const
 {
     DrawCharacter();
     DrawChatWindow();
-    if (showComplete_) DrawCompleteOverlay();
-    if (!IsFinished()) DrawSkipGauge();
+    if (currentStep_ != TutorialStep::ENDING &&
+        currentStep_ != TutorialStep::COMPLETE)
+    {
+        DrawSkipGauge();
+    }
 }
 
 void TutorialUI::NotifyWalkSuccess()
 {
-    if (currentStep_ == TutorialStep::WALK)   AdvanceStep();
+    if (currentStep_ == TutorialStep::WALK)          AdvanceStep();
 }
 void TutorialUI::NotifyRunSuccess()
 {
-    if (currentStep_ == TutorialStep::RUN)    AdvanceStep();
+    if (currentStep_ == TutorialStep::RUN)           AdvanceStep();
 }
 void TutorialUI::NotifyAttackSuccess()
 {
-    if (currentStep_ == TutorialStep::ATTACK) AdvanceStep();
+    if (currentStep_ == TutorialStep::ATTACK)        AdvanceStep();
+}
+void TutorialUI::NotifyWeaponChangeSuccess()
+{
+    if (currentStep_ == TutorialStep::WEAPON_CHANGE) AdvanceStep();
+}
+void TutorialUI::NotifyGunInfoNext()
+{
+    if (currentStep_ == TutorialStep::GUN_INFO_1 ||
+        currentStep_ == TutorialStep::GUN_INFO_2)
+    {
+        AdvanceStep();
+    }
 }
 
-void TutorialUI::ShowWarning(const std::string& message)
+void TutorialUI::ShowWarning(const std::string& message,
+    std::function<void()> onFinished)
 {
     if (isWarning_) return;
     isWarning_ = true;
     warningText_ = message;
+    warningOnFinished_ = onFinished;
     StartTypewriter(message);
     charImage_ = LoadGraph("Data/Image/Tutorial2.png");
 }
@@ -178,6 +268,7 @@ void TutorialUI::StartTypewriter(const std::string& text)
     shownText_ = "";
     typeTimer_ = 0;
     typingDone_ = false;
+    autoAdvanceTimer_ = -1;
 }
 
 void TutorialUI::UpdateTypewriter()
@@ -317,7 +408,7 @@ void TutorialUI::DrawCompleteOverlay() const
 
 void TutorialUI::DrawSkipGauge() const
 {
-    constexpr int ICON_W = 85;
+    constexpr int ICON_W = 72;
     constexpr int ICON_H = 30;
     constexpr int RADIUS = 6;
     constexpr int MARGIN = 20;
@@ -328,7 +419,6 @@ void TutorialUI::DrawSkipGauge() const
     float rate = static_cast<float>(skipHoldFrames_) /
         static_cast<float>(SKIP_REQUIRED);
 
-    // 外枠
     SetDrawBlendMode(DX_BLENDMODE_ALPHA, 160);
     DrawRoundRect(ix, iy, ix + ICON_W, iy + ICON_H,
         RADIUS, RADIUS, GetColor(20, 10, 40), TRUE);
@@ -336,7 +426,6 @@ void TutorialUI::DrawSkipGauge() const
     DrawRoundRect(ix, iy, ix + ICON_W, iy + ICON_H,
         RADIUS, RADIUS, GetColor(100, 60, 180), FALSE);
 
-    // 塗りつぶし（左から右へ）
     if (skipHoldFrames_ > 0)
     {
         int fillW = static_cast<int>(ICON_W * rate);
@@ -348,17 +437,15 @@ void TutorialUI::DrawSkipGauge() const
         SetDrawAreaFull();
     }
 
-    // 「ESC」または「START」テキスト（コントローラー接続で切替）
     std::string btnLabel = (GetJoypadNum() > 0) ? "START" : "ESC";
-    int tw = GetDrawStringWidthToHandle(btnLabel.c_str(),
-        static_cast<int>(btnLabel.size()), font_);
+    int tw = GetDrawStringWidthToHandle(
+        btnLabel.c_str(), static_cast<int>(btnLabel.size()), font_);
     DrawStringToHandle(ix + (ICON_W - tw) / 2, iy + (ICON_H - 20) / 2,
         btnLabel.c_str(),
         (skipHoldFrames_ > 0) ? GetColor(255, 255, 255)
         : GetColor(160, 130, 200),
         font_);
 
-    // ラベル（小フォントでゲージ真上・中央揃え）
     const char* label = "長押しでスキップ";
     int lw = GetDrawStringWidthToHandle(label, static_cast<int>(strlen(label)), fontSmall_);
     DrawStringToHandle(ix + (ICON_W - lw) / 2, iy - 18,

@@ -1,12 +1,11 @@
 #pragma once
 #include "SceneBase.h"
 
-class AnimationController;
 class Player;
-class WeaponManager;
 class Stage;
 class EnemyMob;
 class TutorialUI;
+class WeaponManager;
 
 class TutorialScene : public SceneBase
 {
@@ -20,30 +19,34 @@ public:
     void Release(void) override;
 
 private:
-    Player* player_;
-    WeaponManager* weaponMng_;
-    Stage* stage_;
-    EnemyMob* enemy_;
-    TutorialUI* tutorialUI_;
+
+    Player* player_ = nullptr;
+    WeaponManager* weaponManager_ = nullptr;
+    Stage* stage_ = nullptr;
+    EnemyMob* enemy_ = nullptr;
+    TutorialUI* tutorialUI_ = nullptr;
 
     static constexpr int WALK_REQUIRED = 120;
     static constexpr int RUN_REQUIRED = 120;
 
-    // --- 入力検知用 ---
     void CheckTutorialInput();
     int  walkFrames_ = 0;
     int  runFrames_ = 0;
-    bool prevMouseLeft_ = false;
 
-    //強制終了
-    bool isAnger_ = false;
-    int AngerCount_;
-    int endCount_;
-
-    // --- 行動範囲制限 ---
     void  CheckAreaLimit();
     bool  IsOutOfArea() const;
 
     VECTOR areaCenter_ = { 0.0f, 0.0f, 0.0f };
     float  areaRadius_ = 3000.0f;
+
+    int  warningCount_ = 0;
+    static constexpr int WARNING_CHANGE_COUNT = 3;
+    static constexpr const char* WARNING_MSG_NORMAL = "どけ行っど！戻ってけ！";
+    static constexpr const char* WARNING_MSG_STRICT = "もうよか！わいは剣士じゃなか！";
+
+    void  UpdateAfterWarning();
+    void  OnAfterWarning();
+    bool  waitingAfterWarning_ = false;
+    int   afterWarningTimer_ = 0;
+    static constexpr int AFTER_WARNING_DELAY = 15;
 };
