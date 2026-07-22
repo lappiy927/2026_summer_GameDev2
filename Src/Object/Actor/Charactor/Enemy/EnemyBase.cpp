@@ -187,8 +187,9 @@ void EnemyBase::UpdateDashReady()
 	{
 		dashTimer_ = 0;
 
-		dashSpeed_ = 40.0f;
-		tackleTimer_ = 40;
+		dashSpeed_ = 100.0f;
+
+		tackleTimer_ = 50;
 
 		isTackle_ = true;
 
@@ -201,6 +202,9 @@ void EnemyBase::UpdateDash()
 {
 	moveDir_ = dashDir_;
 	movePow_ = VScale(dashDir_, dashSpeed_);
+
+	dashSpeed_ *= 0.95f;
+
 
 	// “Ëi’†‚Ì“–‚½‚è”»’è
 	if (target_ && IsHit(target_))
