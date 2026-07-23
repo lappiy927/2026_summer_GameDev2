@@ -6,6 +6,7 @@ class Stage;
 class EnemyMob;
 class TutorialUI;
 class WeaponManager;
+class Grass;
 
 class TutorialScene : public SceneBase
 {
@@ -25,6 +26,8 @@ private:
     Stage* stage_ = nullptr;
     EnemyMob* enemy_ = nullptr;
     TutorialUI* tutorialUI_ = nullptr;
+
+    std::unique_ptr<Grass> grass_;
 
     static constexpr int WALK_REQUIRED = 120;
     static constexpr int RUN_REQUIRED = 120;

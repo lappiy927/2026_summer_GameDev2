@@ -42,7 +42,7 @@ static const std::vector<TutorialStepData> kStepTable =
         TutorialStep::ENDING,
         "殺魔剣士",
         "よくやったのぅ！\nこれでチュートリアルは終わりじゃ。\n自由に動いてみぃ。",
-        "[ エンター ] 次へ"
+        "[ スペース ] 次へ"
     },
 };
 

@@ -9,6 +9,7 @@ class Player;
 class WeaponManager;
 class Door;
 class EnemyBase;
+class Grass;
 
 class GameScene : public SceneBase
 {
@@ -40,6 +41,7 @@ private:
 	WeaponManager* weaponMng_;
 	Door* door_;
 
+	std::unique_ptr<Grass> grass_;
 
 	std::vector<std::shared_ptr<EnemyBase>> enemies_;
 

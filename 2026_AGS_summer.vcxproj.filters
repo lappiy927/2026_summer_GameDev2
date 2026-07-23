@@ -49,6 +49,7 @@
     <ClCompile Include="Src\Manager\WeaponManager.cpp" />
     <ClCompile Include="Src\Renderer\VertexMaterial.cpp" />
     <ClCompile Include="Src\Renderer\VertexRenderer.cpp" />
+    <ClCompile Include="Src\Object\Actor\Stage\Grass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\GameClearUI.h" />
@@ -100,6 +101,7 @@
     <ClInclude Include="Src\Renderer\VertexMaterial.h" />
     <ClInclude Include="Src\Renderer\VertexRenderer.h" />
     <ClInclude Include="Src\Object\Actor\Weapon\WeaponState.h" />
+    <ClInclude Include="Src\Object\Actor\Stage\Grass.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -118,5 +120,6 @@
   <ItemGroup>
     <FxCompile Include="Src\Shader\PixelShader\PixelShader.hlsl" />
     <FxCompile Include="Src\Shader\VertexEffect\VertexShader.hlsl" />
+    <FxCompile Include="Src\Shader\VertexEffect\VertexGrass.hlsl" />
   </ItemGroup>
 </Project>

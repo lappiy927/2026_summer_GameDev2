@@ -81,6 +81,10 @@ void ResourceManager::Init(void)
 	// BOSSÉÇÉfÉã
 	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Charactor/Enemy/Boss/BossEnemy.mv1");
 	resourcesMap_.emplace(SRC::BOSS, res);
+
+	//ëêÉÇÉfÉã
+	res = new RES(Resource::TYPE::MODEL, PATH_MDL + "Stage/Grass.mv1");
+	resourcesMap_.emplace(SRC::GRASS, res);
 }
 
 void ResourceManager::Release(void)

@@ -14,15 +14,18 @@ float4 main(PS_INPUT input) : SV_TARGET
     float4 col = diffuseMapTexture.Sample(diffuseMapSampler, input.uv);
     col *= input.diffuse;
 
+    clip(col.a - 0.5f);
+
     if (rimParams.y > 0.5f)
     {
-        float3 N = normalize(input.normal); // ビュー座標の法線
-        float3 V = normalize(-input.vwPos); // ビュー座標での視線ベクトル
+        float3 N = normalize(input.normal);
+        float3 V = normalize(-input.vwPos);
 
         float rim = 1.0f - saturate(dot(N, V));
         rim = pow(rim, max(rimParams.x, 0.001f));
 
         col.rgb += rimColor.rgb * rim * rimColor.a;
     }
+
     return col;
 }
