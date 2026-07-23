@@ -30,7 +30,7 @@ void MenuScene::Update(void)
 {
 	auto& ins = InputManager::GetInstance();
 
-	if (ins.IsTrgDown(KEY_INPUT_UP) ||
+	if (ins.IsTrgDown(KEY_INPUT_W) ||
 		ins.IsPadBtnTrgDown(
 			InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::DPAD_UP))
@@ -43,7 +43,7 @@ void MenuScene::Update(void)
 		}
 	}
 
-	if (ins.IsTrgDown(KEY_INPUT_DOWN) ||
+	if (ins.IsTrgDown(KEY_INPUT_S) ||
 		ins.IsPadBtnTrgDown(
 			InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::DPAD_DOWN))

@@ -131,9 +131,15 @@ void Boss::InitAnimation()
         20.0f,
         Application::PATH_MODEL + "Charactor/Enemy/Boss/BossAttack.mv1");
 
-    // Ž€–S
+    // ƒ`ƒƒ[ƒW
     animationController_->Add(
         4,
+        20.0f,
+        Application::PATH_MODEL + "Charactor/Enemy/Boss/Charge.mv1");
+
+    // Ž€–S
+    animationController_->Add(
+        5,
         20.0f,
         Application::PATH_MODEL + "Charactor/Enemy/Boss/BossDai.mv1");
 
@@ -217,7 +223,7 @@ void Boss::AI()
         {
             state_ = STATE::DASH_READY;
 
-            animationController_->Play(2, true);
+            animationController_->Play(4, true);
         
             chargeEffectHandle_ =
                 PlayEffekseer3DEffect(chargeEffect_);
@@ -287,7 +293,7 @@ void Boss::Damage(int damage)
 
         state_ = STATE::DEAD;
 
-        animationController_->Play(4, false);
+        animationController_->Play(5, false);
     }
 }
 

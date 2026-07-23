@@ -83,7 +83,7 @@ void Katana::InitCollider(void)
         &transform_,
         VGet(0, 0, 100),
         VGet(0, 0, 300),
-        20000.0f);
+        200.0f);
 }
 
 void Katana::UpdateIdle(void)

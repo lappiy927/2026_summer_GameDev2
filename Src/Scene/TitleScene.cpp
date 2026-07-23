@@ -76,7 +76,7 @@ void TitleScene::Update(void)
 	InputManager::JOYPAD_IN_STATE padState =
 		ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
 
-	if (ins.IsTrgDown(KEY_INPUT_LEFT)||
+	if (ins.IsTrgDown(KEY_INPUT_A)||
 		ins.IsPadBtnTrgDown(
 			InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::DPAD_LEFT))
@@ -89,7 +89,7 @@ void TitleScene::Update(void)
 		}
 	}
 
-	if (ins.IsTrgDown(KEY_INPUT_RIGHT) ||
+	if (ins.IsTrgDown(KEY_INPUT_D) ||
 		ins.IsPadBtnTrgDown(
 			InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::DPAD_RIGHT))

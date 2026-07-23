@@ -121,6 +121,8 @@ void GameScene::Init(void)
 		}
 	}
 
+	remainEnemy_ = static_cast<int>(enemies_.size());
+
 	// カメラにプレイヤーを追従
 	Camera* camera = sceMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
@@ -250,7 +252,27 @@ void GameScene::Update(void)
 
 			if (hit)
 			{
+				// ダメージ前のHP
+				int beforeHp = enemy->GetHp();
+
 				enemy->Damage(100);
+
+				if (beforeHp > 0 && enemy->GetHp() <= 0)
+				{
+					remainEnemy_--;
+
+					if (remainEnemy_ > 0)
+					{
+						remainEnemyTimer_ = 120;
+					}
+
+					if (remainEnemy_ == 0 && !isBossRoomOpen_)
+					{
+						isBossRoomOpen_ = true;
+						door_->Open();
+						bossRoomOpenTimer_ = 180;
+					}
+				}
 
 				if (weaponMng_->GetActiveWeaponType() == WeaponManager::WEAPON_TYPE::KATANA)
 				{
@@ -278,6 +300,8 @@ void GameScene::Update(void)
 		return;
 	}
 
+	int before = enemies_.size();
+
 	enemies_.erase(
 		std::remove_if(
 			enemies_.begin(),
@@ -288,15 +312,12 @@ void GameScene::Update(void)
 			}),
 		enemies_.end());
 
-	if (enemies_.empty() && !isBossRoomOpen_)
+	if (remainEnemyTimer_ > 0)
 	{
-		isBossRoomOpen_ = true;
-
-		door_->Open();
-
-		bossRoomOpenTimer_ = 180;
-
+		remainEnemyTimer_--;
 	}
+
+
 
 	if (isBossRoomOpen_)
 	{
@@ -318,6 +339,8 @@ void GameScene::Update(void)
 				SceneManager::SCENE_ID::BOSS);
 		}
 	}
+
+
 }
 
 void GameScene::Draw(void)
@@ -395,7 +418,7 @@ void GameScene::Draw(void)
 			3,
 			DX_FONTTYPE_ANTIALIASING_EDGE);
 
-		const char* text = "BOSS ROOM OPEN";
+		const char* text = "ボス部屋が　開いた！";
 
 		// 文字サイズ取得
 		int textWidth = GetDrawStringWidthToHandle(
@@ -422,6 +445,41 @@ void GameScene::Draw(void)
 
 		DeleteFontToHandle(font);
 	}
+
+	if (remainEnemyTimer_ > 0)
+	{
+		int font = CreateFontToHandle(
+			NULL,
+			64,    // フォントサイズ
+			3,
+			DX_FONTTYPE_ANTIALIASING_EDGE);
+
+		char text[32];
+		sprintf_s(text, "あと %d体", remainEnemy_);
+
+		// 文字サイズ取得
+		int textWidth = GetDrawStringWidthToHandle(
+			text,
+			strlen(text),
+			font);
+
+		int textHeight = GetFontSizeToHandle(font);
+
+		// 画面中央
+		int x = (Application::SCREEN_SIZE_X - textWidth) / 2;
+		int y = (Application::SCREEN_SIZE_Y - textHeight) / 2;
+
+		DrawStringToHandle(
+			x,
+			y,
+			text,
+			GetColor(255, 255, 0),
+			font);
+
+		DeleteFontToHandle(font);
+	}
+
+
 
 	// TIMEUI
 	DrawGraph(-20, -20, timeUI_, TRUE);

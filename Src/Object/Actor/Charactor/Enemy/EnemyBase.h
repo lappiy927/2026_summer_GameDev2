@@ -45,6 +45,8 @@ public:
 
     ColliderBase* GetCollider(int type);
 
+    int GetHp() const;
+
 protected:
 
     // ó‘Ô

@@ -64,4 +64,9 @@ private:
 	float countDown_ = 4.0f;
 
 	int countImage_[4];
+
+	int remainEnemy_ = 10;
+	int remainEnemyTimer_ = 0;
+
+
 };

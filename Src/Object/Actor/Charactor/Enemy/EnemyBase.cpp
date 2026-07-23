@@ -142,6 +142,11 @@ ColliderBase* EnemyBase::GetCollider(int type)
 	return ownColliders_.at(type);
 }
 
+int EnemyBase::GetHp() const
+{
+	return hp_;
+}
+
 void EnemyBase::UpdateIdle()
 {
 	movePow_ = AsoUtility::VECTOR_ZERO;
@@ -186,6 +191,8 @@ void EnemyBase::UpdateDashReady()
 
 	if (dashTimer_ >= 180)
 	{
+
+		
 
 		if (chargeEffectPlaying_)
 		{
