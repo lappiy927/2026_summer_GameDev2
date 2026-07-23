@@ -42,5 +42,10 @@ private:
 	bool isAttacking_ = false;
 
 	int leftHandFrame_ = -1;
+
+	int chargeEffectHandle_ = -1;
+	bool chargeEffectPlaying_ = false;
+
+	int chargeEffect_;
 };
 

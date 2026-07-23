@@ -107,4 +107,9 @@ protected:
 
     int tackleTimer_ = 0;
 
+    int chargeEffectHandle_ = -1;
+    bool chargeEffectPlaying_ = false;
+
+    int chargeEffect_;
+
 };

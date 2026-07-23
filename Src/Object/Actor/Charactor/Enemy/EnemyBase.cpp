@@ -1,4 +1,5 @@
 #include "EnemyBase.h"
+#include <EffekseerForDXLib.h>
 #include "../Player.h"
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../Common/AnimationController.h"
@@ -183,11 +184,19 @@ void EnemyBase::UpdateDashReady()
 
 	dashTimer_++;
 
-	if (dashTimer_ >= 90)
+	if (dashTimer_ >= 180)
 	{
+
+		if (chargeEffectPlaying_)
+		{
+			StopEffekseer3DEffect(chargeEffectHandle_);
+			chargeEffectPlaying_ = false;
+			chargeEffectHandle_ = -1;
+		}
+
 		dashTimer_ = 0;
 
-		dashSpeed_ = 100.0f;
+		dashSpeed_ = 150.0f;
 
 		tackleTimer_ = 50;
 

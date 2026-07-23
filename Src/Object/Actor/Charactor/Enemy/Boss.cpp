@@ -41,8 +41,10 @@ void Boss::InitLoad()
 
     transform_.SetModel(model);
 
-    effectHandle = LoadEffekseerEffect(_T("Data/effect/blood.efk"), 50.0f);
+    effectHandle = LoadEffekseerEffect(_T("Data/Effect/blood.efk"), 50.0f);
 
+    chargeEffect_ =
+        LoadEffekseerEffect(_T("Data/Effect/Charge.efkefc"), 50.0f);
 }
 
 void Boss::InitTransform()
@@ -216,6 +218,20 @@ void Boss::AI()
             state_ = STATE::DASH_READY;
 
             animationController_->Play(2, true);
+        
+            chargeEffectHandle_ =
+                PlayEffekseer3DEffect(chargeEffect_);
+
+            chargeEffectPlaying_ = true;
+        }
+
+        if (chargeEffectPlaying_)
+        {
+            SetPosPlayingEffekseer3DEffect(
+                chargeEffectHandle_,
+                transform_.pos.x,
+                transform_.pos.y + 120.0f,
+                transform_.pos.z);
         }
     }
     else
@@ -258,6 +274,13 @@ void Boss::Damage(int damage)
             int playHandle = PlayEffekseer3DEffect(effectHandle);
             SetPosPlayingEffekseer3DEffect(playHandle, effectPos_.x, effectPos_.y, effectPos_.z);
             SetRotationPlayingEffekseer3DEffect(playHandle, 0.0f, yaw, 0.0f);
+        }
+
+        if (chargeEffectPlaying_)
+        {
+            StopEffekseer3DEffect(chargeEffectHandle_);
+            chargeEffectPlaying_ = false;
+            chargeEffectHandle_ = -1;
         }
 
         sndMng_.Play(SoundManager::SRC::EnemyDai);
