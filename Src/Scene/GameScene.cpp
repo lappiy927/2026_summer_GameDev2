@@ -10,6 +10,7 @@
 #include "../Scene/MenuScene.h"
 #include "../Object/Actor/Stage/Stage.h"
 #include "../Object/Actor/Stage/Door.h"
+#include"../Object/Actor/Stage/Grass.h"
 #include "../Object/Actor/Charactor/Player.h"
 #include "../Object/Actor/Weapon/Gun.h"
 #include "../Object/Actor/Charactor/Enemy/EnemyMob.h"
@@ -46,6 +47,13 @@ void GameScene::Init(void)
 
 	door_ = new Door();
 	door_->Init();
+
+	grass_ = std::make_unique<Grass>();
+	grass_->Init();
+
+	grass_->AddHitCollider(stage_->GetModelCollider());
+	// ここで散布
+	grass_->GenerateField(10000, 10000.0f);
 
 	// ステージモデルのコライダーをプレイヤーに登録
 	// ステージコライダー取得
@@ -220,6 +228,9 @@ void GameScene::Update(void)
 
 	door_->Update();
 
+	grass_->SetPlayerPos(player_->GetPos());
+	grass_->Update();
+
 	// エネミーの更新
 	for (auto& enemy : enemies_)
 	{
@@ -349,6 +360,7 @@ void GameScene::Draw(void)
 
 	// 描画
 	stage_->Draw();
+	grass_->Draw();
 
 	player_->Draw();
 
@@ -563,4 +575,7 @@ void GameScene::Release(void)
 	// ドアの解放
 	door_->Release();
 	delete door_;
+
+	grass_->Release();
+	
 }

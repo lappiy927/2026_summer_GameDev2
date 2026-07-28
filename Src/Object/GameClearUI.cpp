@@ -28,6 +28,7 @@ void GameClearUI::Release()
 {
     if (charImage_ != -1) { DeleteGraph(charImage_); charImage_ = -1; }
     if (font_ != -1) { DeleteFontToHandle(font_); font_ = -1; }
+    RemoveFontResourceEx("Data/Font/玉ねぎ楷書激無料版v7改.ttf", FR_PRIVATE, 0);
 }
 
 // ============================================================
@@ -36,8 +37,9 @@ void GameClearUI::Init()
     // 立ち絵画像（差し替えたい場合はパスを変更してください）
     charImage_ = LoadGraph("Data/Image/Tutorial.png");
 
-    font_ = CreateFontToHandle("ＭＳ ゴシック", 20, 3,
-        DX_FONTTYPE_ANTIALIASING_EDGE);
+    AddFontResourceEx("Data/Font/玉ねぎ楷書激無料版v7改.ttf", FR_PRIVATE, 0);
+
+    font_ = CreateFontToHandle("玉ねぎ楷書激無料版v7改", 20, 3, DX_FONTTYPE_ANTIALIASING_EDGE);
 
     speakerName_ = kGameClearSpeaker;
 

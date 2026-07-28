@@ -24,6 +24,12 @@ void Stage::Draw(void)
 	renderer_->Draw(transform_.modelId);
 }
 
+ColliderModel* Stage::GetModelCollider() const
+{
+	return static_cast<ColliderModel*>(
+		ownColliders_.at(static_cast<int>(COLLIDER_TYPE::MODEL)));
+}
+
 void Stage::InitLoad(void)
 {
 	//ƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ

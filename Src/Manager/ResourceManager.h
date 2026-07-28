@@ -28,6 +28,7 @@ public:
 		ATTACK,
 		ENEMY,
 		BOSS,
+		GRASS,
 	};
 
 	// 明示的にインスタンスを生成する

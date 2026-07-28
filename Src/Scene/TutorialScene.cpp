@@ -4,6 +4,7 @@
 #include "../Manager/WeaponManager.h"
 #include "../Manager/Camera.h"
 #include "../Object/Actor/Stage/Stage.h"
+#include"../Object/Actor/Stage/Grass.h"
 #include "../Object/Actor/Charactor/Player.h"
 #include "../Object/Actor/Charactor/Enemy/EnemyMob.h"
 #include "../Object/TutorialUI.h"
@@ -29,6 +30,12 @@ void TutorialScene::Init(void)
 
     stage_ = new Stage();
     stage_->Init();
+
+    grass_ = std::make_unique<Grass>();
+    grass_->Init();
+
+    grass_->AddHitCollider(stage_->GetModelCollider());
+    grass_->GenerateField(10000, 10000.0f);
 
     enemy_ = new EnemyMob();
     enemy_->Init();
@@ -80,6 +87,10 @@ void TutorialScene::Update(void)
     // ---- プレイヤー・ステージ・武器は ENDING 中も常に更新 ----
     player_->Update();
     stage_->Update();
+
+    grass_->SetPlayerPos(player_->GetPos());
+    grass_->Update();
+
     weaponManager_->Update(player_->GetTransform(), player_->GetWeaponState());
 
     // ---- ENDING（完了セリフ中・自由移動）----
@@ -119,9 +130,11 @@ void TutorialScene::Update(void)
 
 void TutorialScene::Draw(void)
 {
+    stage_->Draw();
+    grass_->Draw();
     player_->Draw();
     weaponManager_->Draw();
-    stage_->Draw();
+   
 
     if (TutorialStep::ATTACK <= tutorialUI_->GetCurrentStep() && !enemy_->IsDead())
     {
@@ -147,6 +160,8 @@ void TutorialScene::Release(void)
 
     tutorialUI_->Release();
     delete tutorialUI_;
+
+    grass_->Release();
 }
 
 bool TutorialScene::IsOutOfArea() const

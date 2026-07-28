@@ -3,6 +3,8 @@
 #include <vector>
 #include "../ActorBase.h"
 
+class ColliderModel;
+
 class Stage :public ActorBase
 {
 
@@ -26,6 +28,8 @@ public:
 
 	//•`‰æ
 	void Draw(void)override;
+
+	ColliderModel* GetModelCollider() const;
 
 protected:
 
