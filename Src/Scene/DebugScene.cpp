@@ -92,15 +92,6 @@ void DebugScene::PlaceDebugPoint(void)
 		// マウスの2D座標から3D座標へ変換
 		VECTOR worldPos = ConvScreenPosToWorldPos(screenPos);
 
-		// ステージのモデルコライダを取得
-		/*const ColliderBase* collider = stage_->GetOwnCollider(
-			static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
-
-		if (collider == nullptr)
-		{
-			return;
-		}*/
-
 		// カメラ情報を取得
 		const auto& camera = SceneManager::GetInstance().GetCamera();
 

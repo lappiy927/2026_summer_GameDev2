@@ -49,7 +49,6 @@ void Application::Init(void)
 		isInitFail_ = true;
 		return;
 	}
-
 	SetUseLighting(TRUE);
 
 	// ŠÂ‹«Œõ‚ð‹­‚­‚·‚é
@@ -137,7 +136,6 @@ void Application::Destroy(void)
 	{
 		isReleaseFail_ = true;
 	}
-
 	delete instance_;
 }
 
@@ -154,9 +152,8 @@ bool Application::IsReleaseFail(void) const
 Application::Application(void)
 	:
 	isInitFail_(false),
-    isReleaseFail_(false)
+	isReleaseFail_(false)
 {
-	
 }
 
 void Application::InitEffekseer(void)

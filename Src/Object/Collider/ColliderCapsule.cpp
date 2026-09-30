@@ -13,17 +13,21 @@ ColliderCapsule::ColliderCapsule(
 	radius_(radius)
 {
 }
+
 ColliderCapsule::~ColliderCapsule(void)
 {
 }
+
 const VECTOR& ColliderCapsule::GetLocalPosTop(void) const
 {
 	return localPosTop_;
 }
+
 const VECTOR& ColliderCapsule::GetLocalPosDown(void) const
 {
 	return localPosDown_;
 }
+
 void ColliderCapsule::SetLocalPosTop(const VECTOR& pos)
 {
 	localPosTop_ = pos;
@@ -33,6 +37,7 @@ void ColliderCapsule::SetLocalPosDown(const VECTOR& pos)
 {
 	localPosDown_ = pos;
 }
+
 VECTOR ColliderCapsule::GetPosTop(void) const
 {
 	return GetRotPos(localPosTop_);
@@ -42,18 +47,22 @@ VECTOR ColliderCapsule::GetPosDown(void) const
 {
 	return GetRotPos(localPosDown_);
 }
+
 float ColliderCapsule::GetRadius(void) const
 {
 	return radius_;
 }
+
 void ColliderCapsule::SetRadius(float radius)
 {
 	radius_ = radius;
 }
+
 float ColliderCapsule::GetHeight(void) const
 {
 	return localPosTop_.y;
 }
+
 VECTOR ColliderCapsule::GetCenter(void) const
 {
 	VECTOR top = GetPosTop();
@@ -84,15 +93,13 @@ VECTOR ColliderCapsule::GetPosPushBackAlongNormal(
 		{
 			break;
 		}
-
 		// 衝突していたら法線方向に押し戻し
-		tmpTransform.pos =
-			VAdd(tmpTransform.pos, VScale(hitColPoly.Normal, pushDistance));
+		tmpTransform.pos_ =
+			VAdd(tmpTransform.pos_, VScale(hitColPoly.Normal, pushDistance));
 
 		tryCnt++;
 	}
-
-	return tmpTransform.pos;
+	return tmpTransform.pos_;
 }
 
 void ColliderCapsule::PushBackAlongNormal(
@@ -102,7 +109,7 @@ void ColliderCapsule::PushBackAlongNormal(
 
 	// モデルとカプセルの衝突判定
 	auto hits = MV1CollCheck_Capsule(
-		colliderModel->GetFollow()->modelId, -1,
+		colliderModel->GetFollow()->modelId_, -1,
 		GetPosTop(), GetPosDown(), GetRadius());
 
 	for (int i = 0; i < hits.HitNum; i++)
@@ -128,7 +135,7 @@ void ColliderCapsule::PushBackAlongNormal(
 		}
 
 		// 指定された回数と距離で三角形の法線方向に押し戻す
-		transform.pos =
+		transform.pos_ =
 			GetPosPushBackAlongNormal(
 				hitPoly,
 				maxTryCnt,
@@ -141,8 +148,6 @@ void ColliderCapsule::PushBackAlongNormal(
 			"NormalY %.2f",
 			hitPoly.Normal.y);
 	}
-	
-
 	// 検出した地面ポリゴン情報の後始末
 	MV1CollResultPolyDimTerminate(hits);
 }
@@ -153,7 +158,7 @@ bool ColliderCapsule::IsHit(const ColliderModel* colliderModel, bool isExclude, 
 
 	// モデルとカプセルの衝突判定
 	auto hits = MV1CollCheck_Capsule(
-		colliderModel->GetFollow()->modelId, -1,
+		colliderModel->GetFollow()->modelId_, -1,
 		GetPosTop(), GetPosDown(), GetRadius());
 
 	// 衝突した複数のポリゴンと衝突回避するまで、位置を移動させる
@@ -177,7 +182,6 @@ bool ColliderCapsule::IsHit(const ColliderModel* colliderModel, bool isExclude, 
 		ret = true;
 		break;
 	}
-
 	// 検出した地面ポリゴン情報の後始末
 	MV1CollResultPolyDimTerminate(hits);
 
@@ -194,14 +198,13 @@ bool ColliderCapsule::IsHit(const ColliderCapsule* other)
 	if (!isEnable_) {
 		return false;
 	}
-
 	// 自分の中心
 	VECTOR myPos =
 		VScale(
 			VAdd(
 				GetRotPos(localPosTop_),
 				GetRotPos(localPosDown_)),
-				0.5f);
+			0.5f);
 
 	// 相手の中心
 	VECTOR otherPos =

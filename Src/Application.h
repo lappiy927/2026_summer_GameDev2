@@ -1,10 +1,10 @@
 #pragma once
 #include <string>
+
 class FpsController;
 
 class Application
 {
-
 public:
 
 	// スクリーンサイズ
@@ -85,4 +85,3 @@ private:
 	// エフェクシアの初期化
 	void InitEffekseer(void);
 };
-

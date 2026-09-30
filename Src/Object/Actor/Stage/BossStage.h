@@ -2,7 +2,7 @@
 #include "../ActorBase.h"
 
 class BossStage :
-    public ActorBase
+	public ActorBase
 {
 public:
 
@@ -56,4 +56,3 @@ private:
 	"Ground",
 	};
 };
-

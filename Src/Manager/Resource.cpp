@@ -47,7 +47,6 @@ Resource::~Resource(void)
 
 void Resource::Load(void)
 {
-
 	switch (type_)
 	{
 	case Resource::TYPE::IMG:
@@ -75,14 +74,11 @@ void Resource::Load(void)
 
 		handleId_ = LoadEffekseerEffect(path_.c_str());
 		break;
-
 	}
-
 }
 
-void Resource::Release(void)
+void Resource::Release(void)const
 {
-
 	switch (type_)
 	{
 	case Resource::TYPE::IMG:
@@ -103,7 +99,7 @@ void Resource::Release(void)
 	case Resource::TYPE::MODEL:
 	{
 		MV1DeleteModel(handleId_);
-		auto ids = duplicateModelIds_;
+		auto &ids = duplicateModelIds_;
 		for (auto id : ids)
 		{
 			MV1DeleteModel(id);
@@ -115,14 +111,11 @@ void Resource::Release(void)
 
 		DeleteEffekseerEffect(handleId_);
 		break;
-
 	}
-
 }
 
 void Resource::CopyHandle(int* imgs) const
 {
-
 	if (handleIds_ == nullptr)
 	{
 		return;
@@ -133,5 +126,4 @@ void Resource::CopyHandle(int* imgs) const
 	{
 		imgs[i] = handleIds_[i];
 	}
-
 }

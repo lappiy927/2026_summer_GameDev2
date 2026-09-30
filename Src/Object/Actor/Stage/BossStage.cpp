@@ -18,7 +18,7 @@ void BossStage::Update(void)
 
 void BossStage::Draw(void)
 {
-	renderer_->Draw(transform_.modelId);
+	renderer_->Draw(transform_.modelId_);
 }
 
 void BossStage::InitLoad(void)
@@ -35,17 +35,17 @@ void BossStage::InitLoad(void)
 
 void BossStage::InitTransform(void)
 {
-	transform_.scl = VGet(0.5f, 0.5f, 0.5f);
-	transform_.quaRot = Quaternion::Identity();
-	transform_.quaRotLocal = Quaternion::Identity();
-	transform_.pos = VGet(2000.0f, 2900.0f, 2000.0f);
+	transform_.scl_ = VGet(0.5f, 0.5f, 0.5f);
+	transform_.quaRot_ = Quaternion::Identity();
+	transform_.quaRotLocal_ = Quaternion::Identity();
+	transform_.pos_ = VGet(2000.0f, 2900.0f, 2000.0f);
 	transform_.Update();
 }
 
 void BossStage::InitCollider(void)
 {
 	// DxLib側の衝突情報セットアップ
-	MV1SetupCollInfo(transform_.modelId);
+	MV1SetupCollInfo(transform_.modelId_);
 
 	// モデルのコライダ
 	ColliderModel* colModel =
@@ -59,7 +59,6 @@ void BossStage::InitCollider(void)
 	{
 		colModel->AddTargetFrameIds(name);
 	}
-
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::MODEL), colModel);
 }
 

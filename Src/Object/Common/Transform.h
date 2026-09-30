@@ -14,28 +14,28 @@ class Transform
 public:
 
 	// モデルのハンドルID
-	int modelId;
+	int modelId_;
 
 	// 大きさ
-	VECTOR scl;
+	VECTOR scl_;
 
 	// 回転
-	VECTOR rot;
+	VECTOR rot_;
 
 	// 位置
-	VECTOR pos;
-	VECTOR localPos;
+	VECTOR pos_;
+	VECTOR localPos_;
 
 	// 行列
-	MATRIX matScl;
-	MATRIX matRot;
-	MATRIX matPos;
+	MATRIX matScl_;
+	MATRIX matRot_;
+	MATRIX matPos_;
 
 	// 回転
-	Quaternion quaRot;
+	Quaternion quaRot_;
 
 	// ローカル回転
-	Quaternion quaRotLocal;
+	Quaternion quaRotLocal_;
 
 	// コンストラクタ
 	Transform(void);
@@ -75,7 +75,4 @@ public:
 
 	// ワールド行列を取得
 	MATRIX GetWorldMatrix()const;
-
-
 };
-

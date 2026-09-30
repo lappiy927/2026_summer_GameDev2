@@ -5,7 +5,6 @@
 
 class ColliderModel : public ColliderBase
 {
-
 public:
 
 	// コンストラクタ
@@ -57,5 +56,4 @@ protected:
 
 	// デバッグ用描画
 	void DrawDebug(int color) override {};
-
 };

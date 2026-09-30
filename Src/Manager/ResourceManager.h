@@ -5,7 +5,6 @@
 
 class ResourceManager
 {
-
 public:
 
 	// リソース名
@@ -77,4 +76,3 @@ private:
 	// 内部ロード
 	Resource& _Load(SRC src);
 };
-

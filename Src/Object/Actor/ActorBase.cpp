@@ -19,7 +19,6 @@ ActorBase::~ActorBase(void)
 
 void ActorBase::Init(void)
 {
-
 	// リソースロード
 	InitLoad();
 
@@ -34,25 +33,14 @@ void ActorBase::Init(void)
 
 	// 初期化後の個別処理
 	InitPost();
-
 }
 
 void ActorBase::Draw(void)
 {
-	if (transform_.modelId != -1)
+	if (transform_.modelId_ != -1)
 	{
-		MV1DrawModel(transform_.modelId);
+		MV1DrawModel(transform_.modelId_);
 	}
-
-#ifdef _DEBUG
-
-	// 所有しているコライダの描画
-	//for (const auto& own : ownColliders_)
-	//{
-	//	own.second->Draw();
-	//}
-
-#endif // _DEBUG
 }
 
 void ActorBase::Release(void)
@@ -100,6 +88,5 @@ void ActorBase::ClearHitCollider(void)
 
 const VECTOR& ActorBase::GetPos() const
 {
-	return transform_.pos;
+	return transform_.pos_;
 }
-

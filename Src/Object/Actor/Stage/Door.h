@@ -40,8 +40,9 @@ protected:
 
 private:
 
-	float slideAmount_ = 0.0f;
-	bool isOpen_ = false;
+	// ƒhƒA‚ÌŠJ•Â—Ê
+	float slideAmount_;
+	bool isOpen_;
 
 	int backHandle_;
 	VECTOR backPos_;
@@ -54,6 +55,4 @@ private:
 
 	int leftHandle_;
 	int rightHandle_;
-
 };
-

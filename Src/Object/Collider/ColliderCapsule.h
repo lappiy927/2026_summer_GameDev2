@@ -1,12 +1,14 @@
 #pragma once
 #include <DxLib.h>
 #include "ColliderBase.h"
+
 class Transform;
 class ColliderModel;
 
 class ColliderCapsule : public ColliderBase
 {
 public:
+
 	// コンストラクタ
 	ColliderCapsule(
 		TAG tag, const Transform* follow,
@@ -58,10 +60,6 @@ public:
 
 	// デバッグ用描画
 	void DrawDebug(int color) override;
-
-protected:
-
-	
 
 private:
 

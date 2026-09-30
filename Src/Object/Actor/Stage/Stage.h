@@ -7,7 +7,6 @@ class ColliderModel;
 
 class Stage :public ActorBase
 {
-
 public:
 
 	// Õ“Ë”»’èí•Ê
@@ -62,6 +61,4 @@ private:
 	const std::vector<std::string> TARGET_FRAME_NAMES = {
 	"Ground",
 	};
-
 };
-

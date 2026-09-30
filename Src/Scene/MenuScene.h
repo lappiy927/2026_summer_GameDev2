@@ -37,7 +37,4 @@ private:
 	int buttonExitSelect_;
 
 	int selectNo_ = 0;
-
-
 };
-

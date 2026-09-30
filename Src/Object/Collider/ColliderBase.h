@@ -1,6 +1,7 @@
 #pragma once
 #pragma once
 #include <DxLib.h>
+
 class Transform;
 
 class ColliderBase
@@ -84,7 +85,4 @@ protected:
 
 	// デバッグ用描画
 	virtual void DrawDebug(int color) = 0;
-
-
 };
-

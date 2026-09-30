@@ -4,9 +4,9 @@
 #include <DxLib.h>
 #include "../Common/Vector2.h"
 #include "../Common/Quaternion.h"
+
 class AsoUtility
 {
-
 public:
 
 	// ラジアン(rad)・度(deg)変換用
@@ -118,4 +118,3 @@ public:
 	// 文字列の分割
 	static std::vector<std::string>Split(std::string& line, char delimiter);
 };
-

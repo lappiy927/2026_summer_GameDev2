@@ -1,12 +1,12 @@
 #pragma once
 #include <DxLib.h>
 #include "ColliderBase.h"
+
 class Transform;
 class ColliderModel;
 
 class ColliderLine : public ColliderBase
 {
-
 public:
 
 	// コンストラクタ
@@ -62,5 +62,4 @@ private:
 
 	// 線分の終了座標(ローカル)
 	VECTOR localPosEnd_;
-
 };

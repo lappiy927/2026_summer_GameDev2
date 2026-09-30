@@ -128,7 +128,6 @@ void GameScene::Init(void)
 			enemies_.push_back(enemy);
 		}
 	}
-
 	remainEnemy_ = static_cast<int>(enemies_.size());
 
 	// カメラにプレイヤーを追従
@@ -140,8 +139,6 @@ void GameScene::Init(void)
 
 	limitTime_ = 180.0f;
 
-
-
 	lifeHandle_ = LoadGraph("Data/Image/Life.png");
 
 	daiHandle_ = LoadGraph("Data/Image/Dai.png");
@@ -150,14 +147,12 @@ void GameScene::Init(void)
 
 	slashEffectHandle_ =
 		LoadEffekseerEffect(
-			"Data/Effect/Slash.efkefc",20.0f);
+			"Data/Effect/Slash.efkefc", 20.0f);
 
 	countImage_[0] = LoadGraph("Data/Image/San.png");
 	countImage_[1] = LoadGraph("Data/Image/Ni.png");
 	countImage_[2] = LoadGraph("Data/Image/Ichi.png");
 	countImage_[3] = LoadGraph("Data/Image/Hajime.png");
-
-
 }
 
 void GameScene::Update(void)
@@ -175,12 +170,8 @@ void GameScene::Update(void)
 		{
 			isGameStart_ = true;
 		}
-
 		return;
 	}
-
-
-
 	UpdateEffekseer3D();
 
 	limitTime_ -= sceMng_.GetDeltaTime();
@@ -192,20 +183,17 @@ void GameScene::Update(void)
 		sceMng_.ChangeScene(
 			SceneManager::SCENE_ID::TITLE);
 	}
-
 	// シーン遷移
 	auto const& ins = InputManager::GetInstance();
-	
 
 	if (ins.IsTrgDown(KEY_INPUT_ESCAPE) ||
 		ins.IsPadBtnTrgDown(
-		InputManager::JOYPAD_NO::PAD1,
-		InputManager::JOYPAD_BTN::MENU))
+			InputManager::JOYPAD_NO::PAD1,
+			InputManager::JOYPAD_BTN::MENU))
 	{
 		sndMng_.StopAll();
 		sceMng_.PushScene(new MenuScene());
 	}
-
 	// プレイヤーの更新
 	player_->Update();
 
@@ -215,8 +203,6 @@ void GameScene::Update(void)
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::GAMEOVER);
 		return;
 	}
-
-
 	// ステージの更新
 	stage_->Update();
 
@@ -243,7 +229,6 @@ void GameScene::Update(void)
 
 			player_->Damage(999);
 		}
-
 		ColliderCapsule* enemyCol =
 			dynamic_cast<ColliderCapsule*>(
 				enemy->GetCollider(
@@ -310,7 +295,6 @@ void GameScene::Update(void)
 
 		return;
 	}
-
 	int before = enemies_.size();
 
 	enemies_.erase(
@@ -328,19 +312,16 @@ void GameScene::Update(void)
 		remainEnemyTimer_--;
 	}
 
-
-
 	if (isBossRoomOpen_)
 	{
-
 		VECTOR playerPos = player_->GetPos();
 
 		// ドア中央位置
 		VECTOR goalPos = VGet(200.0f, 400.0f, 100.0f);
 
 		float dist =
-		VSize(
-			VSub(playerPos, goalPos));
+			VSize(
+				VSub(playerPos, goalPos));
 
 		//　ドアに近づいた
 		if (dist < 875.0f)
@@ -350,14 +331,10 @@ void GameScene::Update(void)
 				SceneManager::SCENE_ID::BOSS);
 		}
 	}
-
-
 }
 
 void GameScene::Draw(void)
 {
-	
-
 	// 描画
 	stage_->Draw();
 	grass_->Draw();
@@ -369,16 +346,9 @@ void GameScene::Draw(void)
 
 	door_->Draw();
 
-
 	int y = 40;
 
 	VECTOR pPos = player_->GetPos();
-
-	//DrawFormatString(
-	//	0, 100,
-	//	0xffffff,
-	//	"Player : %.2f %.2f %.2f",
-	//	pPos.x, pPos.y, pPos.z);
 
 	for (auto& enemy : enemies_)
 	{
@@ -386,24 +356,9 @@ void GameScene::Draw(void)
 
 		VECTOR pos = enemy->GetPos();
 
-	/*	DrawFormatString(
-			0, y,
-			0xffffff,
-			"Enemy : %.2f %.2f %.2f",
-			pos.x, pos.y, pos.z);*/
-
 		y += 20;
 
-		/*DrawFormatString(0, 80, 0xffffff,
-			"HitCheck: %d",
-			enemy->IsHit(player_) ? 1 : 0);*/
 	}
-
-	//DrawFormatString(
-	//	0, 20,
-	//	0x000000,
-	//	"TIME : %.1f",
-	//	limitTime_);
 
 	DrawString(0, 0, "GameScene", 0xffffff);
 
@@ -422,7 +377,6 @@ void GameScene::Draw(void)
 
 	if (isBossRoomOpen_)
 	{
-
 		// フォントサイズ64
 		int font = CreateFontToHandle(
 			NULL,
@@ -453,8 +407,6 @@ void GameScene::Draw(void)
 				GetColor(255, 0, 0),
 				font);
 		}
-		
-
 		DeleteFontToHandle(font);
 	}
 
@@ -490,9 +442,6 @@ void GameScene::Draw(void)
 
 		DeleteFontToHandle(font);
 	}
-
-
-
 	// TIMEUI
 	DrawGraph(-20, -20, timeUI_, TRUE);
 
@@ -501,7 +450,7 @@ void GameScene::Draw(void)
 
 	// TIME
 	DrawFormatString(
-		50, 
+		50,
 		60,
 		GetColor(0, 0, 0),
 		"%02d:%02d",
@@ -509,7 +458,6 @@ void GameScene::Draw(void)
 		second);
 
 	DrawFormatString(45, 40, GetColor(0, 0, 0), "残り時間");
-
 
 	// HP
 	if (!player_->IsDead())
@@ -520,7 +468,6 @@ void GameScene::Draw(void)
 	{
 		DrawGraph(200, 25, daiHandle_, TRUE);
 	}
-
 
 	if (!isGameStart_)
 	{
@@ -552,7 +499,6 @@ void GameScene::Draw(void)
 				TRUE);
 		}
 	}
-
 	Effekseer_Sync3DSetting();
 
 	DrawEffekseer3D();
@@ -577,5 +523,4 @@ void GameScene::Release(void)
 	delete door_;
 
 	grass_->Release();
-	
 }

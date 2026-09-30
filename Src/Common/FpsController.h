@@ -6,7 +6,6 @@
 
 class FpsController
 {
-
 public:
 
     // コンストラクタ
@@ -57,5 +56,4 @@ private:
 
     // 前フレームの時間
     std::chrono::high_resolution_clock::time_point prevTime_;
-
 };

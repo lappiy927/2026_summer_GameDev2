@@ -26,6 +26,5 @@ float4 main(PS_INPUT input) : SV_TARGET
 
         col.rgb += rimColor.rgb * rim * rimColor.a;
     }
-
     return col;
 }

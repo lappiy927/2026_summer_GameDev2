@@ -55,11 +55,10 @@ bool ColliderLine::PushBackUp(
 
 	// ステージモデル(地面)との衝突
 	auto hits = MV1CollCheck_LineDim(
-		colliderModel->GetFollow()->modelId, -1, GetPosStart(), GetPosEnd());
+		colliderModel->GetFollow()->modelId_, -1, GetPosStart(), GetPosEnd());
 
 	for (int i = 0; i < hits.HitNum; i++)
 	{
-
 		auto hit = hits.Dim[i];
 
 		// 除外フレームは無視する
@@ -75,17 +74,16 @@ bool ColliderLine::PushBackUp(
 		}
 
 		// 衝突地点から、少し上に移動
-		if (transform.pos.y < hit.HitPosition.y)
+		if (transform.pos_.y < hit.HitPosition.y)
 		{
 			// 衝突物より、下側にいる場合のみ、位置を修正する
-			transform.pos =
+			transform.pos_ =
 				VAdd(hit.HitPosition, VScale(AsoUtility::DIR_U, 2.0f));
 		}
 
 		//衝突
 		ret = true;
 	}
-
 	// 検出した地面ポリゴン情報の後始末
 	MV1CollResultPolyDimTerminate(hits);
 
@@ -102,4 +100,3 @@ void ColliderLine::DrawDebug(int color)
 	DrawSphere3D(s, RADIUS, DIV_NUM, color, color, true);
 	DrawSphere3D(e, RADIUS, DIV_NUM, color, color, true);
 }
-

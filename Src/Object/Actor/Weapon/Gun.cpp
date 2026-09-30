@@ -10,7 +10,17 @@ int Gun::remainingBullets_ = Gun::MAX_BULLET_COUNT;
 
 Gun::Gun(void)
 	:
-	WeaponBase()
+	WeaponBase(),
+	bulletState_(BULLET_STATE::IDLE),
+	prevWeaponState_(WEAPON_STATE::IDLE),
+	bulletPos_(AsoUtility::VECTOR_ZERO),
+	bulletDir_(AsoUtility::DIR_F),
+	bulletOrigin_(AsoUtility::VECTOR_ZERO),
+	attackTimer_(0.0f),
+	bulletCountHandle_(-1),
+	bulletCountFontHandle_(-1),
+	currentOffset_(OFFSET_IDLE),
+	isAttack_(false)
 {
 }
 
@@ -28,7 +38,7 @@ void Gun::Init(void)
 	InitTransform();
 	InitCollider();
 
-	effectHandle = LoadEffekseerEffect(_T("Data/effect/flash.efk"), 5.0f);
+	effectHandle_ = LoadEffekseerEffect(_T("Data/effect/flash.efk"), 5.0f);
 
 	bulletCountHandle_ = LoadGraph("Data/Image/BulletCount.png");
 
@@ -48,23 +58,28 @@ void Gun::Update(const Transform& playerTransform, WEAPON_STATE weaponState)
 	case WEAPON_STATE::IDLE:
 		UpdateIdle();
 		break;
+
 	case WEAPON_STATE::MOVE:
 		UpdateMove();
 		break;
+
+
 	case WEAPON_STATE::DASH:
 		UpdateDash();
 		break;
+
 	case WEAPON_STATE::JUMP:
 		UpdateJump();
 		break;
+
 	case WEAPON_STATE::ATTACK:
 		UpdateAttack(playerTransform);
 		break;
+
 	case WEAPON_STATE::RELOAD:
 		UpdateReload();
 		break;
 	}
-
 	UpdateTransform(playerTransform);
 
 	// 弾の更新
@@ -76,7 +91,6 @@ void Gun::Update(const Transform& playerTransform, WEAPON_STATE weaponState)
 void Gun::Draw(void)
 {
 	WeaponBase::Draw();
-	//dynamic_cast<ColliderCapsule*>(attackCollider_)->DrawDebug(0xff0000);
 
 	// 弾の描画
 	if (bulletState_ == BULLET_STATE::FLYING)
@@ -114,10 +128,10 @@ void Gun::InitLoad(void)
 
 void Gun::InitTransform(void)
 {
-	transform_.scl = AsoUtility::VECTOR_ONE;
-	transform_.quaRot = Quaternion::Identity();
-	transform_.quaRotLocal = Quaternion::Identity();
-	transform_.pos = VGet(0.0f, 0.0f, 0.0f);
+	transform_.scl_ = AsoUtility::VECTOR_ONE;
+	transform_.quaRot_ = Quaternion::Identity();
+	transform_.quaRotLocal_ = Quaternion::Identity();
+	transform_.pos_ = VGet(0.0f, 0.0f, 0.0f);
 	transform_.Update();
 }
 
@@ -178,7 +192,7 @@ void Gun::UpdateReload(void)
 
 void Gun::UpdateTransform(const Transform& playerTransform)
 {
-	int playerModelId = playerTransform.modelId;
+	int playerModelId = playerTransform.modelId_;
 	int rightHandFrame = MV1SearchFrame(playerModelId, "hand.L");
 	if (rightHandFrame == -1) return;
 
@@ -212,17 +226,15 @@ void Gun::UpdateTransform(const Transform& playerTransform)
 	finalMatrix.m[3][1] = finalPos.y;
 	finalMatrix.m[3][2] = finalPos.z;
 
-	MV1SetMatrix(transform_.modelId, finalMatrix);
+	MV1SetMatrix(transform_.modelId_, finalMatrix);
 
 	attackCollider_->SetLocalPosTop(VAdd(rotatedTop, finalPos));
 	attackCollider_->SetLocalPosDown(VAdd(rotatedDown, finalPos));
 }
 
-
-
 void Gun::FireBullet(const Transform& playerTransform)
 {
-	int playerModelId = playerTransform.modelId;
+	int playerModelId = playerTransform.modelId_;
 
 	int hipFrame = MV1SearchFrame(playerModelId, "spine");
 	if (hipFrame == -1) return;
@@ -235,7 +247,7 @@ void Gun::FireBullet(const Transform& playerTransform)
 		hipMatrix.m[3][2]);
 
 	static constexpr float MUZZLE_FORWARD_OFFSET = 50.0f;
-	float yaw = playerTransform.quaRot.ToEuler().y;
+	float yaw = playerTransform.quaRot_.ToEuler().y;
 	VECTOR forward = VGet(sinf(yaw), 0.0f, cosf(yaw));
 
 	bulletOrigin_ = VAdd(rayOrigin, VScale(forward, MUZZLE_FORWARD_OFFSET));
@@ -246,7 +258,7 @@ void Gun::FireBullet(const Transform& playerTransform)
 	// 残弾数を1消費する(ゲームシーン・ボスシーンで共有)
 	remainingBullets_--;
 
-	int playHandle = PlayEffekseer3DEffect(effectHandle);
+	int playHandle = PlayEffekseer3DEffect(effectHandle_);
 	SetPosPlayingEffekseer3DEffect(playHandle, bulletOrigin_.x, bulletOrigin_.y, bulletOrigin_.z);
 	SetRotationPlayingEffekseer3DEffect(playHandle, 0.0f, yaw, 0.0f);
 }

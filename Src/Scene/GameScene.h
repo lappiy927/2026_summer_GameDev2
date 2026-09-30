@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include <memory>
-
 #include "SceneBase.h"
 
 class Stage;
@@ -13,7 +12,6 @@ class Grass;
 
 class GameScene : public SceneBase
 {
-
 public:
 
 	// コンストラクタ
@@ -69,6 +67,4 @@ private:
 
 	int remainEnemy_ = 10;
 	int remainEnemyTimer_ = 0;
-
-
 };

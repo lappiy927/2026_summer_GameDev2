@@ -1,11 +1,11 @@
 #pragma once
 #include <DxLib.h>
 #include "ColliderBase.h"
+
 class Transform;
 
 class ColliderSphere : public ColliderBase
 {
-
 public:
 
 	// コンストラクタ
@@ -46,5 +46,4 @@ private:
 
 	// 半径
 	float radius_;
-
 };

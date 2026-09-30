@@ -59,14 +59,13 @@ VECTOR ColliderSphere::GetPosPushBackAlongNormal(const MV1_COLL_RESULT_POLY& hit
 		{
 			break;
 		}
-
 		// Õ“Ë‚µ‚Ä‚¢‚½‚ç–@ü•ûŒü‚É‰Ÿ‚µ–ß‚µ
-		tmpTransform.pos =
-			VAdd(tmpTransform.pos, VScale(hitColPoly.Normal, pushDistance));
+		tmpTransform.pos_ =
+			VAdd(tmpTransform.pos_, VScale(hitColPoly.Normal, pushDistance));
 
 		tryCnt++;
 	}
-	return tmpTransform.pos;
+	return tmpTransform.pos_;
 }
 
 void ColliderSphere::DrawDebug(int color)

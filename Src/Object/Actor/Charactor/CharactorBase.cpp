@@ -18,7 +18,10 @@ CharactorBase::CharactorBase(void)
 	jumpPow_(AsoUtility::VECTOR_ZERO),
 	isJump_(false),
 	imgShadow_(-1),
-	stepJump_(-1)
+	stepJump_(-1),
+	isSteepSlope_(false),
+	isPlayer_(false),
+	prevPos_(AsoUtility::VECTOR_ZERO)
 {
 }
 
@@ -28,9 +31,8 @@ CharactorBase::~CharactorBase(void)
 
 void CharactorBase::Update(void)
 {
-
 	// 移動前座標を更新
-	prevPos_ = transform_.pos;
+	prevPos_ = transform_.pos_;
 
 	//各キャラクターごとの更新処理
 	UpdateProcess();
@@ -55,7 +57,6 @@ void CharactorBase::Update(void)
 
 	//モデル制御更新
 	transform_.Update();
-
 }
 
 void CharactorBase::Draw(void)
@@ -75,7 +76,6 @@ void CharactorBase::Release(void)
 		animationController_->Release();
 		delete animationController_;
 	}
-
 	//基底クラス開放
 	ActorBase::Release();
 }
@@ -93,20 +93,18 @@ void CharactorBase::DelayRotate(void)
 	{
 		return;
 	}
-
-
 	//移動方向から回転に変換する
 	Quaternion goalRot =
 		Quaternion::LookRotation(moveDir_);
 
-	transform_.quaRot =
+	transform_.quaRot_ =
 		Quaternion::Slerp(
-			transform_.quaRot,
+			transform_.quaRot_,
 			goalRot,
 			0.2f);
 
 	// モデル補正
-	transform_.quaRotLocal =
+	transform_.quaRotLocal_ =
 		Quaternion::AngleAxis(
 			DX_PI_F,
 			AsoUtility::DIR_U);
@@ -125,17 +123,15 @@ void CharactorBase::CalcGravityPow(void)
 	//重力
 	VECTOR gravity = VScale(dirGravity, gravityPow);
 	jumpPow_ = VAdd(jumpPow_, gravity);
-
 }
 
 void CharactorBase::Collision(void)
 {
-
 	// 移動処理
-	transform_.pos = VAdd(transform_.pos, movePow_);
+	transform_.pos_ = VAdd(transform_.pos_, movePow_);
 
 	// ジャンプ量を加算
-	transform_.pos = VAdd(transform_.pos, jumpPow_);
+	transform_.pos_ = VAdd(transform_.pos_, jumpPow_);
 
 	// 地面との衝突
 	CollisionGravity();
@@ -146,8 +142,6 @@ void CharactorBase::Collision(void)
 
 void CharactorBase::CollisionGravity(void)
 {
-
-
 	isSteepSlope_ = false;
 
 	int lineType = static_cast<int>(COLLIDER_TYPE::LINE);
@@ -176,7 +170,7 @@ void CharactorBase::CollisionGravity(void)
 		if (colliderModel == nullptr) continue;
 
 		auto hits = MV1CollCheck_LineDim(
-			colliderModel->GetFollow()->modelId, -1, s, e);
+			colliderModel->GetFollow()->modelId_, -1, s, e);
 
 		for (int i = 0; i < hits.HitNum; i++)
 		{
@@ -199,7 +193,7 @@ void CharactorBase::CollisionGravity(void)
 
 			if (hit.Normal.y >= slopeLimit)
 			{
-				transform_.pos.y = hit.HitPosition.y + 10.0f;
+				transform_.pos_.y = hit.HitPosition.y + 10.0f;
 
 				jumpPow_ = AsoUtility::VECTOR_ZERO;
 
@@ -224,14 +218,13 @@ void CharactorBase::CollisionGravity(void)
 						float slidePower =
 							(1.0f - hit.Normal.y) * 5.0f;
 
-						transform_.pos =
+						transform_.pos_ =
 							VAdd(
-								transform_.pos,
+								transform_.pos_,
 								VScale(slideDir, slidePower)
 							);
 					}
 				}
-
 				char str[256];
 				sprintf_s(str,
 					"SteepSlope! Normal=(%.2f, %.2f, %.2f)\n",
@@ -246,20 +239,17 @@ void CharactorBase::CollisionGravity(void)
 				movePow_.x = 0.0f;
 				movePow_.z = 0.0f;
 			}
-
 		}
-
 		MV1CollResultPolyDimTerminate(hits);
-
 
 		if (isHitGround)
 		{
 			float slopeLimit = 0.75f;
 
 			// 地面より下に来たら着地させる
-			if (transform_.pos.y < nearestY + 2.0f)
+			if (transform_.pos_.y < nearestY + 2.0f)
 			{
-				transform_.pos.y = nearestY + 2.0f;
+				transform_.pos_.y = nearestY + 2.0f;
 				jumpPow_ = AsoUtility::VECTOR_ZERO;
 				isJump_ = false;
 			}
@@ -268,7 +258,7 @@ void CharactorBase::CollisionGravity(void)
 			{
 				if (!isJump_)
 				{
-					transform_.pos.y = nearestY + 10.0f;
+					transform_.pos_.y = nearestY + 10.0f;
 				}
 			}
 			else
@@ -279,7 +269,7 @@ void CharactorBase::CollisionGravity(void)
 
 				if (!isJump_)
 				{
-					transform_.pos.y = nearestY + 10.0f;
+					transform_.pos_.y = nearestY + 10.0f;
 				}
 			}
 		}
@@ -294,16 +284,10 @@ void CharactorBase::CollisionGravity(void)
 
 void CharactorBase::CollisionCapsule(void)
 {
-	/*if (isSteepSlope_)
-	{
-		return;
-	}*/
-
 	if (isSteepSlope_)
 	{
 		OutputDebugStringA("SteepSlope ON\n");
 	}
-
 
 	// カプセルコライダ
 	int capsuleType = static_cast<int>(COLLIDER_TYPE::CAPSULE);
@@ -345,7 +329,7 @@ void CharactorBase::DrawShadow(void)
 	const float PLAYER_SHADOW_HEIGHT = 800.0f;
 	const float PLAYER_SHADOW_SIZE = 30.0f;
 
-	VECTOR playerPos = transform_.pos;
+	VECTOR playerPos = transform_.pos_;
 
 	// ライティング無効（影は照明を受けない）
 	SetUseLighting(FALSE);
@@ -366,7 +350,7 @@ void CharactorBase::DrawShadow(void)
 			dynamic_cast<const ColliderModel*>(hitCol);
 		if (!colliderModel) continue;
 
-		int modelHandle = colliderModel->GetFollow()->modelId;
+		int modelHandle = colliderModel->GetFollow()->modelId_;
 
 		// カプセルの下方向へ影を落とすポリゴンを取得
 		MV1_COLL_RESULT_POLY_DIM hitDim =
@@ -378,7 +362,7 @@ void CharactorBase::DrawShadow(void)
 			);
 
 		// 頂点データ共通設定
-		VERTEX3D v[3];
+		VERTEX3D v[3]{};
 		v[0].dif = GetColorU8(255, 255, 255, 255);
 		v[0].spc = GetColorU8(0, 0, 0, 0);
 		v[0].su = 0.0f;  v[0].sv = 0.0f;
@@ -431,15 +415,12 @@ void CharactorBase::DrawShadow(void)
 			// 影ポリゴンを描画
 			DrawPolygon3D(v, 1, imgShadow_, TRUE);
 		}
-
 		// メモリ解放
 		MV1CollResultPolyDimTerminate(hitDim);
 	}
-
 	// ライティングON
 	SetUseLighting(TRUE);
 
 	// Zバッファを無効に戻す
 	SetUseZBuffer3D(FALSE);
 }
-

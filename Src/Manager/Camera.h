@@ -2,12 +2,12 @@
 #include <DxLib.h>
 #include "../Common/Quaternion.h"
 #include "../Object/Actor/ActorBase.h"
+
 class Transform;
 class ColliderSphere;
 
 class Camera : public ActorBase
 {
-
 public:
 
 	// ƒJƒƒ‰‚Ì‰ŠúÀ•W

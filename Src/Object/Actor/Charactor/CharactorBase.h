@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "../ActorBase.h"
+
 class AnimationController;
 
 class CharactorBase : public ActorBase
@@ -64,7 +65,7 @@ protected:
 	// ƒWƒƒƒ“ƒv”»’è
 	bool isJump_;
 
-	bool isPlayer_ = false;
+	bool isPlayer_;
 
 	// ŠÛ‰e‰æ‘œ
 	int imgShadow_;
@@ -72,7 +73,7 @@ protected:
 	// ƒWƒƒƒ“ƒv‚Ì“ü—ÍŽó•tŽžŠÔ
 	float stepJump_;
 
-	bool isSteepSlope_ = false;
+	bool isSteepSlope_;
 
 	void InitLoad(void) override;
 
@@ -95,4 +96,3 @@ protected:
 	// ŠÛ‰e•`‰æ
 	void DrawShadow(void);
 };
-

@@ -64,5 +64,4 @@ private:
 
 	// アニメーション追加の共通処理
 	void Add(int type, float speed, Animation& animation);
-
 };

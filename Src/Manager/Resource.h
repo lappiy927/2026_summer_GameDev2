@@ -32,7 +32,7 @@ public:
 	void Load(void);
 
 	// 解放
-	void Release(void);
+	void Release(void)const;
 
 	// 複数画像ハンドルを別配列にコピー
 	void CopyHandle(int* imgs) const;
@@ -56,4 +56,3 @@ public:
 	// モデル複製用
 	std::vector<int> duplicateModelIds_;
 };
-

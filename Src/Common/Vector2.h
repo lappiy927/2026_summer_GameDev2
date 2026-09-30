@@ -15,4 +15,3 @@ public:
 	// デストラクタ
 	~Vector2(void);
 };
-

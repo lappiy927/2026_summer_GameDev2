@@ -25,16 +25,16 @@ void GameOverScene::Init()
 	float size = 0;
 
 	charactor_.SetModel(resMng_.Load(ResourceManager::SRC::PLAYER).handleId_);
-	charactor_.pos = { 0.0f, -200.0f, -105.0f };
+	charactor_.pos_ = { 0.0f, -200.0f, -105.0f };
 	size = 2.5f;
-	charactor_.scl = { size, size, size };
-	charactor_.quaRot = Quaternion::Euler(
+	charactor_.scl_ = { size, size, size };
+	charactor_.quaRot_ = Quaternion::Euler(
 		0.0f, AsoUtility::Deg2RadF(90.0f), AsoUtility::Deg2RadF(45.0f));
 	charactor_.Update();
 
 	// アニメーションコントローラー
 	animationController_ =
-		new AnimationController(charactor_.modelId);
+		new AnimationController(charactor_.modelId_);
 	animationController_->Add(0, 20.0f,
 		Application::PATH_MODEL + "Charactor/Player/FastRun.mv1");
 	animationController_->Play(0);
@@ -102,17 +102,16 @@ void GameOverScene::Update()
 		currentTextAlpha_ = static_cast<int>(255.0f * t);
 		currentTextAlpha_ = std::clamp(currentTextAlpha_, 0, 255);
 	}
-
-	// GameOverUI 更新 ▼追加
+	// GameOverUI
 	gameOverUI_.Update();
 }
 
 void GameOverScene::Draw()
 {
 	// 3Dモデルを描画
-	if (charactor_.modelId != -1)
+	if (charactor_.modelId_ != -1)
 	{
-		MV1DrawModel(charactor_.modelId);
+		MV1DrawModel(charactor_.modelId_);
 	}
 
 	// GAME OVER 表示（奥から手前に近づく演出）
@@ -127,8 +126,7 @@ void GameOverScene::Draw()
 			fontHandle);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
-
-	// GameOverUI 描画 ▼追加
+	// GameOverUI 描画
 	gameOverUI_.Draw();
 }
 
@@ -144,7 +142,7 @@ void GameOverScene::Release()
 
 	charactor_.Release();
 
-	// GameOverUI 解放 ▼追加
+	// GameOverUI 解放
 	gameOverUI_.Release();
 }
 

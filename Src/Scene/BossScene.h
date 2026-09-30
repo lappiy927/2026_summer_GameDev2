@@ -10,7 +10,7 @@ class Boss;
 class WeaponManager;
 
 class BossScene :
-    public SceneBase
+	public SceneBase
 {
 public:
 
@@ -48,4 +48,3 @@ private:
 
 	int slashEffectHandle_;
 };
-

@@ -6,10 +6,12 @@
 #include "WeaponBase.h"
 
 WeaponBase::WeaponBase(void)
-    :
-    resMng_(ResourceManager::GetInstance()),
-    scnMng_(SceneManager::GetInstance()),
-    transform_()
+	:
+	resMng_(ResourceManager::GetInstance()),
+	scnMng_(SceneManager::GetInstance()),
+	transform_(),
+	attackCollider_(nullptr),
+	effectHandle_(-1)
 {
 }
 
@@ -19,25 +21,23 @@ WeaponBase::~WeaponBase(void)
 
 void WeaponBase::Draw(void)
 {
-    if (transform_.modelId != -1)
-    {
-        MV1DrawModel(transform_.modelId);
-    }
-
-    //dynamic_cast<ColliderCapsule*>(attackCollider_)->DrawDebug(0xff0000);
+	if (transform_.modelId_ != -1)
+	{
+		MV1DrawModel(transform_.modelId_);
+	}
 }
 
 void WeaponBase::Release(void)
 {
-    transform_.Release();
+	transform_.Release();
 
-    DeleteEffekseerEffect(effectHandle);
+	DeleteEffekseerEffect(effectHandle_);
 
-    effectHandle = -1;
+	effectHandle_ = -1;
 
-    if (attackCollider_ != nullptr)
-    {
-        delete attackCollider_;
-        attackCollider_ = nullptr;
-    }
+	if (attackCollider_ != nullptr)
+	{
+		delete attackCollider_;
+		attackCollider_ = nullptr;
+	}
 }

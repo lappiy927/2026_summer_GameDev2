@@ -15,18 +15,17 @@ ColliderModel::~ColliderModel(void)
 void ColliderModel::AddExcludeFrameIds(const std::string& name)
 {
 	// フレーム数を取得
-	int num = MV1GetFrameNum(follow_->modelId);
+	int num = MV1GetFrameNum(follow_->modelId_);
 	for (int i = 0; i < num; i++)
 	{
 		// フレーム名称を取得
-		std::string frameName = MV1GetFrameName(follow_->modelId, i);
+		std::string frameName = MV1GetFrameName(follow_->modelId_, i);
 		if (frameName.find(name) != std::string::npos)
 		{
 			// 除外フレームに追加
 			excludeFrameIds_.emplace_back(i);
 		}
 	}
-
 }
 
 void ColliderModel::ClearExcludeFrame(void)
@@ -46,17 +45,16 @@ bool ColliderModel::IsExcludeFrame(int frameIdx) const
 		return true;
 	}
 	return false;
-
 }
 
 void ColliderModel::AddTargetFrameIds(const std::string& name)
 {
 	// フレーム数を取得
-	int num = MV1GetFrameNum(follow_->modelId);
+	int num = MV1GetFrameNum(follow_->modelId_);
 	for (int i = 0; i < num; i++)
 	{
 		// フレーム名称を取得
-		std::string frameName = MV1GetFrameName(follow_->modelId, i);
+		std::string frameName = MV1GetFrameName(follow_->modelId_, i);
 		if (frameName.find(name) != std::string::npos)
 		{
 			// 対象フレームに追加
@@ -91,7 +89,7 @@ MV1_COLL_RESULT_POLY ColliderModel::GetNearestHitPolyLine(
 
 	// 線分で衝突判定
 	auto hits = MV1CollCheck_LineDim(
-		follow_->modelId,
+		follow_->modelId_,
 		-1,
 		start,
 		end
@@ -118,10 +116,8 @@ MV1_COLL_RESULT_POLY ColliderModel::GetNearestHitPolyLine(
 			ret = hit;
 		}
 	}
-
 	// 検出した地面ポリゴン情報の後始末
 	MV1CollResultPolyDimTerminate(hits);
 
 	return ret;
 }
-

@@ -36,7 +36,6 @@ void AnimationController::AddInFbx(int type, float speed, int animIndex)
 
 void AnimationController::Play(int type, bool isLoop)
 {
-
 	if (playType_ == type)
 	{
 		// 同じアニメーションだったら再生を継続する
@@ -75,12 +74,10 @@ void AnimationController::Play(int type, bool isLoop)
 
 	// アニメーションループ
 	isLoop_ = isLoop;
-
 }
 
 void AnimationController::Update(void)
 {
-
 	// 経過時間の取得
 	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
 
@@ -101,10 +98,8 @@ void AnimationController::Update(void)
 			playAnim_.step = playAnim_.totalTime;
 		}
 	}
-
 	// アニメーション設定
 	MV1SetAttachAnimTime(modelId_, playAnim_.attachNo, playAnim_.step);
-
 }
 
 void AnimationController::Release(void)
@@ -115,7 +110,6 @@ void AnimationController::Release(void)
 		MV1DetachAnim(modelId_, playAnim_.attachNo);
 		playType_ = -1;
 	}
-
 	// 外部FBXモデルの解放
 	for (auto& pair : animations_)
 	{
@@ -124,7 +118,6 @@ void AnimationController::Release(void)
 			MV1DeleteModel(pair.second.model);
 		}
 	}
-
 	animations_.clear();
 }
 
@@ -135,7 +128,6 @@ int AnimationController::GetPlayType(void) const
 
 bool AnimationController::IsEnd(void) const
 {
-
 	bool ret = false;
 
 	if (isLoop_)
@@ -150,9 +142,7 @@ bool AnimationController::IsEnd(void) const
 		// 再生時間を過ぎたらtrue
 		return true;
 	}
-
 	return ret;
-
 }
 
 const AnimationController::Animation& AnimationController::GetPlayAnim(void) const

@@ -37,12 +37,11 @@ void Camera::Update(void)
 
 void Camera::SetBeforeDraw(void)
 {
-
 	// クリップ距離を設定する(SetDrawScreenでリセットされる)
 	SetCameraNearFar(VIEW_NEAR, VIEW_FAR);
 
 	// 更新前情報
-	prePos_ = transform_.pos;
+	prePos_ = transform_.pos_;
 
 	switch (mode_)
 	{
@@ -59,14 +58,13 @@ void Camera::SetBeforeDraw(void)
 
 	// カメラの設定(位置と注視点による制御)
 	SetCameraPositionAndTargetAndUpVec(
-		transform_.pos,
+		transform_.pos_,
 		targetPos_,
-		transform_.quaRot.GetUp()
+		transform_.quaRot_.GetUp()
 	);
 
 	// DXライブラリのカメラとEffekseerのカメラを同期する。
 	Effekseer_Sync3DSetting();
-
 }
 
 void Camera::DrawDebug(void)
@@ -107,7 +105,7 @@ void Camera::InitPost(void)
 
 const VECTOR& Camera::GetPos(void) const
 {
-	return transform_.pos;
+	return transform_.pos_;
 }
 
 const VECTOR& Camera::GetAngles(void) const
@@ -122,7 +120,7 @@ const VECTOR& Camera::GetTargetPos(void) const
 
 const Quaternion& Camera::GetQuaRot(void) const
 {
-	return transform_.quaRot;
+	return transform_.quaRot_;
 }
 
 const Quaternion& Camera::GetQuaRotY(void) const
@@ -132,12 +130,11 @@ const Quaternion& Camera::GetQuaRotY(void) const
 
 VECTOR Camera::GetForward(void) const
 {
-	return VNorm(VSub(targetPos_, transform_.pos));
+	return VNorm(VSub(targetPos_, transform_.pos_));
 }
 
 void Camera::ChangeMode(MODE mode)
 {
-
 	// カメラの初期設定
 	SetDefault();
 
@@ -154,30 +151,27 @@ void Camera::ChangeMode(MODE mode)
 	case Camera::MODE::FOLLOW:
 		break;
 	}
-
 }
 
 void Camera::SetDefault(void)
 {
-
 	// カメラの初期設定
-	transform_.pos = DERFAULT_POS;
+	transform_.pos_ = DERFAULT_POS;
 
 	// カメラ角
 	angles_ = DERFAULT_ANGLES;
-	transform_.quaRot = Quaternion::Identity();
+	transform_.quaRot_ = Quaternion::Identity();
 
 	// 注視点
 	targetPos_ = AsoUtility::VECTOR_ZERO;
 
 	// カメラの上方向
-	transform_.quaRot.GetUp() = transform_.quaRot.GetUp();
-
+	transform_.quaRot_.GetUp() = transform_.quaRot_.GetUp();
 }
 
 void Camera::SyncFollow(void)
 {
-	VECTOR pos = followTransform_->pos;
+	VECTOR pos = followTransform_->pos_;
 
 	// Y回転
 	rotY_ =
@@ -197,28 +191,24 @@ void Camera::SyncFollow(void)
 		);
 
 	// 合成
-	transform_.quaRot =
+	transform_.quaRot_ =
 		rotX.Mult(rotY_);
 
-	//--------------------------------
 	// カメラ位置
-	//--------------------------------
 	VECTOR camOffset =
-		transform_.quaRot.PosAxis(
+		transform_.quaRot_.PosAxis(
 			FOLLOW_CAMERA_LOCAL_POS
 		);
 
-	transform_.pos =
+	transform_.pos_ =
 		VAdd(
 			pos,
 			camOffset
 		);
 
-	//--------------------------------
 	// 注視点
-	//--------------------------------
 	VECTOR forward =
-		transform_.quaRot.PosAxis(
+		transform_.quaRot_.PosAxis(
 			AsoUtility::DIR_F
 		);
 
@@ -231,7 +221,6 @@ void Camera::SyncFollow(void)
 
 void Camera::ProcessRot(bool isLimit)
 {
-
 	if (GetJoypadNum() == 0)
 	{
 		// 方向回転によるXYZの移動(キーボード)
@@ -242,12 +231,10 @@ void Camera::ProcessRot(bool isLimit)
 		// 方向回転によるXYZの移動(ゲームパッド)
 		RotGamePad(isLimit);
 	}
-
 }
 
 void Camera::ProcessMove(void)
 {
-
 	auto& ins = InputManager::GetInstance();
 
 	VECTOR moveDir = AsoUtility::VECTOR_ZERO;
@@ -278,17 +265,15 @@ void Camera::ProcessMove(void)
 		// 移動させたい方向(ベクトル)に変換
 
 		// 現在の向きからの進行方向を取得
-		VECTOR direction = VNorm(transform_.quaRot.PosAxis(moveDir));
+		VECTOR direction = VNorm(transform_.quaRot_.PosAxis(moveDir));
 
 		// 移動させたい方向に移動量をかける(=移動量)
 		VECTOR movePow = VScale(direction, SPEED);
 
 		// カメラ位置も注視点も移動させる
-		transform_.pos = VAdd(transform_.pos, movePow);
+		transform_.pos_ = VAdd(transform_.pos_, movePow);
 		targetPos_ = VAdd(targetPos_, movePow);
-
 	}
-
 }
 
 void Camera::SetBeforeDrawFixedPoint(void)
@@ -298,7 +283,6 @@ void Camera::SetBeforeDrawFixedPoint(void)
 
 void Camera::SetBeforeDrawFree(void)
 {
-
 	// カメラ操作(回転)
 	ProcessRot(false);
 
@@ -322,12 +306,11 @@ void Camera::SetBeforeDrawFree(void)
 		);
 
 	// 合成
-	transform_.quaRot = rotX.Mult(rotY_);
+	transform_.quaRot_ = rotX.Mult(rotY_);
 }
 
 void Camera::SetBeforeDrawFollow(void)
 {
-
 	// カメラ操作(回転)
 	ProcessRot(true);
 
@@ -338,16 +321,15 @@ void Camera::SetBeforeDrawFollow(void)
 	Collision();
 
 	// カメラ位置の補間
-	transform_.pos =
-		AsoUtility::Lerp(prePos_, transform_.pos, LERP_RATE_MOVE);
-
+	transform_.pos_ =
+		AsoUtility::Lerp(prePos_, transform_.pos_, LERP_RATE_MOVE);
 }
 
 void Camera::Collision(void)
 {
 	// プレイヤーのルートフレーム
 	VECTOR start =
-		MV1GetFramePosition(followTransform_->modelId, 1);
+		MV1GetFramePosition(followTransform_->modelId_, 1);
 
 	for (const auto& hitCol : hitColliders_)
 	{
@@ -363,7 +345,7 @@ void Camera::Collision(void)
 		//線分とモデルの最近接(startに近い)衝突ポリゴンを取得
 		auto hitPoly = colliderModel->GetNearestHitPolyLine(
 			start,
-			transform_.pos,
+			transform_.pos_,
 			false,
 			true
 		);
@@ -375,10 +357,10 @@ void Camera::Collision(void)
 		}
 
 		// カメラ位置から注視点への方向
-		VECTOR dirToTarget = VNorm(VSub(targetPos_, transform_.pos));
+		VECTOR dirToTarget = VNorm(VSub(targetPos_, transform_.pos_));
 
 		// 衝突点の少し手前にカメラを置く
-		transform_.pos =
+		transform_.pos_ =
 			VAdd(hitPoly.HitPosition,
 				VScale(dirToTarget, COLLISION_BACK_DIS));
 
@@ -396,13 +378,10 @@ void Camera::Collision(void)
 		//if (colliderSphere == nullptr) return;
 
 		// 指定された回数と距離で三角形の法線方向に押し戻す
-		transform_.pos =
+		transform_.pos_ =
 			ownColliders_.at(typeSphere)->GetPosPushBackAlongNormal(
 				hitPoly, CNT_TRY_COLLISION_CAMERA, COLLISION_BACK_DIS);
-
-		//12/8の動画の続きから
 #pragma endregion
-
 	}
 }
 
@@ -442,7 +421,6 @@ void Camera::RotMouse(bool isLimit)
 
 void Camera::RotKeyboard(bool isLimit)
 {
-
 	const auto& ins = InputManager::GetInstance();
 
 	// カメラ回転
@@ -477,12 +455,10 @@ void Camera::RotKeyboard(bool isLimit)
 			angles_.x = -LIMIT_X_DW_RAD;
 		}
 	}
-
 }
 
 void Camera::RotGamePad(bool isLimit)
 {
-
 	auto& ins = InputManager::GetInstance();
 
 	// 接続されているゲームパッド１の情報を取得
@@ -508,5 +484,4 @@ void Camera::RotGamePad(bool isLimit)
 	{
 		angles_.x = LIMIT_X_UP_RAD;
 	}
-
 }

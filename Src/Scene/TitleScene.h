@@ -6,7 +6,6 @@ class AnimationController;
 
 class TitleScene : public SceneBase
 {
-
 public:
 
 	// コンストラクタ

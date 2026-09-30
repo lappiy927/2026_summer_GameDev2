@@ -1,14 +1,15 @@
 #pragma once
 #include <chrono>
 #include <stack>
+
 #include <DxLib.h>
+
 class SceneBase;
 class Fader;
 class Camera;
 
 class SceneManager
 {
-
 public:
 
 	// 背景色
@@ -58,7 +59,7 @@ public:
 	void ChangeScene(SCENE_ID nextId);
 
 	// シーンIDの取得
-	SCENE_ID GetSceneID(void);
+	SCENE_ID GetSceneID(void)const;
 
 	// デルタタイムの取得
 	float GetDeltaTime(void) const;

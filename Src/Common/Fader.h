@@ -37,7 +37,7 @@ public:
 	void Update(void);
 
 	// 描画
-	void Draw(void);
+	void Draw(void)const;
 
 private:
 
@@ -54,4 +54,3 @@ private:
 	// フェード処理の終了判定
 	bool isEnd_;
 };
-

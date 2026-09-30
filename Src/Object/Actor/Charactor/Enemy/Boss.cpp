@@ -14,319 +14,331 @@
 #include "../../../../Object/Collider/ColliderCapsule.h"
 
 Boss::Boss()
-    :
-    EnemyBase()
+	:
+	EnemyBase(),
+	attackCollider_(nullptr),
+	isAttackHit_(false),
+	attackEnable_(false),
+	isAttacking_(false),
+	leftHandFrame_(-1),
+	chargeEffectHandle_(-1),
+	chargeEffectPlaying_(false),
+	chargeEffect_(-1)
 {
-    hp_ = 500;
+	hp_ = BOSS_HP;
 
-    attackRange_ = 400.0f;
-    searchRange_ = 3000.0f;
+	attackRange_ = ATTACK_RANGE;
+	searchRange_ = SEARCH_RANGE;
 }
 
 Boss::~Boss()
 {
-
 }
 
 void Boss::InitLoad()
 {
-    // 共通ロード
-    CharactorBase::InitLoad();
+	// 共通ロード
+	CharactorBase::InitLoad();
 
-    // モデル読み込み
-    int model =
-        MV1DuplicateModel(
-            resMng_.Load(
-                ResourceManager::SRC::BOSS).handleId_);
+	// モデル読み込み
+	int model =
+		MV1DuplicateModel(
+			resMng_.Load(
+				ResourceManager::SRC::BOSS).handleId_);
 
-    transform_.SetModel(model);
+	transform_.SetModel(model);
 
-    effectHandle = LoadEffekseerEffect(_T("Data/Effect/blood.efk"), 50.0f);
+	effectHandle_ = LoadEffekseerEffect(_T("Data/Effect/blood.efk"), 50.0f);
 
-    chargeEffect_ =
-        LoadEffekseerEffect(_T("Data/Effect/Charge.efkefc"), 50.0f);
+	chargeEffect_ =LoadEffekseerEffect(_T("Data/Effect/Charge.efkefc"), 50.0f);
 }
 
 void Boss::InitTransform()
 {
-    transform_.scl = VGet(2.0f, 2.0f, 2.0f);
+	transform_.scl_ = VGet(2.0f, 2.0f, 2.0f);
 
-    transform_.quaRot = Quaternion::Identity();
+	transform_.quaRot_ = Quaternion::Identity();
 
-    transform_.quaRotLocal = Quaternion::Identity();
+	transform_.quaRotLocal_ = Quaternion::Identity();
 
-    // 出現位置
-    transform_.pos = VGet(2500.0f, 2000.0f, 6000.0f);
+	// 出現位置
+	transform_.pos_ = VGet(2500.0f, 2000.0f, 6000.0f);
 
-    transform_.Update();
+	transform_.Update();
 }
 
 void Boss::InitCollider()
 {
-    // 地面判定線
-    ColliderLine* colLine =
-        new ColliderLine(
-            ColliderBase::TAG::BOSS,
-            &transform_,
-            VGet(0.0f, 100.0f, 0.0f),
-            VGet(0.0f, -2000.0f, 0.0f));
+	// 地面判定線
+	ColliderLine* colLine =
+		new ColliderLine(
+			ColliderBase::TAG::BOSS,
+			&transform_,
+			VGet(0.0f, 100.0f, 0.0f),
+			VGet(0.0f, -2000.0f, 0.0f));
 
-    ownColliders_.emplace(
-        static_cast<int>(COLLIDER_TYPE::LINE),
-        colLine);
+	ownColliders_.emplace(
+		static_cast<int>(COLLIDER_TYPE::LINE),
+		colLine);
 
-    // 壁判定カプセル
-    ColliderCapsule* colCapsule =
-        new ColliderCapsule(
-            ColliderBase::TAG::BOSS,
-            &transform_,
-            VGet(0.0f, 120.0f, 0.0f),
-            VGet(0.0f, 0.0f, 0.0f),
-            80.0f);
+	// 壁判定カプセル
+	ColliderCapsule* colCapsule =
+		new ColliderCapsule(
+			ColliderBase::TAG::BOSS,
+			&transform_,
+			VGet(0.0f, 120.0f, 0.0f),
+			VGet(0.0f, 0.0f, 0.0f),
+			80.0f);
 
-    ownColliders_.emplace(
-        static_cast<int>(COLLIDER_TYPE::CAPSULE),
-        colCapsule);
+	ownColliders_.emplace(
+		static_cast<int>(COLLIDER_TYPE::CAPSULE),
+		colCapsule);
 
-    attackCollider_ =
-        new ColliderCapsule(
-            ColliderBase::TAG::BOSS,
-            &transform_,
-            VGet(0, 120, 80),
-            VGet(0, 120, 250),
-            60.0f);
+	attackCollider_ =
+		new ColliderCapsule(
+			ColliderBase::TAG::BOSS,
+			&transform_,
+			VGet(0, 120, 80),
+			VGet(0, 120, 250),
+			60.0f);
 
-    ownColliders_.emplace(
-        static_cast<int>(COLLIDER_TYPE::ATTACK),
-        attackCollider_);
+	// 攻撃判定カプセル
+	ownColliders_.emplace(
+		static_cast<int>(COLLIDER_TYPE::ATTACK),
+		attackCollider_);
 }
 
 void Boss::InitAnimation()
 {
-    animationController_ =
-        new AnimationController(transform_.modelId);
+	animationController_ =
+		new AnimationController(transform_.modelId_);
 
-    // 待機
-    animationController_->Add(
-        0,
-        20.0f,
-        Application::PATH_MODEL + "Charactor/Enemy/Boss/BossIdle.mv1");
+	// 待機
+	animationController_->Add(
+		0,
+		20.0f,
+		Application::PATH_MODEL + "Charactor/Enemy/Boss/BossIdle.mv1");
 
-    // 歩き
-    animationController_->Add(
-        1,
-        20.0f,
-        Application::PATH_MODEL + "Charactor/Enemy/Boss/BossWalk.mv1");
+	// 歩き
+	animationController_->Add(
+		1,
+		20.0f,
+		Application::PATH_MODEL + "Charactor/Enemy/Boss/BossWalk.mv1");
 
-    // ダッシュ
-    animationController_->Add(
-        2,
-        20.0f,
-        Application::PATH_MODEL + "Charactor/Enemy/Boss/BossRun.mv1");
+	// ダッシュ
+	animationController_->Add(
+		2,
+		20.0f,
+		Application::PATH_MODEL + "Charactor/Enemy/Boss/BossRun.mv1");
 
+	// 攻撃
+	animationController_->Add(
+		3,
+		20.0f,
+		Application::PATH_MODEL + "Charactor/Enemy/Boss/BossAttack.mv1");
 
-    // 攻撃
-    animationController_->Add(
-        3,
-        20.0f,
-        Application::PATH_MODEL + "Charactor/Enemy/Boss/BossAttack.mv1");
+	// チャージ
+	animationController_->Add(
+		4,
+		20.0f,
+		Application::PATH_MODEL + "Charactor/Enemy/Boss/Charge.mv1");
 
-    // チャージ
-    animationController_->Add(
-        4,
-        20.0f,
-        Application::PATH_MODEL + "Charactor/Enemy/Boss/Charge.mv1");
+	// 死亡
+	animationController_->Add(
+		5,
+		20.0f,
+		Application::PATH_MODEL + "Charactor/Enemy/Boss/BossDai.mv1");
 
-    // 死亡
-    animationController_->Add(
-        5,
-        20.0f,
-        Application::PATH_MODEL + "Charactor/Enemy/Boss/BossDai.mv1");
-
-    // 初期アニメ
-    animationController_->Play(0, true);
+	// 初期アニメ
+	animationController_->Play(0, true);
 }
 
 void Boss::InitPost()
 {
-    leftHandFrame_ =
-        MV1SearchFrame(
-            transform_.modelId,
-            "hand.L"
-        );
+	// 左手のフレーム番号取得
+	leftHandFrame_ =
+		MV1SearchFrame(
+			transform_.modelId_,
+			"hand.L"
+		);
 }
 
 void Boss::AI()
 {
-    UpdateAttackCollider();
+	UpdateAttackCollider();
 
+	if (isTackle_)
+	{
+		return;
+	}
 
-    if (isTackle_)
-    {
-        return;
-    }
+	// 行動中ならAIで状態を変えない
+	if (state_ == STATE::DASH_READY ||
+		state_ == STATE::DASH)
+	{
+		return;
+	}
 
+	if (target_ == nullptr)
+	{
+		return;
+	}
 
-    // 行動中ならAIで状態を変えない
-    if (state_ == STATE::DASH_READY ||
-        state_ == STATE::DASH)
-    {
-        return;
-    }
+	// 攻撃中なら他の行動をしない
+	if (isAttacking_)
+	{
+		if (animationController_->IsEnd())
+		{
+			isAttacking_ = false;
+			state_ = STATE::CHASE;
 
+			animationController_->Play(1, true);
+		}
+		return;
+	}
 
+	float dist = GetPlayerDistance();
 
-    if (target_ == nullptr)
-    {
-        return;
-    }
+	// 死亡状態なら何もしない
+	if (state_ == STATE::DEAD)
+	{
+		return;
+	}
 
-    // 攻撃中なら他の行動をしない
-    if (isAttacking_)
-    {
-        if (animationController_->IsEnd())
-        {
-            isAttacking_ = false;
-            state_ = STATE::CHASE;
+	// 攻撃距離内なら攻撃状態に遷移
+	if (dist <= attackRange_)
+	{
+		state_ = STATE::ATTACK;
 
-            animationController_->Play(1, true);
-        }
+		isAttacking_ = true;
+		animationController_->Play(3, false);
+	}
+	// 索敵距離内なら追跡状態に遷移	
+	else if (dist <= 800.0f)
+	{
+		if (state_ != STATE::CHASE)
+		{
+			state_ = STATE::CHASE;
+			animationController_->Play(1, true);
+		}
+	}
+	// 索敵距離内ならチャージ状態に遷移
+	else if (dist <= searchRange_)
+	{
+		if (state_ != STATE::DASH_READY)
+		{
+			state_ = STATE::DASH_READY;
 
-        return;
-    }
+			animationController_->Play(4, true);
 
-    float dist = GetPlayerDistance();
+			chargeEffectHandle_ =
+				PlayEffekseer3DEffect(chargeEffect_);
 
-    if (state_ == STATE::DEAD)
-    {
-        return;
-    }
+			chargeEffectPlaying_ = true;
+		}
+		// チャージエフェクトの位置を更新
+		if (chargeEffectPlaying_)
+		{
+			SetPosPlayingEffekseer3DEffect(
+				chargeEffectHandle_,
+				transform_.pos_.x,
+				transform_.pos_.y + 120.0f,
+				transform_.pos_.z);
+		}
+	}
+	// 索敵距離外なら待機状態に遷移
+	else
+	{
+		if (state_ != STATE::IDLE)
+		{
+			state_ = STATE::IDLE;
+			animationController_->Play(0, true);
+		}
+	}
 
-    if (dist <= attackRange_)
-    {
-        state_ = STATE::ATTACK;
-
-        isAttacking_ = true;
-        animationController_->Play(3, false);
-    }
-    else if (dist <= 800.0f)
-    {
-        if (state_ != STATE::CHASE)
-        {
-            state_ = STATE::CHASE;
-            animationController_->Play(1, true);
-        }
-    }
-    else if (dist <= searchRange_)
-    {
-        if (state_ != STATE::DASH_READY)
-        {
-            state_ = STATE::DASH_READY;
-
-            animationController_->Play(4, true);
-        
-            chargeEffectHandle_ =
-                PlayEffekseer3DEffect(chargeEffect_);
-
-            chargeEffectPlaying_ = true;
-        }
-
-        if (chargeEffectPlaying_)
-        {
-            SetPosPlayingEffekseer3DEffect(
-                chargeEffectHandle_,
-                transform_.pos.x,
-                transform_.pos.y + 120.0f,
-                transform_.pos.z);
-        }
-    }
-    else
-    {
-        if (state_ != STATE::IDLE)
-        {
-            state_ = STATE::IDLE;
-            animationController_->Play(0, true);
-        }
-    }
-
-    attackEnable_ = (state_ == STATE::ATTACK);
+	attackEnable_ = (state_ == STATE::ATTACK);
 }
 
 void Boss::Damage(int damage)
 {
-    if (state_ == STATE::DEAD) return;
+	// 死亡状態ならダメージを受けない
+	if (state_ == STATE::DEAD) return;
 
-    hp_ -= damage;
+	hp_ -= damage;
 
-    if (hp_ <= 0)
-    {
-        hp_ = 0;
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
 
-        int shoulderFrame = MV1SearchFrame(transform_.modelId, "shoulder.L");
-        if (shoulderFrame != -1)
-        {
-            MATRIX shoulderMatrix = MV1GetFrameLocalWorldMatrix(transform_.modelId, shoulderFrame);
+		// 左肩のフレーム番号取得
+		int shoulderFrame = MV1SearchFrame(transform_.modelId_, "shoulder.L");
+		if (shoulderFrame != -1)
+		{
+			MATRIX shoulderMatrix = MV1GetFrameLocalWorldMatrix(transform_.modelId_, shoulderFrame);
 
-            VECTOR rayOrigin = VGet(
-                shoulderMatrix.m[3][0],
-                shoulderMatrix.m[3][1],
-                shoulderMatrix.m[3][2]);
+			VECTOR rayOrigin = VGet(
+				shoulderMatrix.m[3][0],
+				shoulderMatrix.m[3][1],
+				shoulderMatrix.m[3][2]);
 
-            float yaw = transform_.quaRot.ToEuler().y;
-            VECTOR forward = VGet(sinf(yaw), 0.0f, cosf(yaw));
+			float yaw = transform_.quaRot_.ToEuler().y;
+			VECTOR forward = VGet(sinf(yaw), 0.0f, cosf(yaw));
 
-            effectPos_ = VAdd(rayOrigin, forward);
+			effectPos_ = VAdd(rayOrigin, forward);
 
-            int playHandle = PlayEffekseer3DEffect(effectHandle);
-            SetPosPlayingEffekseer3DEffect(playHandle, effectPos_.x, effectPos_.y, effectPos_.z);
-            SetRotationPlayingEffekseer3DEffect(playHandle, 0.0f, yaw, 0.0f);
-        }
+			// 死亡エフェクト再生
+			int playHandle = PlayEffekseer3DEffect(effectHandle_);
+			SetPosPlayingEffekseer3DEffect(playHandle, effectPos_.x, effectPos_.y, effectPos_.z);
+			SetRotationPlayingEffekseer3DEffect(playHandle, 0.0f, yaw, 0.0f);
+		}
+		
+		// チャージエフェクトを停止
+		if (chargeEffectPlaying_)
+		{
+			StopEffekseer3DEffect(chargeEffectHandle_);
+			chargeEffectPlaying_ = false;
+			chargeEffectHandle_ = -1;
+		}
 
-        if (chargeEffectPlaying_)
-        {
-            StopEffekseer3DEffect(chargeEffectHandle_);
-            chargeEffectPlaying_ = false;
-            chargeEffectHandle_ = -1;
-        }
+		// 死亡音再生
+		sndMng_.Play(SoundManager::SRC::EnemyDai);
 
-        sndMng_.Play(SoundManager::SRC::EnemyDai);
+		state_ = STATE::DEAD;
 
-        state_ = STATE::DEAD;
-
-        animationController_->Play(5, false);
-    }
+		animationController_->Play(5, false);
+	}
 }
 
 bool Boss::IsAttack() const
 {
-    return attackEnable_;
+	return attackEnable_;
 }
 
 void Boss::UpdateAttackCollider()
 {
-    if (leftHandFrame_ == -1 || attackCollider_ == nullptr)
-    {
-        return;
-    }
+	if (leftHandFrame_ == -1 || attackCollider_ == nullptr)
+	{
+		return;
+	}
 
-    MATRIX mat =
-        MV1GetFrameLocalWorldMatrix(
-            transform_.modelId,
-            leftHandFrame_);
+	MATRIX mat =
+		MV1GetFrameLocalWorldMatrix(
+			transform_.modelId_,
+			leftHandFrame_);
 
-    VECTOR handPos =
-    {
-        mat.m[3][0],
-        mat.m[3][1],
-        mat.m[3][2]
-    };
+	VECTOR handPos =
+	{
+		mat.m[3][0],
+		mat.m[3][1],
+		mat.m[3][2]
+	};
 
-    VECTOR localPos = VSub(handPos, transform_.pos);
+	VECTOR localPos = VSub(handPos, transform_.pos_);
 
-    // 手のひら方向へ少しずらす
-    localPos = VAdd(localPos, VGet(0.0f, 0.0f, 25.0f));
+	// 手のひら方向へ少しずらす
+	localPos = VAdd(localPos, VGet(0.0f, 0.0f, 25.0f));
 
 
-    attackCollider_->SetLocalPosTop(localPos);
-    attackCollider_->SetLocalPosDown(localPos);
+	attackCollider_->SetLocalPosTop(localPos);
+	attackCollider_->SetLocalPosDown(localPos);
 }

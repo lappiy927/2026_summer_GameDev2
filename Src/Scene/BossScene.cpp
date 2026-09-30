@@ -139,8 +139,6 @@ void BossScene::Update(void)
 						pos.y + 50.0f,
 						pos.z);
 				}
-				
-
 				int effect = PlayEffekseer3DEffect(slashEffectHandle_);
 
 				VECTOR pos = boss_->GetPos();
@@ -153,7 +151,6 @@ void BossScene::Update(void)
 			}
 		}
 	}
-	
 
 	if (boss_->IsDeadAnimationEnd())
 	{
@@ -163,6 +160,7 @@ void BossScene::Update(void)
 
 		return;
 	}
+
 	else if (player_->IsDead())
 	{
 		sndMng_.StopAll();
@@ -188,12 +186,6 @@ void BossScene::Draw(void)
 	DrawString(0, 0, "BossScene", 0xffffff);
 
 	VECTOR pPos = player_->GetPos();
-
-	/*DrawFormatString(
-		0, 100,
-		0xffffff,
-		"Player : %.2f %.2f %.2f",
-		pPos.x, pPos.y, pPos.z);*/
 
 	if (hit_) {
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128); // îºìßñæ(0Å`255)

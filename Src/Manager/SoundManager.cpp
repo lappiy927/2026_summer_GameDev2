@@ -22,7 +22,6 @@ SoundManager::SoundManager(void)
 {
 }
 
-
 void SoundManager::Init(void)
 {
 	static std::string PATH_SND = "Data/Sound/";
@@ -36,8 +35,6 @@ void SoundManager::Init(void)
 	pathMap_.emplace(SRC::Run, PATH_SND + "Run.mp3");
 	pathMap_.emplace(SRC::EnemyDai, PATH_SND + "devil_scared1.mp3");
 	pathMap_.emplace(SRC::Shot, PATH_SND + "shot.mp3");
-
-
 }
 
 void SoundManager::Release(void)
@@ -61,10 +58,7 @@ void SoundManager::Destroy(void)
 	instance_ = nullptr;
 }
 
-//=============================================================
 // 内部ロード
-//=============================================================
-
 SoundManager::SoundData* SoundManager::_Load(SRC src)
 {
 	// ロード済みチェック
@@ -88,10 +82,7 @@ SoundManager::SoundData* SoundManager::_Load(SRC src)
 	return &soundMap_[src];
 }
 
-//=============================================================
 // 再生 / 停止 / 一時停止
-//=============================================================
-
 void SoundManager::Play(SRC src, bool loop, int volume)
 {
 	SoundData* data = _Load(src);
@@ -147,10 +138,7 @@ void SoundManager::StopAll(void)
 	}
 }
 
-//=============================================================
 // パラメータ変更
-//=============================================================
-
 void SoundManager::SetVolume(SRC src, int volume)
 {
 	auto it = soundMap_.find(src);

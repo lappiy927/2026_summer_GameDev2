@@ -49,7 +49,6 @@ mul(VSInput.norm, (float3x3) g_base.localWorldMatrix));
     ret.lightDir = float3(0.0f, 0.0f, 0.0f);
 // ライトから見た座標
     ret.lightAtPos = float3(0.0f, 0.0f, 0.0f);
-    
 
   // 出力パラメータを返す
     return ret;

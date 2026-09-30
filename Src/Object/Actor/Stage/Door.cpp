@@ -2,6 +2,18 @@
 #include "Door.h"
 
 Door::Door(void)
+	:
+	ActorBase(),
+	leftHandle_(-1),
+	rightHandle_(-1),
+	backHandle_(-1),
+	leftBasePos_(AsoUtility::VECTOR_ZERO),
+	rightBasePos_(AsoUtility::VECTOR_ZERO),
+	backPos_(AsoUtility::VECTOR_ZERO),
+	leftPos_(AsoUtility::VECTOR_ZERO),
+	rightPos_(AsoUtility::VECTOR_ZERO),
+	isOpen_(false),
+	slideAmount_(0.0f)
 {
 }
 
@@ -14,10 +26,6 @@ void Door::Init(void)
 	InitLoad();
 	InitTransform();
 	InitPost();
-
-	
-
-	
 }
 
 void Door::Update(void)
@@ -30,7 +38,6 @@ void Door::Update(void)
 			slideAmount_ += 2.0f;
 		}
 	}
-
 	// äÓèÄà íuÇ÷ñﬂÇ∑
 	leftPos_ = leftBasePos_;
 	rightPos_ = rightBasePos_;
@@ -38,7 +45,6 @@ void Door::Update(void)
 	// ç∂âEÇ÷äJÇ≠
 	leftPos_.z -= slideAmount_;
 	rightPos_.z += slideAmount_;
-
 }
 
 void Door::Draw(void)
@@ -51,18 +57,6 @@ void Door::Draw(void)
 
 	MV1SetPosition(rightHandle_, rightPos_);
 	MV1DrawModel(rightHandle_);
-
-	/*DrawFormatString(
-		0, 400,
-		0xffffff,
-		"door : %.2f %.2f %.2f",
-		rightPos_.x, rightPos_.y, rightPos_.z);
-
-	DrawFormatString(
-		0, 450,
-		0xffffff,
-		"door : %.2f %.2f %.2f",
-		leftPos_.x, leftPos_.y, leftPos_.z);*/
 }
 
 void Door::Release(void)
@@ -92,15 +86,12 @@ void Door::InitLoad(void)
 void Door::InitTransform(void)
 {
 	leftBasePos_ = VGet(230.0f, 400.0f, 0.0f);
-	rightBasePos_ = VGet(230.0f,400.0f, 0.0f);
+	rightBasePos_ = VGet(230.0f, 400.0f, 0.0f);
 	backPos_ = VGet(1000.0f, 400.0f, 0.0f);
-
-
 
 	leftPos_ = leftBasePos_;
 	rightPos_ = rightBasePos_;
 
-	
 	MV1SetScale(leftHandle_, VGet(0.3f, 0.3f, 0.3f));
 	MV1SetScale(rightHandle_, VGet(0.3f, 0.3f, 0.3f));
 	MV1SetScale(backHandle_, VGet(0.3f, 0.3f, 0.3f));

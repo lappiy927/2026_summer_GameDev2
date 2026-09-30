@@ -1,117 +1,115 @@
 #pragma once
 #include "../CharactorBase.h"
+
 class Player;
 
 class EnemyBase :
-    public CharactorBase
+	public CharactorBase
 {
 public:
 
-    enum class STATE
-    {
-        IDLE,
-        CHASE,
-        DASH_READY,
-        DASH,
-        ATTACK,
-        DAMAGE,
-        DEAD
-    };
+	enum class STATE
+	{
+		IDLE,
+		CHASE,
+		DASH_READY,
+		DASH,
+		ATTACK,
+		DAMAGE,
+		DEAD
+	};
 
-    EnemyBase();
-    virtual ~EnemyBase();
+	EnemyBase();
+	virtual ~EnemyBase();
 
-    virtual void UpdateProcess() override;
-    virtual void UpdateProcessPost() override;
+	virtual void UpdateProcess() override;
+	virtual void UpdateProcessPost() override;
 
-    // 敵AI
-    virtual void AI() = 0;
+	// 敵AI
+	virtual void AI() = 0;
 
-    // ターゲット設定
-    void SetTarget(Player* player);
+	// ターゲット設定
+	void SetTarget(Player* player);
 
-    // 死亡確認
-    virtual bool IsDead() const;
+	// 死亡確認
+	virtual bool IsDead() const;
 
-    void SetPos(const VECTOR& pos);
+	void SetPos(const VECTOR& pos);
 
-    bool IsHit(Player* player);
+	bool IsHit(Player* player);
 
-    // 死亡アニメーション終了確認
-    bool IsDeadAnimationEnd() const;
+	// 死亡アニメーション終了確認
+	bool IsDeadAnimationEnd() const;
 
-    // ダメージ
-    virtual void Damage(int power);
+	// ダメージ
+	virtual void Damage(int power);
 
-    ColliderBase* GetCollider(int type);
+	ColliderBase* GetCollider(int type);
 
-    int GetHp() const;
-
-protected:
-
-    // 状態
-    STATE state_;
-
-    // プレイヤー
-    Player* target_;
-
-    // HP
-    int hp_;
-
-    // 死亡フラグ
-    bool isDead_;
-
-    // 索敵距離
-    float searchRange_;
-
-    // 攻撃距離
-    float attackRange_;
-
-    // 敵移動速度
-    float moveSpeedEnemy_;
-
-    VECTOR effectPos_ = AsoUtility::VECTOR_ZERO;
+	int GetHp() const;
 
 protected:
 
-    // 状態更新
-    void UpdateIdle();
-    void UpdateChase();
-    void UpdateDashReady();
-    void UpdateDash();
-    void UpdateAttack();
-    void UpdateDamage();
-    void UpdateDead();
+	// 状態
+	STATE state_;
 
-    // プレイヤー方向
-    VECTOR GetPlayerDirection() const;
+	// プレイヤー
+	Player* target_;
 
-    // プレイヤー距離
-    float GetPlayerDistance() const;
+	// HP
+	int hp_;
 
-    // プレイヤー発見
-    bool SearchPlayer() const;
+	// 死亡フラグ
+	bool isDead_;
 
-    int effectHandle = -1;
+	// 索敵距離
+	float searchRange_;
 
-    VECTOR knockbackPow_ = AsoUtility::VECTOR_ZERO;
-    int knockbackTimer_ = 0;
+	// 攻撃距離
+	float attackRange_;
 
-    VECTOR dashDir_;
+	// 敵移動速度
+	float moveSpeedEnemy_;
 
-    float dashSpeed_ = 0.0f;
+	VECTOR effectPos_ = AsoUtility::VECTOR_ZERO;
 
-    int dashTimer_ = 0;
+protected:
 
-    bool isLanding_ = false;
+	// 状態更新
+	void UpdateIdle();
+	void UpdateChase();
+	void UpdateDashReady();
+	void UpdateDash();
+	void UpdateAttack();
+	void UpdateDamage();
+	void UpdateDead();
 
-    bool isTackle_ = false;
+	// プレイヤー方向
+	VECTOR GetPlayerDirection() const;
 
-    int tackleTimer_ = 0;
+	// プレイヤー距離
+	float GetPlayerDistance() const;
 
-    int chargeEffectHandle_ = -1;
-    bool chargeEffectPlaying_ = false;
+	// プレイヤー発見
+	bool SearchPlayer() const;
 
-    int chargeEffect_;
+	int effectHandle_;
 
+	VECTOR dashDir_;
+
+	float dashSpeed_;
+
+	int dashTimer_;
+
+	bool isLanding_;
+
+	bool isTackle_;
+
+	int tackleTimer_;
+
+	//チャージエフェクト
+	int chargeEffectHandle_;
+	bool chargeEffectPlaying_;
+
+	int chargeEffect_;
 };

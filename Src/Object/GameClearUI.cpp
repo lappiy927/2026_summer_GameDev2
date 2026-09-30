@@ -18,7 +18,6 @@ static unsigned int GOC_NAME() { return GetColor(192, 132, 252); }
 static unsigned int GOC_TEXT() { return GetColor(240, 232, 255); }
 static unsigned int GOC_DIVIDER() { return GetColor(80, 40, 140); }
 
-// ============================================================
 GameClearUI::~GameClearUI()
 {
     Release();
@@ -31,10 +30,9 @@ void GameClearUI::Release()
     RemoveFontResourceEx("Data/Font/玉ねぎ楷書激無料版v7改.ttf", FR_PRIVATE, 0);
 }
 
-// ============================================================
 void GameClearUI::Init()
 {
-    // 立ち絵画像（差し替えたい場合はパスを変更してください）
+    // 立ち絵画像
     charImage_ = LoadGraph("Data/Image/Tutorial.png");
 
     AddFontResourceEx("Data/Font/玉ねぎ楷書激無料版v7改.ttf", FR_PRIVATE, 0);
@@ -59,7 +57,6 @@ void GameClearUI::Init()
     StartTypewriter(message);
 }
 
-// ============================================================
 void GameClearUI::Update()
 {
     UpdateTypewriter();
@@ -71,7 +68,6 @@ void GameClearUI::Draw() const
     DrawChatWindow();
 }
 
-// ============================================================
 void GameClearUI::StartTypewriter(const std::string& text)
 {
     fullText_ = text;
@@ -106,14 +102,12 @@ void GameClearUI::UpdateTypewriter()
     }
 }
 
-// ============================================================
 void GameClearUI::DrawCharacter() const
 {
     if (charImage_ == -1) return;
     DrawGraph(charX_, charY_, charImage_, TRUE);
 }
 
-// ============================================================
 void GameClearUI::DrawChatWindow() const
 {
     constexpr int PAD = 20;

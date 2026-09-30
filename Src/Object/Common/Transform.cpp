@@ -4,16 +4,16 @@
 
 Transform::Transform(void)
 	:
-	modelId(-1),
-	scl(AsoUtility::VECTOR_ONE),
-	rot(AsoUtility::VECTOR_ZERO),
-	pos(AsoUtility::VECTOR_ZERO),
-	localPos(AsoUtility::VECTOR_ZERO),
-	matScl(MGetIdent()),
-	matRot(MGetIdent()),
-	matPos(MGetIdent()),
-	quaRot(Quaternion::Identity()),
-	quaRotLocal(Quaternion::Identity())
+	modelId_(-1),
+	scl_(AsoUtility::VECTOR_ONE),
+	rot_(AsoUtility::VECTOR_ZERO),
+	pos_(AsoUtility::VECTOR_ZERO),
+	localPos_(AsoUtility::VECTOR_ZERO),
+	matScl_(MGetIdent()),
+	matRot_(MGetIdent()),
+	matPos_(MGetIdent()),
+	quaRot_(Quaternion::Identity()),
+	quaRotLocal_(Quaternion::Identity())
 
 {
 }
@@ -24,30 +24,28 @@ Transform::~Transform(void)
 
 void Transform::Update(void)
 {
-
 	// 大きさ
-	matScl = MGetScale(scl);
+	matScl_ = MGetScale(scl_);
 
 	// 回転
-	rot = quaRot.ToEuler();
-	matRot = quaRot.ToMatrix();
+	rot_ = quaRot_.ToEuler();
+	matRot_ = quaRot_.ToMatrix();
 
 	// 位置
-	matPos = MGetTranslate(pos);
+	matPos_ = MGetTranslate(pos_);
 
 	// 行列の合成
 	MATRIX mat = MGetIdent();
-	mat = MMult(mat, matScl);
-	Quaternion q = quaRot.Mult(quaRotLocal);
+	mat = MMult(mat, matScl_);
+	Quaternion q = quaRot_.Mult(quaRotLocal_);
 	mat = MMult(mat, q.ToMatrix());
-	mat = MMult(mat, matPos);
+	mat = MMult(mat, matPos_);
 
 	// 行列をモデルに判定
-	if (modelId != -1)
+	if (modelId_ != -1)
 	{
-		MV1SetMatrix(modelId, mat);
+		MV1SetMatrix(modelId_, mat);
 	}
-
 }
 
 void Transform::Release(void)
@@ -56,7 +54,7 @@ void Transform::Release(void)
 
 void Transform::SetModel(int id)
 {
-	modelId = id;
+	modelId_ = id;
 }
 
 VECTOR Transform::GetForward(void) const
@@ -91,15 +89,15 @@ VECTOR Transform::GetDown(void) const
 
 VECTOR Transform::GetDir(const VECTOR& dir) const
 {
-	return quaRot.PosAxis(dir);
+	return quaRot_.PosAxis(dir);
 }
 
 MATRIX Transform::GetWorldMatrix() const
 {
 	MATRIX mat = MGetIdent();
-	mat = MMult(mat, matScl);
-	Quaternion q = quaRot.Mult(quaRotLocal);
+	mat = MMult(mat, matScl_);
+	Quaternion q = quaRot_.Mult(quaRotLocal_);
 	mat = MMult(mat, q.ToMatrix());
-	mat = MMult(mat, matPos);  // pos の行列化は matPos に入れる
+	mat = MMult(mat, matPos_);  // pos の行列化は matPos に入れる
 	return mat;
 }

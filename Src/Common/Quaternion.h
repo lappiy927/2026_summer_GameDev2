@@ -1,9 +1,9 @@
 #pragma once
 #include <DxLib.h>
 #include <algorithm>
+
 class Quaternion
 {
-
 public:
 
 	static constexpr float kEpsilonNormalSqrt = 1e-15F;
@@ -96,5 +96,4 @@ private:
 
 	Quaternion operator*(float rhs);
 	Quaternion operator+(const Quaternion& rhs);
-
 };

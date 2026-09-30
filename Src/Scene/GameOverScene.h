@@ -36,5 +36,5 @@ private:
 	int currentTextY_ = 300;
 	int currentTextAlpha_ = 255;
 
-	GameOverUI gameOverUI_;  // Å•í«â¡
+	GameOverUI gameOverUI_;
 };

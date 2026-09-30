@@ -2,6 +2,7 @@
 #include <vector>
 #include <DxLib.h>
 #include "SceneBase.h"
+
 class Stage;
 
 class DebugScene : public SceneBase
@@ -40,4 +41,3 @@ private:
 	// デバッグポイントの保存
 	void SavePoints(void);
 };
-

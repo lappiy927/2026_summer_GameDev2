@@ -39,8 +39,4 @@ protected:
 	SceneManager& sceMng_;
 
 	bool endRequest_ = false;
-
-
-
-
 };

@@ -41,7 +41,6 @@ void Fader::Init(void)
 
 void Fader::Update(void)
 {
-
 	if (isEnd_)
 	{
 		return;
@@ -65,7 +64,6 @@ void Fader::Update(void)
 			}
 			isPreEnd_ = true;
 		}
-
 		break;
 
 	case STATE::FADE_IN:
@@ -86,17 +84,17 @@ void Fader::Update(void)
 	default:
 		return;
 	}
-
 }
 
-void Fader::Draw(void)
+void Fader::Draw(void)const
 {
-
 	switch (state_)
 	{
 	case STATE::NONE:
 		return;
+
 	case STATE::FADE_OUT:
+
 	case STATE::FADE_IN:
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)alpha_);
 		DrawBox(
@@ -107,5 +105,4 @@ void Fader::Draw(void)
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		break;
 	}
-
 }

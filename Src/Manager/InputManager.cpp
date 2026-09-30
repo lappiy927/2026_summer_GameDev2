@@ -25,7 +25,6 @@ InputManager& InputManager::GetInstance(void)
 
 void InputManager::Init(void)
 {
-
 	// ゲームで使用したいキーを、
 	// 事前にここで登録しておいてください
 	InputManager::GetInstance().Add(KEY_INPUT_SPACE);
@@ -72,12 +71,10 @@ void InputManager::Init(void)
 	info.keyTrgDown = false;
 	info.keyTrgUp = false;
 	mouseInfos_.emplace(info.key, info);
-
 }
 
 void InputManager::Update(void)
 {
-
 	// キーボード検知
 	for (auto& p : keyInfos_)
 	{
@@ -105,19 +102,16 @@ void InputManager::Update(void)
 	SetJPadInState(JOYPAD_NO::PAD2);
 	SetJPadInState(JOYPAD_NO::PAD3);
 	SetJPadInState(JOYPAD_NO::PAD4);
-
 }
 
 void InputManager::Destroy(void)
 {
-
 	// キー情報のクリア
 	keyInfos_.clear();
 	mouseInfos_.clear();
 
 	// インスタンスのメモリ解放
 	delete instance_;
-
 }
 
 void InputManager::Add(int key)
@@ -197,7 +191,6 @@ InputManager::InputManager(void)
 
 const InputManager::Info& InputManager::Find(int key) const
 {
-
 	auto it = keyInfos_.find(key);
 	if (it != keyInfos_.end())
 	{
@@ -205,7 +198,6 @@ const InputManager::Info& InputManager::Find(int key) const
 	}
 
 	return infoEmpty_;
-
 }
 
 const InputManager::MouseInfo& InputManager::FindMouse(int key) const
@@ -240,7 +232,6 @@ XINPUT_STATE InputManager::GetJPadXInputState(JOYPAD_NO no)
 
 void InputManager::SetJPadInState(JOYPAD_NO jpNo)
 {
-
 	int no = static_cast<int>(jpNo);
 	auto stateNew = GetJPadInputState(jpNo);
 	auto& stateNow = padInfos_[no];
@@ -258,19 +249,16 @@ void InputManager::SetJPadInState(JOYPAD_NO jpNo)
 
 		stateNow.IsTrgDown[i] = stateNow.IsNew[i] && !stateNow.IsOld[i];
 		stateNow.IsTrgUp[i] = !stateNow.IsNew[i] && stateNow.IsOld[i];
-
 	}
 
 	stateNow.AKeyLX = stateNew.AKeyLX;
 	stateNow.AKeyLY = stateNew.AKeyLY;
 	stateNow.AKeyRX = stateNew.AKeyRX;
 	stateNow.AKeyRY = stateNew.AKeyRY;
-
 }
 
 InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
 {
-
 	JOYPAD_IN_STATE ret = JOYPAD_IN_STATE();
 
 	auto type = GetJPadType(no);
@@ -285,14 +273,13 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
 	break;
 	case InputManager::JOYPAD_TYPE::XBOX_ONE:
 	{
-
 		auto d = GetJPadDInputState(no);
 		auto x = GetJPadXInputState(no);
 
-	/*	for (int i = 0; i < 16; i++)
-		{
-			printfDx("%d:%d\n", i, x.Buttons[i]);
-		}*/
+		/*	for (int i = 0; i < 16; i++)
+			{
+				printfDx("%d:%d\n", i, x.Buttons[i]);
+			}*/
 
 		int idx;
 
@@ -333,7 +320,6 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
 		idx = static_cast<int>(JOYPAD_BTN::DPAD_RIGHT);
 		ret.ButtonsNew[idx] = x.Buttons[3];
 
-
 		// 左スティック
 		ret.AKeyLX = d.X;
 		ret.AKeyLY = d.Y;
@@ -341,13 +327,11 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
 		// 右スティック
 		ret.AKeyRX = d.Rx;
 		ret.AKeyRY = d.Ry;
-
 	}
 	break;
 	case InputManager::JOYPAD_TYPE::DUAL_SHOCK_4:
 	case InputManager::JOYPAD_TYPE::DUAL_SENSE:
 	{
-
 		auto d = GetJPadDInputState(no);
 		int idx;
 
@@ -380,7 +364,6 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
 		// 右スティック
 		ret.AKeyRX = d.Z;
 		ret.AKeyRY = d.Rz;
-
 	}
 	break;
 	case InputManager::JOYPAD_TYPE::SWITCH_JOY_CON_L:
@@ -392,9 +375,7 @@ InputManager::JOYPAD_IN_STATE InputManager::GetJPadInputState(JOYPAD_NO no)
 	case InputManager::JOYPAD_TYPE::MAX:
 		break;
 	}
-
 	return ret;
-
 }
 
 bool InputManager::IsPadBtnNew(JOYPAD_NO no, JOYPAD_BTN btn) const
@@ -414,7 +395,6 @@ bool InputManager::IsPadBtnTrgUp(JOYPAD_NO no, JOYPAD_BTN btn) const
 
 VECTOR InputManager::GetDirectionXZAKey(int aKeyX, int aKeyY) const
 {
-
 	VECTOR ret = { 0.0f, 0.0f, 0.0f };
 
 	// スティックの個々の入力値は、
@@ -446,5 +426,4 @@ VECTOR InputManager::GetDirectionXZAKey(int aKeyX, int aKeyY) const
 	ret = VNorm({ dirX, 0.0f, -dirZ });
 
 	return ret;
-
 }

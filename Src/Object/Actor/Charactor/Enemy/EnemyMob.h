@@ -17,5 +17,6 @@ public:
 	void AI() override;
 
 	void Damage(int damage) override;
-};
 
+	int bloodPoolEf_;
+};

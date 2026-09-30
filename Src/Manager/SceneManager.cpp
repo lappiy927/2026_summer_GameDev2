@@ -32,7 +32,6 @@ SceneManager& SceneManager::GetInstance(void)
 
 void SceneManager::Init(void)
 {
-
 	sceneId_ = SCENE_ID::TITLE;
 	waitSceneId_ = SCENE_ID::NONE;
 
@@ -55,12 +54,10 @@ void SceneManager::Init(void)
 
 	// 初期シーンの設定
 	DoChangeScene(SCENE_ID::TITLE);
-
 }
 
 void SceneManager::Init3D(void)
 {
-
 	// 背景色設定
 	SetBackgroundColor(
 		BACKGROUND_COLOR_R,
@@ -86,12 +83,10 @@ void SceneManager::Init3D(void)
 	SetFogEnable(true);
 	SetFogColor(5, 5, 5);
 	SetFogStartEnd(10000.0f, 20000.0f);
-
 }
 
 void SceneManager::Update(void)
 {
-
 	if (sceneStack_.empty())
 		return;
 
@@ -121,7 +116,6 @@ void SceneManager::Update(void)
 
 void SceneManager::Draw(void)
 {
-
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	ClearDrawScreen();
@@ -141,7 +135,6 @@ void SceneManager::Draw(void)
 	DrawEffekseer3D();
 
 	fader_->Draw();
-
 }
 
 void SceneManager::Destroy(void)
@@ -167,12 +160,10 @@ void SceneManager::Destroy(void)
 
 	delete instance_;
 	instance_ = nullptr;
-
 }
 
 void SceneManager::ChangeScene(SCENE_ID nextId)
 {
-
 	// フェード処理が終わってからシーンを変える場合もあるため、
 	// 遷移先シーンをメンバ変数に保持
 	waitSceneId_ = nextId;
@@ -180,10 +171,9 @@ void SceneManager::ChangeScene(SCENE_ID nextId)
 	// フェードアウト(暗転)を開始する
 	fader_->SetFade(Fader::STATE::FADE_OUT);
 	isSceneChanging_ = true;
-
 }
 
-SceneManager::SCENE_ID SceneManager::GetSceneID(void)
+SceneManager::SCENE_ID SceneManager::GetSceneID(void)const
 {
 	return sceneId_;
 }
@@ -219,7 +209,6 @@ void SceneManager::PopScene()
 
 SceneManager::SceneManager(void)
 {
-
 	sceneId_ = SCENE_ID::NONE;
 	waitSceneId_ = SCENE_ID::NONE;
 
@@ -232,7 +221,6 @@ SceneManager::SceneManager(void)
 	deltaTime_ = 1.0f / 60.0f;
 
 	camera_ = nullptr;
-
 }
 
 void SceneManager::ResetDeltaTime(void)
@@ -256,8 +244,6 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 
 	// シーンを変更する
 	sceneId_ = sceneId;
-
-	
 
 	switch (sceneId_)
 	{
@@ -295,12 +281,10 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 	ResetDeltaTime();
 
 	waitSceneId_ = SCENE_ID::NONE;
-
 }
 
 void SceneManager::Fade(void)
 {
-
 	Fader::STATE fState = fader_->GetState();
 	switch (fState)
 	{
@@ -324,7 +308,4 @@ void SceneManager::Fade(void)
 		}
 		break;
 	}
-
 }
-
-

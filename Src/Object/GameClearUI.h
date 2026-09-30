@@ -5,6 +5,7 @@
 class GameClearUI
 {
 public:
+
     GameClearUI() = default;
     ~GameClearUI();
 
@@ -17,6 +18,7 @@ public:
     int screenH = 720;
 
 private:
+
     void StartTypewriter(const std::string& text);
     void UpdateTypewriter();
 

@@ -14,7 +14,16 @@ EnemyBase::EnemyBase()
 	isDead_(false),
 	searchRange_(700.0f),
 	attackRange_(50.0f),
-	moveSpeedEnemy_(5.0f)
+	moveSpeedEnemy_(5.0f),
+	dashDir_(AsoUtility::VECTOR_ZERO),
+	dashSpeed_(0.0f),
+	dashTimer_(0),
+	tackleTimer_(0),
+	isLanding_(false),
+	chargeEffectHandle_(-1),
+	chargeEffectPlaying_(false),
+	chargeEffect_(-1),
+	effectHandle_(-1)
 {
 }
 
@@ -75,7 +84,6 @@ void EnemyBase::UpdateProcess()
 		UpdateDead();
 		break;
 	}
-
 	transform_.Update();
 }
 
@@ -104,13 +112,12 @@ bool EnemyBase::IsDeadAnimationEnd() const
 	{
 		return true;
 	}
-
 	return animationController_->IsEnd();
 }
 
 void EnemyBase::SetPos(const VECTOR& pos)
 {
-	transform_.pos = pos;
+	transform_.pos_ = pos;
 }
 
 bool EnemyBase::IsHit(Player* player)
@@ -138,7 +145,6 @@ ColliderBase* EnemyBase::GetCollider(int type)
 	{
 		return nullptr;
 	}
-
 	return ownColliders_.at(type);
 }
 
@@ -191,9 +197,6 @@ void EnemyBase::UpdateDashReady()
 
 	if (dashTimer_ >= 180)
 	{
-
-		
-
 		if (chargeEffectPlaying_)
 		{
 			StopEffekseer3DEffect(chargeEffectHandle_);
@@ -220,7 +223,6 @@ void EnemyBase::UpdateDash()
 	movePow_ = VScale(dashDir_, dashSpeed_);
 
 	dashSpeed_ *= 0.95f;
-
 
 	// “Ëi’†‚Ì“–‚½‚è”»’è
 	if (target_ && IsHit(target_))
@@ -267,9 +269,8 @@ VECTOR EnemyBase::GetPlayerDirection() const
 	{
 		return AsoUtility::VECTOR_ZERO;
 	}
-
 	VECTOR dir =
-		VSub(target_->GetPos(), transform_.pos);
+		VSub(target_->GetPos(), transform_.pos_);
 
 	// ‚‚³–³Ž‹
 	dir.y = 0.0f;
@@ -279,7 +280,6 @@ VECTOR EnemyBase::GetPlayerDirection() const
 	{
 		return AsoUtility::VECTOR_ZERO;
 	}
-
 	return VNorm(dir);
 }
 
@@ -289,9 +289,8 @@ float EnemyBase::GetPlayerDistance() const
 	{
 		return 999999.0f;
 	}
-
 	return VSize(
-		VSub(target_->GetPos(), transform_.pos));
+		VSub(target_->GetPos(), transform_.pos_));
 }
 
 bool EnemyBase::SearchPlayer() const

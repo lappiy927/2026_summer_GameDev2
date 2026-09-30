@@ -29,25 +29,25 @@ void TitleScene::Init(void)
 	float size = 0;
 
 	charactor_.SetModel(resMng_.Load(ResourceManager::SRC::PLAYER).handleId_);
-	charactor_.pos = { 0.0f, -300.0f, -105.0f };
+	charactor_.pos_ = { 0.0f, -300.0f, -105.0f };
 	size = 0.8f;
-	charactor_.scl = { size, size, size };
-	charactor_.quaRot = Quaternion::Euler(
+	charactor_.scl_ = { size, size, size };
+	charactor_.quaRot_ = Quaternion::Euler(
 		0.0f, AsoUtility::Deg2RadF(90.0f), AsoUtility::Deg2RadF(45.0f));
 	charactor_.Update();
 
 	//アニメーションコントローラー
 	animationController_ =
-		new AnimationController(charactor_.modelId);
+		new AnimationController(charactor_.modelId_);
 	animationController_->Add(0, 20.0f,
 		Application::PATH_MODEL + "Charactor/Player/FastRun.mv1");
 	animationController_->Play(0);
 
 	enemy_.SetModel(resMng_.Load(ResourceManager::SRC::ENEMY).handleId_);
-	enemy_.pos = { -100.0f, -300.0f, -105.0f };
+	enemy_.pos_ = { -100.0f, -300.0f, -105.0f };
 	size = 0.4f;
-	enemy_.scl = { size, size, size };
-	enemy_.quaRot = Quaternion::Euler(
+	enemy_.scl_ = { size, size, size };
+	enemy_.quaRot_ = Quaternion::Euler(
 		AsoUtility::Deg2RadF(45.0f), 0.0f, AsoUtility::Deg2RadF(45.0f));
 	enemy_.Update();
 
@@ -56,7 +56,7 @@ void TitleScene::Init(void)
 	buttonExit_ = LoadGraph("Data/Image/Menu/button_exit.png");
 	buttonExitSelect_ = LoadGraph("Data/Image/Menu/button_exit_select.png");
 
-	selectNo_ = 0; 
+	selectNo_ = 0;
 }
 
 void TitleScene::Update(void)
@@ -65,7 +65,7 @@ void TitleScene::Update(void)
 	animationController_->Update();
 
 	// 惑星の回転
-	enemy_.quaRot = enemy_.quaRot.Mult(
+	enemy_.quaRot_ = enemy_.quaRot_.Mult(
 		Quaternion::Euler(AsoUtility::Deg2RadF(10.0f), AsoUtility::Deg2RadF(20.0f), AsoUtility::Deg2RadF(30.0f)));
 	enemy_.Update();
 
@@ -76,7 +76,7 @@ void TitleScene::Update(void)
 	InputManager::JOYPAD_IN_STATE padState =
 		ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
 
-	if (ins.IsTrgDown(KEY_INPUT_A)||
+	if (ins.IsTrgDown(KEY_INPUT_A) ||
 		ins.IsPadBtnTrgDown(
 			InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::DPAD_LEFT))
@@ -103,7 +103,7 @@ void TitleScene::Update(void)
 	}
 
 	if (ins.IsTrgDown(KEY_INPUT_RETURN) ||
-		ins.IsTrgDown(KEY_INPUT_SPACE)||
+		ins.IsTrgDown(KEY_INPUT_SPACE) ||
 		ins.IsPadBtnTrgDown(
 			InputManager::JOYPAD_NO::PAD1,
 			InputManager::JOYPAD_BTN::RIGHT))
@@ -125,8 +125,8 @@ void TitleScene::Draw(void)
 {
 	DrawString(0, 0, "TitleScene", GetColor(255, 255, 255));
 	DrawGraph(0, 0, imgTitle_, TRUE);
-	MV1DrawModel(charactor_.modelId);
-	MV1DrawModel(enemy_.modelId);
+	MV1DrawModel(charactor_.modelId_);
+	MV1DrawModel(enemy_.modelId_);
 
 	if (selectNo_ == 0)
 	{
